@@ -1,7 +1,7 @@
 # Учебный проект «Куплю. Продам» [![Build status][travis-image]][travis-url]
 
 * Студент: [Денис Попов](https://up.htmlacademy.ru/nodejs/3/user/505149).
-* Наставник: `Неизвестно`.
+* Наставник: [Юрий Кучма](https://htmlacademy.ru/profile/krabaton).
 
 ---
 
