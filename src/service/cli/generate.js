@@ -30,10 +30,10 @@ const SENTENCES = [
   `Если найдёте дешевле — сброшу цену.`,
   `Таких предложений больше нет!`,
   `При покупке с меня бесплатная доставка в черте города.`,
-  `Кажется, что это хрупкая вещь`,
-  `Мой дед не мог её сломать`,
+  `Кажется, что это хрупкая вещь.`,
+  `Мой дед не мог её сломать.`,
   `Кому нужен этот новый телефон, если тут такое...`,
-  `Не пытайтесь торговаться. Цену вещам я знаю`,
+  `Не пытайтесь торговаться. Цену вещам я знаю.`,
 ];
 
 const CATEGORIES = [
@@ -67,10 +67,10 @@ const generateOffers = (count) => (
   Array(count).fill({}).map(() => ({
     type: Object.keys(OfferType)[Math.floor(Math.random() * Object.keys(OfferType).length)],
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
-    description: shuffle(SENTENCES).slice(1, 5).join(` `),
+    description: shuffle(SENTENCES).slice(0, getRandomInt(1, 5)).join(` `),
     sum: getRandomInt(SumRestrict.min, SumRestrict.max),
     picture: getPictureFileName(getRandomInt(PictureRestrict.min, PictureRestrict.max)),
-    category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]],
+    category: shuffle(CATEGORIES).slice(0, getRandomInt(1, CATEGORIES.length - 1)),
   }))
 );
 
