@@ -1,8 +1,10 @@
 'use strict';
 
+const chalk = require(`chalk`);
 const {Cli} = require(`./cli`);
 const {
   DEFAULT_COMMAND,
+  MAX_DATA_COUNT,
   USER_ARGV_INDEX,
   ExitCode
 } = require(`../constants`);
@@ -15,4 +17,10 @@ if (userArguments.length === 0 || !Cli[userCommand]) {
   process.exit(ExitCode.success);
 }
 
-Cli[userCommand].run(userArguments.slice(1));
+const count = userArguments.slice(1);
+if (count >= MAX_DATA_COUNT) {
+  console.error(chalk.red(`Не больше 1000 объявлений`));
+  process.exit(ExitCode.error);
+}
+
+Cli[userCommand].run(count);
