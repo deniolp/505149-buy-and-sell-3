@@ -17,10 +17,22 @@ if (userArguments.length === 0 || !Cli[userCommand]) {
   process.exit(ExitCode.success);
 }
 
-const count = userArguments.slice(1);
-if (count >= MAX_DATA_COUNT) {
-  console.error(chalk.red(`Не больше 1000 объявлений`));
-  process.exit(ExitCode.error);
-}
+switch (userCommand) {
+  case `--generate`:
+    const count = userArguments.slice(1);
+    if (count >= MAX_DATA_COUNT) {
+      console.error(chalk.red(`Не больше 1000 объявлений`));
+      process.exit(ExitCode.error);
+    }
+    Cli[userCommand].run(count);
+    break;
 
-Cli[userCommand].run(count);
+  case `--server`:
+    const port = userArguments.slice(1);
+    Cli[userCommand].run(port);
+    break;
+
+  default:
+    Cli[userCommand].run();
+    break;
+}
