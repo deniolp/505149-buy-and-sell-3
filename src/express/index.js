@@ -7,10 +7,10 @@ const myRoutes = require(`./routes/my`);
 const offersRoutes = require(`./routes/offers`);
 
 const app = express();
-const port = 8081;
+const port = 8080;
 app.listen(port);
 
-app.use(express.static(path.join(__dirname, `markup`)));
+app.use(express.static(path.join(__dirname, `files`)));
 
 app.set(`views`, path.join(__dirname, `templates`));
 app.set(`view engine`, `pug`);
