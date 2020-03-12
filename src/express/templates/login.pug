@@ -1,0 +1,35 @@
+extends layouts/layout.pug
+
+block content
+  header.header
+    .header__wrapper
+      a.header__logo.logo(href='/')
+        img(src='/img/logo.svg' width='179' height='34' alt='Логотип Куплю Продам')
+      nav.header__user-menu
+        ul.header__list
+          li.header__item
+            a(href='my-tickets.html') Публикации
+          li.header__item
+            a(href='comments.html') Комментарии
+      form.search(method='get' action='#' autocomplete='off')
+        input(type='search' name='search' placeholder='Поиск' aria-label='Поиск')
+        .search__icon
+        .search__close-btn
+      a.header__avatar.avatar(href='#')
+        img(src='/img/avatar.jpg' srcset='/img/avatar@2x.jpg 2x' alt='Аватар пользователя')
+      a.header__input(href='sign-up.html') Вход и регистрация
+  main.page-content
+    section.login
+      form.login__form.form(action='#' method='post' enctype='multipart/form-data')
+        .login__title
+          a.login__link(href='sign-up.html') Регистрация
+          h2 Вход
+        .form__field.login__field
+          input#user-email.js-field(type='email' name='user-email' required)
+          label(for='user-email') Эл. почта
+          span Обязательное поле
+        .form__field.login__field
+          input#user-password.js-field(type='password' name='user-password' required)
+          label(for='user-password') Пароль
+          span Обязательное поле
+        button.login__button.btn.btn--medium.js-button(type='submit' disabled) Войти
