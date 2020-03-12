@@ -15,6 +15,5 @@ node_modules/
 build/
 
 test/
-src/express/markup
 
 mocks.json
