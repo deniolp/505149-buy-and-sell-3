@@ -1,0 +1,50 @@
+extends layouts/layout.pug
+
+block content
+  header.header
+    .header__wrapper
+      a.header__logo.logo(href='/')
+        img(src='/img/logo.svg' width='179' height='34' alt='Логотип Куплю Продам')
+      nav.header__user-menu
+        ul.header__list
+          li.header__item
+            a(href='/my') Публикации
+          li.header__item
+            a(href='/my/comments') Комментарии
+      form.search(method='get' action='#' autocomplete='off')
+        input(type='search' name='search' placeholder='Поиск' aria-label='Поиск')
+        .search__icon
+        .search__close-btn
+      a.header__avatar.avatar(href='#')
+        img(src='/img/avatar.jpg' srcset='/img/avatar@2x.jpg 2x' alt='Аватар пользователя')
+      a.header__input(href='/register') Вход и регистрация
+  main.page-content
+    section.sign-up
+      form.sign-up__form.form(action='#' method='post' enctype='multipart/form-data' autocomplete='off')
+        .sign-up__title
+          h2 Регистрация
+          a.sign-up__link(href='/login') Вход
+        .sign-up__avatar-container.js-preview-container
+          .sign-up__avatar.js-preview
+          .sign-up__field-avatar
+            input#avatar.visually-hidden.js-file-field(type='file' name='avatar')
+            label(for='avatar')
+              span.sign-up__text-upload Загрузить аватар…
+              span.sign-up__text-another Загрузить другой аватар…
+        .form__field.sign-up__field
+          input#user-name.js-field(type='text' name='user-name' required)
+          label(for='user-name') Имя и фамилия
+          span Обязательное поле
+        .form__field.sign-up__field
+          input#user-email.js-field(type='email' name='user-email' required)
+          label(for='user-email') Эл. почта
+          span Обязательное поле
+        .form__field.sign-up__field
+          input#user-password.js-field(type='password' name='user-password' required)
+          label(for='user-password') Пароль
+          span Обязательное поле
+        .form__field.sign-up__field
+          input#user-password-again.js-field(type='password' name='user-password-again' required)
+          label(for='user-password-again') Пароль еще раз
+          span Обязательное поле
+        button.sign-up__button.btn.btn--medium.js-button(type='submit' disabled) Создать аккаунт
