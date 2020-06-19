@@ -7,6 +7,7 @@ const {getRandomInt, shuffle} = require(`../../utils`);
 const {MAX_ID_LENGTH} = require(`../../../src/constants`);
 
 const DEFAULT_COUNT = 1;
+const MAX_COMMENTS = 4;
 const FILE_NAME = `mocks.json`;
 const TXT_FILES_DIR = `./data/`;
 
@@ -54,6 +55,15 @@ const readContent = async (fileName) => {
 
 const getPictureFileName = (number) => number > 10 ? `item${number}.jpg` : `item0${number}.jpg`;
 
+const generateComments = (count, comments) => (
+  Array(count).fill({}).map(() => ({
+    id: nanoid(MAX_ID_LENGTH),
+    text: shuffle(comments)
+      .slice(0, getRandomInt(1, 3))
+      .join(` `),
+  }))
+);
+
 const generateOffers = (count, mockData) => (
   Array(count).fill({}).map(() => ({
     id: nanoid(MAX_ID_LENGTH),
@@ -63,6 +73,7 @@ const generateOffers = (count, mockData) => (
     sum: getRandomInt(SumRestrict.min, SumRestrict.max),
     picture: getPictureFileName(getRandomInt(PictureRestrict.min, PictureRestrict.max)),
     category: shuffle(mockData.categories).slice(0, getRandomInt(1, mockData.categories.length - 1)),
+    comments: generateComments(getRandomInt(1, MAX_COMMENTS), mockData.comments),
   }))
 );
 
@@ -70,6 +81,7 @@ module.exports = {
   name: `--generate`,
   async run(args) {
     const files = await fs.readdir(TXT_FILES_DIR);
+
     const mockData = await makeMockData(files);
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
