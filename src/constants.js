@@ -6,6 +6,8 @@ module.exports.MAX_DATA_COUNT = 1000;
 
 module.exports.USER_ARGV_INDEX = 2;
 
+module.exports.MAX_ID_LENGTH = 6;
+
 module.exports.ExitCode = {
   error: 1,
   success: 0,
