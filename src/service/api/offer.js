@@ -7,7 +7,14 @@ const {HttpCode} = require(`../../constants`);
 const route = new Router();
 
 module.exports = (app, service) => {
-  app.use(`/offer`, route);
+  app.use(`/offers`, route);
+
+  route.get(`/`, (req, res) => {
+    const offers = service.findAll();
+
+    return res.status(HttpCode.OK)
+        .json(offers);
+  });
 
   route.get(`/:offerId`, (req, res) => {
     const {offerId} = req.params;
