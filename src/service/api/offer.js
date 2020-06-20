@@ -4,14 +4,15 @@ const {Router} = require(`express`);
 
 const {HttpCode} = require(`../../constants`);
 const offerValidator = require(`../middlewares/offer-validator`);
+const offerExist = require(`../middlewares/offer-exist`);
 
 const route = new Router();
 
-module.exports = (app, service) => {
+module.exports = (app, offerService, commentService) => {
   app.use(`/offers`, route);
 
   route.get(`/`, (req, res) => {
-    const offers = service.findAll();
+    const offers = offerService.findAll();
 
     return res.status(HttpCode.OK)
         .json(offers);
@@ -19,7 +20,7 @@ module.exports = (app, service) => {
 
   route.get(`/:offerId`, (req, res) => {
     const {offerId} = req.params;
-    const offer = service.findOne(offerId);
+    const offer = offerService.findOne(offerId);
 
     if (!offer) {
       return res.status(HttpCode.NOT_FOUND)
@@ -31,9 +32,18 @@ module.exports = (app, service) => {
   });
 
   route.post(`/`, offerValidator, (req, res) => {
-    const offer = service.create(req.body);
+    const offer = offerService.create(req.body);
 
     return res.status(HttpCode.CREATED)
       .json(offer);
+  });
+
+  route.get(`/:offerId/comments`, offerExist(offerService), (req, res) => {
+    const {offer} = res.locals;
+
+    const comments = commentService.findAll(offer);
+
+    return res.status(HttpCode.OK)
+      .json(comments);
   });
 };
