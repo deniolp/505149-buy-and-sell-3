@@ -39,6 +39,34 @@ module.exports = (app, offerService, commentService) => {
       .json(offer);
   });
 
+  route.put(`/:offerId`, offerValidator, (req, res) => {
+    const {offerId} = req.params;
+    const offer = offerService.findOne(offerId);
+
+    if (!offer) {
+      return res.status(HttpCode.NOT_FOUND)
+        .send(`Not found with ${offerId}`);
+    }
+
+    const updatedOffer = offerService.update(offerId, req.body);
+
+    return res.status(HttpCode.OK)
+      .json(updatedOffer);
+  });
+
+  route.delete(`/:offerId`, (req, res) => {
+    const {offerId} = req.params;
+    const offer = offerService.delete(offerId);
+
+    if (!offer) {
+      return res.status(HttpCode.NOT_FOUND)
+        .send(`Not found`);
+    }
+
+    return res.status(HttpCode.OK)
+      .json(offer);
+  });
+
   route.get(`/:offerId/comments`, offerExist(offerService), (req, res) => {
     const {offer} = res.locals;
 

@@ -17,7 +17,7 @@ class OfferService {
     return newOffer;
   }
 
-  drop(id) {
+  delete(id) {
     const offer = this._offers.find((item) => item.id === id);
 
     if (!offer) {
