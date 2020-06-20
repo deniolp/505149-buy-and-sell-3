@@ -14,18 +14,18 @@ class CommentService {
     return comment;
   }
 
-  drop(offer, commentId) {
-    const dropComment = offer.comments
+  delete(offer, commentId) {
+    const commentToDelete = offer.comments
       .find((item) => item.id === commentId);
 
-    if (!dropComment) {
+    if (!commentToDelete) {
       return null;
     }
 
     offer.comments = offer.comments
       .filter((item) => item.id !== commentId);
 
-    return dropComment;
+    return commentToDelete;
   }
 
   findAll(offer) {
