@@ -24,7 +24,7 @@ app.get(`/login`, (req, res) => res.render(`login`, {}));
 app.get(`/search`, (req, res) => res.render(`search-result`, {}));
 
 app.use((req, res) => {
-  res.status(404).render(`errors/404`);
+  res.status(404).render(`errors/404`, {title: `Страница не найдена`});
 });
 
 app.use((err, req, res, _next) => {

@@ -1,0 +1,79 @@
+# Список категорий done
+GET http://localhost:3000/api/categories HTTP/1.1
+
+###
+
+# Поиск
+GET http://localhost:3000/api/search?query=Продам HTTP/1.1
+
+###
+
+# Запрашивает все объявления done
+GET http://localhost:3000/api/offers HTTP/1.1
+
+###
+
+# Запрашивает объявление с идентификатором :id done
+
+GET http://localhost:3000/api/offers/6wbq1Q HTTP/1.1
+
+###
+
+# Удаление объявления с идентификатором :id done
+
+DELETE http://localhost:3000/api/offers/6wbq1Q HTTP/1.1
+
+###
+
+# Добавление нового объявления done
+
+POST http://localhost:3000/api/offers HTTP/1.1
+Content-Type: application/json
+
+{
+  "category": ["Журналы"],
+  "description": "При покупке с меня бесплатная доставка в черте города. Две страницы заляпаны свежим кофе. Пользовались бережно и только по большим праздникам., Бонусом отдам все аксессуары.",
+  "picture": "item16.jpg",
+  "title": "Продам новую приставку Sony Playstation 5.",
+  "sum": 42698,
+  "type": "offer"
+}
+
+###
+
+# Обновление объявления done
+
+PUT http://localhost:3000/api/offers/6wbq1Q HTTP/1.1
+Content-Type: application/json
+
+{
+  "category": ["Игры"],
+  "description": "Пользовались бережно и только по большим праздникам.",
+  "picture": "item17.jpg",
+  "title": "Изменение заголовка!",
+  "sum": 900,
+  "type": "offer"
+}
+
+###
+
+# Список комментариев done
+
+GET http://localhost:3000/api/offers/6wbq1Q/comments HTTP/1.1
+
+###
+
+# Удаляет комментарий done
+
+DELETE http://localhost:3000/api/offers/6wbq1Q/comments/4EoY-Q HTTP/1.1
+
+###
+
+# Добавляет новый комментарий к публикации done
+
+POST http://localhost:3000/api/offers/6wbq1Q/comments HTTP/1.1
+Content-Type: application/json
+
+{
+  "text": "Это новый комментарий"
+}

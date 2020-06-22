@@ -1,69 +1,8 @@
-extends layouts/layout.pug
+extends layout.pug
 
 block content
-  header.header.header--logged
-    .header__wrapper
-      a.header__logo.logo(href='/')
-        img(src='/img/logo.svg' width='179' height='34' alt='Логотип Куплю Продам')
-      nav.header__user-menu
-        ul.header__list
-          li.header__item
-            a(href='/my') Публикации
-          li.header__item
-            a(href='/my/comments') Комментарии
-      form.search(method='get' action='#' autocomplete='off')
-        input(type='search' name='search' placeholder='Поиск' aria-label='Поиск')
-        .search__icon
-        .search__close-btn
-      a.header__avatar.avatar(href='#')
-        img(src='/img/avatar.jpg' srcset='/img/avatar@2x.jpg 2x' alt='Аватар пользователя')
-      a.header__input(href='ticket-form.html') Вход и регистрация
   main.page-content
-    section.categories-list
-      h1.visually-hidden Сервис объявлений "Куплю - продам"
-      ul.categories-list__wrapper
-        li.categories-list__item
-          a.category-tile(href='#')
-            span.category-tile__image
-              img(src='/img/cat.jpg' srcset='/img/cat@2x.jpg 2x' alt='Иконка категории')
-            span.category-tile__label
-              | Дом
-              span.category-tile__qty.js-qty 81
-        li.categories-list__item
-          a.category-tile.category-tile--active(href='#')
-            span.category-tile__image
-              img(src='/img/cat02.jpg' srcset='/img/cat02@2x.jpg 2x' alt='Иконка категории')
-            span.category-tile__label
-              | Электроника
-              span.category-tile__qty.js-qty 62
-        li.categories-list__item
-          a.category-tile(href='#')
-            span.category-tile__image
-              img(src='/img/cat03.jpg' srcset='/img/cat03@2x.jpg 2x' alt='Иконка категории')
-            span.category-tile__label
-              | Одежда
-              span.category-tile__qty.js-qty 106
-        li.categories-list__item
-          a.category-tile(href='#')
-            span.category-tile__image
-              img(src='/img/cat04.jpg' srcset='/img/cat04@2x.jpg 2x' alt='Иконка категории')
-            span.category-tile__label
-              | Спорт/отдых
-              span.category-tile__qty.js-qty 86
-        li.categories-list__item
-          a.category-tile(href='#')
-            span.category-tile__image
-              img(src='/img/cat05.jpg' srcset='/img/cat05@2x.jpg 2x' alt='Иконка категории')
-            span.category-tile__label
-              | Авто
-              span.category-tile__qty.js-qty 34
-        li.categories-list__item
-          a.category-tile(href='#')
-            span.category-tile__image
-              img(src='/img/cat06.jpg' srcset='/img/cat06@2x.jpg 2x' alt='Иконка категории')
-            span.category-tile__label
-              | Книги
-              span.category-tile__qty.js-qty 92
+    include partials/categories.pug
     section.tickets-list
       h2.visually-hidden Предложения из категории электроника
       .tickets-list__wrapper
