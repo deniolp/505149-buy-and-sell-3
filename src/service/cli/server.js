@@ -4,20 +4,27 @@ const express = require(`express`);
 const chalk = require(`chalk`);
 
 const {HttpCode} = require(`../../constants`);
-const routes = require(`../api`);
+const createApi = require(`../api`);
 const DEFAULT_PORT = 3000;
 
-const app = express();
-app.use(express.json());
-app.use(`/api`, routes);
+const createApp = async () => {
+  const app = express();
+  const apiRoutes = await createApi();
 
-app.use((req, res) => res.status(HttpCode.NOT_FOUND)
+  app.use(express.json());
+  app.use(`/api`, apiRoutes);
+
+  app.use((req, res) => res.status(HttpCode.NOT_FOUND)
   .send(`Not found`));
+
+  return app;
+};
 
 module.exports = {
   name: `--server`,
-  server: app,
-  run(args) {
+  createApp,
+  async run(args) {
+    const app = await createApp();
     const [customPort] = args;
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
 
