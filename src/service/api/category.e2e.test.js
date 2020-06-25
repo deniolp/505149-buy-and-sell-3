@@ -3,6 +3,7 @@
 const request = require(`supertest`);
 
 const {createApp} = require(`../cli/server`);
+const {HttpCode} = require(`../../constants`);
 
 describe(`Categories API end-points:`, () => {
   let app = null;
@@ -14,7 +15,7 @@ describe(`Categories API end-points:`, () => {
   });
 
   test(`status code of get query should be 200`, async () => {
-    expect(res.statusCode).toBe(200);
+    expect(res.statusCode).toBe(HttpCode.OK);
   });
 
   test(`output should have at least one category`, async () => {
