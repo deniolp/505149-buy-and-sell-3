@@ -1,15 +1,18 @@
 'use strict';
 
-const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
 const {nanoid} = require(`nanoid`);
-const {getRandomInt, shuffle} = require(`../../utils`);
-const {MAX_ID_LENGTH} = require(`../../../src/constants`);
 
+const {getLogger} = require(`../lib/logger`);
+const {getRandomInt, shuffle} = require(`../../utils`);
+
+const {MAX_ID_LENGTH} = require(`../../../src/constants`);
 const DEFAULT_COUNT = 1;
 const MAX_COMMENTS = 4;
 const FILE_NAME = `mocks.json`;
 const TXT_FILES_DIR = `./data/`;
+
+const logger = getLogger();
 
 const OfferType = {
   offer: `offer`,
@@ -36,7 +39,7 @@ const makeMockData = async (files) => {
     }
     return mockData;
   } catch (error) {
-    console.error(chalk.red(error));
+    logger.error(error);
     return mockData;
   }
 };
@@ -48,7 +51,7 @@ const readContent = async (fileName) => {
     contentArray.pop();
     return contentArray;
   } catch (err) {
-    console.error(chalk.red(err));
+    logger.error(err);
     return [];
   }
 };
@@ -89,9 +92,9 @@ module.exports = {
 
     try {
       await fs.writeFile(FILE_NAME, content);
-      console.log(chalk.green(`Operation success. File created.`));
+      logger.info(`Operation success. File created.`);
     } catch (err) {
-      console.error(chalk.red(`Can't write data to file...`));
+      logger.error(`Can't write data to file...`);
     }
   }
 };

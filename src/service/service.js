@@ -1,7 +1,7 @@
 'use strict';
 
-const chalk = require(`chalk`);
 const {Cli} = require(`./cli`);
+const {getLogger} = require(`./lib/logger`);
 const {
   DEFAULT_COMMAND,
   MAX_DATA_COUNT,
@@ -9,6 +9,7 @@ const {
   ExitCode
 } = require(`../constants`);
 
+const logger = getLogger();
 const userArguments = process.argv.slice(USER_ARGV_INDEX);
 const [userCommand] = userArguments;
 
@@ -21,7 +22,7 @@ switch (userCommand) {
   case `--generate`:
     const count = userArguments.slice(1);
     if (count >= MAX_DATA_COUNT) {
-      console.error(chalk.red(`Не больше 1000 объявлений`));
+      logger.error(`Не больше 1000 объявлений`);
       process.exit(ExitCode.error);
     }
     Cli[userCommand].run(count);
