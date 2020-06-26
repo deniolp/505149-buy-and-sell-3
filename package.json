@@ -7,10 +7,10 @@
     "test": "npm run eslint && npm run test::rest",
     "test::rest": "jest",
     "eslint": "eslint --ext .js src/",
-    "start": "node ./src/service/service.js | pino-pretty",
-    "server": "LOG_LEVEL=debug nodemon ./src/service/service.js -- --server | pino-pretty",
-    "start-front-server": "nodemon ./src/express/index.js",
-    "debug": "LOG_LEVEL=debug DEBUG=app:start-request node -r pino-debug test/lessons/pino/server.js | ./node_modules/.bin/pino-pretty"
+    "help": "node ./src/service/service.js",
+    "start": "LOG_LEVEL=error nodemon ./src/service/service.js -- --server",
+    "start::debug": "LOG_LEVEL=debug nodemon ./src/service/service.js -- --server",
+    "start-front-server": "nodemon ./src/express/index.js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "jest": "26.0.1",
     "nodemon": "2.0.2",
     "pino-debug": "1.3.0",
+    "pino-multi-stream": "5.0.0",
     "pino-pretty": "4.0.0",
     "pug-lint": "2.6.0",
     "supertest": "4.0.2"
