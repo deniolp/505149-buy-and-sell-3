@@ -122,3 +122,62 @@ describe(`Offer API end-points:`, () => {
     expect(res.statusCode).toBe(HttpCode.NOT_FOUND);
   });
 });
+
+describe(`Offer comments API end-points`, () => {
+  let res;
+
+  test(`status code after GET request for comments should be 200 and `, async () => {
+    await request(app)
+      .post(`/api/offers`)
+      .send(offerMock);
+    res = await request(app).get((`/api/offers/${offerMock.id}/comments`));
+
+    expect(res.statusCode).toBe(HttpCode.OK);
+  });
+
+  test(`output after GET for comments should be an array with at least length 1`, async () => {
+    res = await request(app).get(`/api/offers/${offerMock.id}/comments`);
+    expect(res.body.length).toBeGreaterThan(0);
+    expect(Array.isArray(res.body)).toBeTruthy();
+  });
+
+  test(`status code after request of comments with wrong offer id should be 404`, async () => {
+    res = await request(app).get((`/api/offers/xx/comments`));
+
+    expect(res.statusCode).toBe(HttpCode.NOT_FOUND);
+  });
+
+  test(`status code after POST comment request should be 201`, async () => {
+    res = await request(app)
+      .post((`/api/offers/${offerMock.id}/comments`))
+      .send({
+        "text": `Some text`,
+      });
+
+    expect(res.statusCode).toBe(HttpCode.CREATED);
+  });
+
+  test(`status code after wrong POST request of comment should be 400`, async () => {
+    res = await request(app)
+      .post((`/api/offers/${offerMock.id}/comments`))
+      .send({
+        "some": `Some`,
+      });
+
+    expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
+  });
+
+  test(`delete comment request should delete comment and status code after should be 200`, async () => {
+    res = await request(app).delete((`/api/offers/${offerMock.id}/comments/1`));
+    expect(res.statusCode).toBe(HttpCode.OK);
+
+    res = await request(app).get((`/api/offers/${offerMock.id}/comments`));
+    expect(res.body.length).toBe(1);
+  });
+
+  test(`status code after delete comment request with wrong comment id should return 404`, async () => {
+    res = await request(app).delete((`/api/offers/${offerMock.id}/comments/xx`));
+
+    expect(res.statusCode).toBe(HttpCode.NOT_FOUND);
+  });
+});
