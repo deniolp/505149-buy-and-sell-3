@@ -6,8 +6,10 @@ const {HttpCode} = require(`../../constants`);
 const offerValidator = require(`../middlewares/offer-validator`);
 const commentValidator = require(`../middlewares/comment-validator`);
 const offerExist = require(`../middlewares/offer-exist`);
+const {getLogger} = require(`../lib/logger`);
 
 const route = new Router();
+const logger = getLogger();
 
 module.exports = (app, offerService, commentService) => {
   app.use(`/offers`, route);
@@ -24,8 +26,9 @@ module.exports = (app, offerService, commentService) => {
     const offer = offerService.findOne(offerId);
 
     if (!offer) {
+      logger.error(`Did not found offer with ${offerId}`);
       return res.status(HttpCode.NOT_FOUND)
-        .send(`Not found with ${offerId}`);
+        .send(`Did not found offer with ${offerId}`);
     }
 
     return res.status(HttpCode.OK)
@@ -44,8 +47,9 @@ module.exports = (app, offerService, commentService) => {
     const offer = offerService.findOne(offerId);
 
     if (!offer) {
+      logger.error(`Did not found offer with ${offerId}`);
       return res.status(HttpCode.NOT_FOUND)
-        .send(`Not found with ${offerId}`);
+        .send(`Did not found offer with ${offerId}`);
     }
 
     const updatedOffer = offerService.update(offerId, req.body);
@@ -59,8 +63,9 @@ module.exports = (app, offerService, commentService) => {
     const offer = offerService.delete(offerId);
 
     if (!offer) {
+      logger.error(`Did not found offer with ${offerId}`);
       return res.status(HttpCode.NOT_FOUND)
-        .send(`Not found`);
+        .send(`Did not found offer with ${offerId}`);
     }
 
     return res.status(HttpCode.OK)
@@ -82,8 +87,9 @@ module.exports = (app, offerService, commentService) => {
     const deletedComment = commentService.delete(offer, commentId);
 
     if (!deletedComment) {
+      logger.error(`Did not found comment with ${commentId}`);
       return res.status(HttpCode.NOT_FOUND)
-        .send(`Not found`);
+        .send(`Did not found comment with ${commentId}`);
     }
 
     return res.status(HttpCode.OK)

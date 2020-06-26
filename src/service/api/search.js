@@ -3,8 +3,10 @@
 const {Router} = require(`express`);
 
 const {HttpCode} = require(`../../constants`);
+const {getLogger} = require(`../lib/logger`);
 
 const route = new Router();
+const logger = getLogger();
 
 module.exports = (app, service) => {
   app.use(`/search`, route);
@@ -13,6 +15,7 @@ module.exports = (app, service) => {
     const {query = ``} = req.query;
 
     if (!query) {
+      logger.error(`Empty query...`);
       res.status(HttpCode.BAD_REQUEST).json([]);
       return;
     }
