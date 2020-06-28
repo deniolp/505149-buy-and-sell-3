@@ -106,14 +106,25 @@ describe(`Offer API end-points:`, () => {
   });
 
   test(`DELETE offer request should work and status code after deleting should be 200`, async () => {
-    res = await request(app).get(`/api/offers`);
-    const firstLength = res.body.length;
-
     res = await request(app).delete(`/api/offers/${offerMock.id}`);
     expect(res.statusCode).toBe(HttpCode.OK);
-
-    res = await request(app).get(`/api/offers`);
-    expect(res.body.length).toBe(firstLength - 1);
+    expect(res.body).toEqual({
+      "id": `1`,
+      "title": `Title`,
+      "picture": `01.jpg`,
+      "description": `Some description`,
+      "type": `offer`,
+      "sum": 999,
+      "category": [
+        `Журналы`,
+      ],
+      "comments": [
+        {
+          "id": `1`,
+          "text": `Some comment`
+        }
+      ],
+    });
   });
 
   test(`status for incorrect DELETE offer request should be 404`, async () => {

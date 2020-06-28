@@ -10,7 +10,7 @@ module.exports = (service) => (req, res, next) => {
   const offer = service.findOne(offerId);
 
   if (!offer) {
-    logger.error(`Did not found offer with ${offerId}`);
+    logger.error(`Did not find offer with ${offerId}`);
     return res.status(HttpCode.NOT_FOUND)
       .send(`Offer with ${offerId} not found`);
   }
