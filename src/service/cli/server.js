@@ -1,31 +1,53 @@
 'use strict';
 
-const chalk = require(`chalk`);
 const express = require(`express`);
 
-const {HttpCode} = require(`../../../src/constants`);
-const routes = require(`../api`);
+const {HttpCode} = require(`../../constants`);
+const createApi = require(`../api`);
+const {getLogger} = require(`../lib/logger`);
+
 const DEFAULT_PORT = 3000;
 
-const app = express();
-app.use(express.json());
-app.use(`/api`, routes);
+const logger = getLogger();
 
-app.use((req, res) => res.status(HttpCode.NOT_FOUND)
-  .send(`Not found`));
+const createApp = async () => {
+  const app = express();
+  const apiRoutes = await createApi();
+
+  app.use(express.json());
+  app.use((req, res, next) => {
+    logger.debug(`Start request to url ${req.url}`);
+    res.on(`finish`, () => {
+      logger.info(`Response status code: ${res.statusCode}`);
+    });
+
+    next();
+  });
+  app.use(`/api`, apiRoutes);
+
+  app.use((req, res) => {
+    logger.error(`Did not found url: ${req.url}`);
+    return res.status(HttpCode.NOT_FOUND)
+      .send(`Not found`);
+  });
+
+  return app;
+};
 
 module.exports = {
   name: `--server`,
-  run(args) {
+  createApp,
+  async run(args) {
+    const app = await createApp();
     const [customPort] = args;
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
 
     app.listen(port, (err) => {
       if (err) {
-        return console.error(`Ошибка при создании сервера`, err);
+        return logger.error(`Ошибка при создании сервера: ${err}`);
       }
 
-      return console.info(chalk.green(`Ожидаю соединений на ${port}`));
+      return logger.info(`Ожидаю соединений на ${port} порт`);
     });
   }
 };

@@ -2,7 +2,11 @@
 
 const {nanoid} = require(`nanoid`);
 
+const {getLogger} = require(`../lib/logger`);
+
 const {MAX_ID_LENGTH} = require(`../../../src/constants`);
+
+const logger = getLogger();
 
 class OfferService {
   constructor(offers) {
@@ -21,6 +25,7 @@ class OfferService {
     const offer = this._offers.find((item) => item.id === id);
 
     if (!offer) {
+      logger.error(`Did not found offer`);
       return null;
     }
 
