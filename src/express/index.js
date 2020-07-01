@@ -6,6 +6,7 @@ const path = require(`path`);
 const myRoutes = require(`./routes/my`);
 const offersRoutes = require(`./routes/offers`);
 const getOffers = require(`./api/offers`);
+const getCategories = require(`./api/categories`);
 
 const app = express();
 const port = 8080;
@@ -21,9 +22,12 @@ app.use(`/offers`, offersRoutes);
 
 app.get(`/`, async (req, res) => {
   const offers = await getOffers();
+  const categories = await getCategories();
+
   res.render(`main`, {
     offers,
     mostDiscussed: offers.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 4),
+    categories,
   });
 });
 app.get(`/register`, (req, res) => res.render(`sign-up`, {}));
