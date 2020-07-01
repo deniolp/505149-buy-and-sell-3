@@ -19,9 +19,13 @@ app.set(`view engine`, `pug`);
 app.use(`/my`, myRoutes);
 app.use(`/offers`, offersRoutes);
 
-app.get(`/`, async (req, res) => res.render(`main`, {
-  offers: await getOffers()
-}));
+app.get(`/`, async (req, res) => {
+  const offers = await getOffers();
+  res.render(`main`, {
+    offers,
+    mostDiscussed: offers.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 4),
+  });
+});
 app.get(`/register`, (req, res) => res.render(`sign-up`, {}));
 app.get(`/login`, (req, res) => res.render(`login`, {}));
 app.get(`/search`, (req, res) => res.render(`search-result`, {}));
