@@ -5,6 +5,7 @@ const path = require(`path`);
 
 const myRoutes = require(`./routes/my`);
 const offersRoutes = require(`./routes/offers`);
+const getOffers = require(`./api/offers`);
 
 const app = express();
 const port = 8080;
@@ -18,7 +19,9 @@ app.set(`view engine`, `pug`);
 app.use(`/my`, myRoutes);
 app.use(`/offers`, offersRoutes);
 
-app.get(`/`, (req, res) => res.render(`main`, {}));
+app.get(`/`, async (req, res) => res.render(`main`, {
+  offers: await getOffers()
+}));
 app.get(`/register`, (req, res) => res.render(`sign-up`, {}));
 app.get(`/login`, (req, res) => res.render(`login`, {}));
 app.get(`/search`, (req, res) => res.render(`search-result`, {}));
