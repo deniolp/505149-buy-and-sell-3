@@ -16,7 +16,7 @@ const logger = getLogger();
 
 const OfferType = {
   offer: `offer`,
-  sale: `sale`,
+  buy: `buy`,
 };
 
 const SumRestrict = {
@@ -56,7 +56,7 @@ const readContent = async (fileName) => {
   }
 };
 
-const getPictureFileName = (number) => number > 10 ? `item${number}.jpg` : `item0${number}.jpg`;
+const getPictureFileName = (number) => number > 10 ? `item${number}` : `item0${number}`;
 
 const generateComments = (count, comments) => (
   Array(count).fill({}).map(() => ({
