@@ -7,6 +7,7 @@ const myRoutes = require(`./routes/my`);
 const offersRoutes = require(`./routes/offers`);
 const getOffers = require(`./api/offers`);
 const getCategories = require(`./api/categories`);
+const {getSortedByCommentAmount} = require(`../utils`);
 
 const app = express();
 const port = 8080;
@@ -26,7 +27,7 @@ app.get(`/`, async (req, res) => {
 
   res.render(`main`, {
     offers,
-    mostDiscussed: offers.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 4),
+    mostDiscussed: getSortedByCommentAmount(offers),
     categories,
   });
 });

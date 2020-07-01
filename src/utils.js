@@ -14,3 +14,5 @@ module.exports.shuffle = (someArray) => {
 
   return someArray;
 };
+
+module.exports.getSortedByCommentAmount = (someArray) => someArray.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 4);
