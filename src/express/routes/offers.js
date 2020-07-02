@@ -12,11 +12,15 @@ offersRouter.get(`/:id`, (req, res) => res.render(`ticket`, {}));
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
   const offers = await getOffers();
-  const offer = await offers.find((item) => item.id === id);
+  const offer = offers.find((item) => item.id === id);
 
-  res.render(`ticket-edit`, {
-    offer,
-  });
+  if (offer) {
+    res.render(`ticket-edit`, {
+      offer,
+    });
+  } else {
+    res.status(404).render(`errors/404`, {title: `Страница не найдена`});
+  }
 });
 
 module.exports = offersRouter;
