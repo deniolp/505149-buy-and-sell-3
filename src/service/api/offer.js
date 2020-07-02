@@ -26,9 +26,9 @@ module.exports = (app, offerService, commentService) => {
     const offer = offerService.findOne(offerId);
 
     if (!offer) {
-      logger.error(`Did not find offer with ${offerId}`);
+      logger.error(`Error status - ${HttpCode.NOT_FOUND}, url: /api/offers${req.url}`);
       return res.status(HttpCode.NOT_FOUND)
-        .send(`Did not find offer with ${offerId}`);
+        .send(`Did not find offer with id: ${offerId}`);
     }
 
     return res.status(HttpCode.OK)
@@ -47,9 +47,9 @@ module.exports = (app, offerService, commentService) => {
     const offer = offerService.findOne(offerId);
 
     if (!offer) {
-      logger.error(`Did not find offer with ${offerId}`);
+      logger.error(`Error status - ${HttpCode.NOT_FOUND}, url: /api/offers${req.url}`);
       return res.status(HttpCode.NOT_FOUND)
-        .send(`Did not find offer with ${offerId}`);
+        .send(`Did not find offer with id: ${offerId}`);
     }
 
     const updatedOffer = offerService.update(offerId, req.body);
@@ -63,9 +63,9 @@ module.exports = (app, offerService, commentService) => {
     const offer = offerService.delete(offerId);
 
     if (!offer) {
-      logger.error(`Did not find offer with ${offerId}`);
+      logger.error(`Error status - ${HttpCode.NOT_FOUND}, url: /api/offers${req.url}`);
       return res.status(HttpCode.NOT_FOUND)
-        .send(`Did not find offer with ${offerId}`);
+        .send(`Did not find offer with id: ${offerId}`);
     }
 
     return res.status(HttpCode.OK)
@@ -87,9 +87,9 @@ module.exports = (app, offerService, commentService) => {
     const deletedComment = commentService.delete(offer, commentId);
 
     if (!deletedComment) {
-      logger.error(`Did not find comment with ${commentId}`);
+      logger.error(`Error status - ${HttpCode.NOT_FOUND}, url: /api/offers${req.url}`);
       return res.status(HttpCode.NOT_FOUND)
-        .send(`Did not find comment with ${commentId}`);
+        .send(`Did not find comment with id: ${commentId}`);
     }
 
     return res.status(HttpCode.OK)

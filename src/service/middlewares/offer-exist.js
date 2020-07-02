@@ -10,9 +10,9 @@ module.exports = (service) => (req, res, next) => {
   const offer = service.findOne(offerId);
 
   if (!offer) {
-    logger.error(`Did not find offer with ${offerId}`);
+    logger.error(`Error status - ${HttpCode.NOT_FOUND}, url: ${req.url}`);
     return res.status(HttpCode.NOT_FOUND)
-      .send(`Offer with ${offerId} not found`);
+      .send(`Offer with id ${offerId} not found`);
   }
 
   res.locals.offer = offer;
