@@ -5,7 +5,7 @@
   "main": "./src/service/service.js",
   "scripts": {
     "test": "npm run eslint && npm run test::rest",
-    "test::rest": "jest",
+    "test::rest": "jest | pino-pretty -t SYS:standard -i hostname,pid -l true",
     "eslint": "eslint --ext .js src/",
     "help": "node ./src/service/service.js --help | pino-pretty -t SYS:standard -i hostname,pid -l true",
     "generate": "node ./src/service/service.js --generate",
