@@ -7,6 +7,7 @@ const myRoutes = require(`./routes/my`);
 const offersRoutes = require(`./routes/offers`);
 const getOffers = require(`./api/offers`);
 const getCategories = require(`./api/categories`);
+const getSearchResults = require(`./api/search`);
 const {getSortedByCommentAmount} = require(`../utils`);
 const {getLogger} = require(`../service/lib/logger`);
 
@@ -35,7 +36,15 @@ app.get(`/`, async (req, res) => {
 });
 app.get(`/register`, (req, res) => res.render(`sign-up`, {}));
 app.get(`/login`, (req, res) => res.render(`login`, {}));
-app.get(`/search`, (req, res) => res.render(`search-result`, {}));
+app.get(`/search`, async (req, res) => {
+  const encodedURI = encodeURI(req.query.search);
+  const offers = await getSearchResults(encodedURI);
+  const allOffers = await getOffers();
+  const eightOffers = allOffers.slice(0, 8);
+  const moreOffersQty = allOffers.length >= 8 ? (allOffers.length) - 8 : null;
+
+  res.render(`search-result`, {offers, eightOffers, moreOffersQty});
+});
 
 app.use((req, res) => {
   logger.error(`Error status - 404, url: ${req.url}`);
