@@ -56,7 +56,7 @@ const readContent = async (fileName) => {
   }
 };
 
-const getPictureFileName = (number) => number > 10 ? `item${number}` : `item0${number}`;
+const getPictureFileName = (number) => number > 10 ? `item${number}` : `item0${number}.jpg`;
 
 const generateComments = (count, comments) => (
   Array(count).fill({}).map(() => ({
