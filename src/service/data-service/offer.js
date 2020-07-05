@@ -25,7 +25,7 @@ class OfferService {
     const offer = this._offers.find((item) => item.id === id);
 
     if (!offer) {
-      logger.error(`Did not found offer`);
+      logger.error(`Did not find offer`);
       return null;
     }
 
