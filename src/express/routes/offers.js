@@ -13,7 +13,6 @@ const offersRouter = new Router();
 const logger = getLogger();
 
 let categories = [];
-let isAllowedFormat;
 
 offersRouter.get(`/add`, async (req, res) => {
   categories = await getCategories();
@@ -22,10 +21,12 @@ offersRouter.get(`/add`, async (req, res) => {
 
 offersRouter.post(`/add`, async (req, res) => {
   const allowedTypes = [`image/jpeg`, `image/png`];
+  let isAllowedFormat;
   let offer = {category: []};
-  const formData = new formidable.IncomingForm();
+
+  const formData = new formidable.IncomingForm({maxFileSize: 2 * 1024 * 1024});
   try {
-    await formData.parse(req)
+    formData.parse(req)
       .on(`field`, (name, field) => {
         if (name === `category`) {
           offer[name].push(field);
@@ -35,7 +36,6 @@ offersRouter.post(`/add`, async (req, res) => {
       })
       .on(`fileBegin`, (name, file) => {
         if (!allowedTypes.includes(file.type)) {
-          logger.error(`Not correct type of file`);
           isAllowedFormat = false;
         } else {
           isAllowedFormat = true;
@@ -46,10 +46,10 @@ offersRouter.post(`/add`, async (req, res) => {
         offer.picture = file.path.match(/\/([^\/]+)\/?$/)[1];
       })
       .on(`aborted`, () => {
-        logger.error(`Request aborted by the user`);
+        formData.emit(`error`, `Request aborted by the user.`);
       })
-      .on(`error`, (_err) => {
-        logger.error(`There is error while parsing form data`);
+      .on(`error`, (err) => {
+        logger.error(`There is error while parsing form data. ${err}`);
         res.render(`new-ticket`, {categories, offer});
       })
       .on(`end`, async () => {
@@ -57,11 +57,12 @@ offersRouter.post(`/add`, async (req, res) => {
           await postOffer(offer);
           res.redirect(`/my`);
         } else {
-          res.render(`new-ticket`, {categories, offer});
+          formData.emit(`error`, `Not correct file's extension.`);
         }
       });
   } catch (error) {
-    logger.error(`Error happened: `, error);
+    logger.error(`Error happened: ${error}`);
+    res.render(`new-ticket`, {categories, offer});
   }
 });
 
