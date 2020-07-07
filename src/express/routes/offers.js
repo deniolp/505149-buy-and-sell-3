@@ -4,7 +4,7 @@ const {Router} = require(`express`);
 const formidable = require(`formidable`);
 const {getLogger} = require(`../../service/lib/logger`);
 
-const getOffers = require(`../api/offers`);
+const getOffer = require(`../api/offer`);
 const getCategories = require(`../api/categories`);
 const postOffer = require(`../api/new-offer`);
 
@@ -70,8 +70,7 @@ offersRouter.get(`/category`, (req, res) => res.render(`category`, {}));
 offersRouter.get(`/:id`, (req, res) => res.render(`ticket`, {}));
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
-  const offers = await getOffers();
-  const offer = offers.find((item) => item.id === id);
+  const offer = await getOffer(id);
 
   if (offer) {
     res.render(`ticket-edit`, {
