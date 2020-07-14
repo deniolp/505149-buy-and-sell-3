@@ -54,6 +54,7 @@ CREATE TABLE offers
 );
 
 CREATE INDEX title_index ON offers ((lower(title)));
+CREATE INDEX offer_created_date_index ON offers (created_date);
 
 CREATE TABLE categories
 (
@@ -78,6 +79,10 @@ CREATE TABLE comments
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
+
+CREATE INDEX user_id_index ON comments (user_id);
+CREATE INDEX offer_id_index ON comments (offer_id);
+CREATE INDEX comment_created_date_index ON comments (created_date);
 
 CREATE TABLE offers_categories
 (
