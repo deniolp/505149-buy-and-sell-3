@@ -1,7 +1,12 @@
 DROP ROLE IF EXISTS buy_sell;
+
 DROP DATABASE IF EXISTS buy_and_sell;
+
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS offers;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS offers_categories;
 
 CREATE ROLE buy_sell WITH
     LOGIN
