@@ -1,25 +1,39 @@
-CREATE ROLE byu_sell WITH
+DROP ROLE IF EXISTS buy_sell;
+DROP DATABASE IF EXISTS buy_and_sell;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS offers;
+
+CREATE ROLE buy_sell WITH
 	LOGIN
 	NOSUPERUSER
-	NOCREATEDB
+	CREATEDB
 	NOCREATEROLE
 	INHERIT
 	NOREPLICATION
 	CONNECTION LIMIT -1
 	PASSWORD '';
 
-CREATE DATABASE byu_and_sell
+CREATE DATABASE buy_and_sell
     WITH
-    OWNER = byu_sell
+    OWNER = buy_sell
     TEMPLATE = template0
     ENCODING = 'UTF8'
     LC_COLLATE = 'C'
     LC_CTYPE = 'C'
     CONNECTION LIMIT = -1;
 
-GRANT ALL ON DATABASE byu_and_sell TO byu_sell;
-
 CREATE TYPE offer_type AS ENUM ('buy', 'offer');
+
+CREATE TABLE users
+(
+    id bigserial NOT NULL,
+    first_name character varying(50) NOT NULL,
+    last_name character varying(50) NOT NULL,
+    email character varying(50) NOT NULL,
+    password character varying(50) NOT NULL,
+    avatar character varying(50),
+    PRIMARY KEY (id)
+);
 
 CREATE TABLE offers
 (
@@ -36,15 +50,4 @@ CREATE TABLE offers
         REFERENCES users (id) MATCH FULL
         ON UPDATE CASCADE
         ON DELETE CASCADE
-);
-
-CREATE TABLE users
-(
-    id bigserial NOT NULL,
-    first_name character varying(50) NOT NULL,
-    last_name character varying(50) NOT NULL,
-    email character varying(50) NOT NULL,
-    password character varying(50) NOT NULL,
-    avatar character varying(50),
-    PRIMARY KEY (id)
 );
