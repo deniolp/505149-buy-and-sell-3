@@ -33,6 +33,7 @@ CREATE TABLE users
     PRIMARY KEY (id)
 );
 
+CREATE UNIQUE INDEX email_index ON users ((lower(email)));
 CREATE TYPE offer_type AS ENUM ('buy', 'offer');
 
 CREATE TABLE offers
@@ -52,6 +53,15 @@ CREATE TABLE offers
         ON DELETE CASCADE
 );
 
+CREATE INDEX title_index ON offers ((lower(title)));
+
+CREATE TABLE categories
+(
+    id bigserial PRIMARY KEY,
+    title character varying(50) NOT NULL,
+    picture character varying(500)
+);
+
 CREATE TABLE comments
 (
     id bigserial PRIMARY KEY,
@@ -65,6 +75,19 @@ CREATE TABLE comments
         ON DELETE CASCADE,
     CONSTRAINT comments_offers FOREIGN KEY (offer_id)
         REFERENCES offers (id) MATCH FULL
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+CREATE TABLE offers_categories
+(
+    offer_id bigint NOT NULL,
+    category_id bigint NOT NULL,
+    CONSTRAINT offers_categories_pk PRIMARY KEY (offer_id, category_id),
+    FOREIGN KEY(offer_id) REFERENCES offers (id) MATCH FULL
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY(category_id) REFERENCES categories (id) MATCH FULL
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
