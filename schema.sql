@@ -33,7 +33,7 @@ CREATE TABLE users
     first_name character varying(50) NOT NULL,
     last_name character varying(50) NOT NULL,
     email character varying(50) UNIQUE NOT NULL,
-    password character varying(50) NOT NULL,
+    password character varying(50) NOT NULL CHECK (char_length(password) > 6),
     avatar character varying(50),
     PRIMARY KEY (id)
 );
@@ -63,18 +63,20 @@ CREATE INDEX offer_created_date_index ON offers (created_date);
 
 CREATE TABLE categories
 (
-    id bigserial PRIMARY KEY,
+    id bigserial NOT NULL,
     title character varying(50) NOT NULL,
-    picture character varying(500)
+    picture character varying(500),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE comments
 (
-    id bigserial PRIMARY KEY,
+    id bigserial NOT NULL,
     text character varying(300) NOT NULL,
     created_date DATE NOT NULL,
     user_id bigint NOT NULL,
     offer_id bigint NOT NULL,
+    PRIMARY KEY (id),
     CONSTRAINT comments_users FOREIGN KEY (user_id)
         REFERENCES users (id) MATCH FULL
         ON UPDATE CASCADE
