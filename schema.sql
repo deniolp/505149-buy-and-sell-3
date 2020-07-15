@@ -1,12 +1,6 @@
-DROP ROLE IF EXISTS buy_sell;
-
+/* There are initial commands under postgres user*/
 DROP DATABASE IF EXISTS buy_and_sell;
-
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS offers;
-DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS offers_categories;
+DROP ROLE IF EXISTS buy_sell;
 
 CREATE ROLE buy_sell WITH
     LOGIN
@@ -26,6 +20,15 @@ CREATE DATABASE buy_and_sell
     LC_COLLATE = 'C'
     LC_CTYPE = 'C'
     CONNECTION LIMIT = -1;
+
+/* There are commands under buy_sell user*/
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS offers;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS offers_categories;
+
+DROP TYPE IF EXISTS offer_type;
 
 CREATE TABLE users
 (

@@ -14,7 +14,6 @@ test/
 coverage/
 mocks.json
 .env
-queries.txt
 
 # Папка с собранными файлами проекта
 build/
