@@ -22,11 +22,11 @@ CREATE DATABASE buy_and_sell
     CONNECTION LIMIT = -1;
 
 /* There are commands under buy_sell user*/
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS offers;
-DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS offers_categories;
+DROP TABLE IF EXISTS offers;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS users;
 
 DROP TYPE IF EXISTS offer_type;
 
