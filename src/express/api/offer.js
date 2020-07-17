@@ -8,13 +8,13 @@ const logger = getLogger();
 
 const HOST = process.env.HOST || `http://localhost:3000/`;
 
-const getSearchResults = async (query) => {
+const getOffer = async (id) => {
   try {
-    const {data: response} = await axios.get(`${HOST}api/search/?search=${query}`);
+    const {data: response} = await axios.get(`${HOST}api/offers/${id}`);
     return response;
   } catch (error) {
     return logger.error(error.message);
   }
 };
 
-module.exports = getSearchResults;
+module.exports = getOffer;
