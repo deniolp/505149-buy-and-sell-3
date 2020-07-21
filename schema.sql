@@ -43,6 +43,7 @@ CREATE TABLE users
 
 CREATE UNIQUE INDEX email_index ON users ((lower(email)));
 CREATE TYPE offer_type AS ENUM ('buy', 'offer');
+SET datestyle = "ISO, DMY";
 
 CREATE TABLE offers
 (
