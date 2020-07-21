@@ -33,6 +33,11 @@ switch (userCommand) {
     Cli[userCommand].run(port);
     break;
 
+  case `--fill`:
+    const qty = userArguments.slice(1);
+    Cli[userCommand].run(qty);
+    break;
+
   default:
     Cli[userCommand].run();
     break;
