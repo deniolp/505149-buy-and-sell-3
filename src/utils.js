@@ -26,7 +26,6 @@ const TimeConstants = {
 };
 
 module.exports = {
-  TXT_FILES_DIR: `./data/`,
   SumRestrict: {
     min: 1000,
     max: 100000,
