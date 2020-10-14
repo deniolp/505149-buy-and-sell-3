@@ -16,7 +16,7 @@ let categories = [];
 
 offersRouter.get(`/add`, async (req, res) => {
   categories = await getCategories();
-  res.render(`new-ticket`, {categories});
+  res.render(`new-offer`, {categories});
 });
 
 offersRouter.post(`/add`, async (req, res) => {
@@ -50,7 +50,7 @@ offersRouter.post(`/add`, async (req, res) => {
       })
       .on(`error`, (err) => {
         logger.error(`There is error while parsing form data. ${err}`);
-        res.render(`new-ticket`, {categories, offer});
+        res.render(`new-offer`, {categories, offer});
       })
       .on(`end`, async () => {
         if (isAllowedFormat) {
@@ -62,18 +62,18 @@ offersRouter.post(`/add`, async (req, res) => {
       });
   } catch (error) {
     logger.error(`Error happened: ${error}`);
-    res.render(`new-ticket`, {categories, offer});
+    res.render(`new-offer`, {categories, offer});
   }
 });
 
-offersRouter.get(`/category`, (req, res) => res.render(`category`, {}));
-offersRouter.get(`/:id`, (req, res) => res.render(`ticket`, {}));
+offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
+offersRouter.get(`/:id`, (req, res) => res.render(`offer`, {}));
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
   const offer = await getOffer(id);
 
   if (offer) {
-    res.render(`ticket-edit`, {
+    res.render(`offer-edit`, {
       offer,
     });
   } else {

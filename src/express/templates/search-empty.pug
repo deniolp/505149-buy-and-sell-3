@@ -1,0 +1,38 @@
+extends layout.pug
+
+block content
+  main.page-content
+    section.search-results
+      h1.visually-hidden Результаты поиска
+      .search-results__wrapper
+        .search-results__message
+          p
+            | Не найдено
+            br
+            | ни одной публикации
+    section.tickets-list
+      h2.visually-hidden Самые новые предложения
+      .tickets-list__wrapper
+        .tickets-list__header
+          p.tickets-list__title Самое свежее
+          unless !moreOffersQty
+            a.tickets-list__link(href='#') Еще #{moreOffersQty}
+        ul
+          each offer in eightOffers
+            li.tickets-list__item
+              .ticket-card.ticket-card--color01
+                .ticket-card__img
+                  img(src=`/img/${offer.picture}` alt='Изображение товара')
+                .ticket-card__info
+                  span.ticket-card__label= offer.type === `buy` ? `Куплю` : `Продам`
+                  .ticket-card__categories
+                    each category in offer.category
+                      a(href='#')= category
+                    .ticket-card__header
+                      h3.ticket-card__title
+                        a(href='#')= offer.title
+                      p.ticket-card__price
+                        span.js-sum= offer.sum
+                        |  ₽
+                    .ticket-card__desc
+                      p= offer.description

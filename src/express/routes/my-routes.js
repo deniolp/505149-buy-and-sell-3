@@ -12,7 +12,7 @@ let myOffers = null;
 myRouter.get(`/`, async (req, res) => {
   myOffers = await getOffers();
 
-  res.render(`my-tickets`, {
+  res.render(`my-offers`, {
     myOffers,
   });
 });

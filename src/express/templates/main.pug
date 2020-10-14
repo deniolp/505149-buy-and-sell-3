@@ -2,11 +2,7 @@ extends layout.pug
 
 block content
   main.page-content
-    section.categories-list
-      h1.visually-hidden Сервис объявлений "Куплю - продам"
-      ul.categories-list__wrapper
-        each category in categories
-          include partials/categories.pug
+    include partials/categories.pug
     section.tickets-list
       h2.visually-hidden Самые новые предложения
       .tickets-list__wrapper
