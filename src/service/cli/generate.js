@@ -11,7 +11,9 @@ const DEFAULT_COUNT = 1;
 const MAX_COMMENTS = 4;
 const FILE_NAME = `mocks.json`;
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `pino-from-service`,
+});
 
 const generateComments = (count, comments) => (
   Array(count).fill({}).map(() => ({

@@ -2,7 +2,9 @@
 
 const {getLogger} = require(`../lib/logger`);
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `pino-from-service`,
+});
 
 module.exports = {
   name: `--help`,

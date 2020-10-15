@@ -8,7 +8,9 @@ const {getLogger} = require(`../lib/logger`);
 
 const DEFAULT_PORT = 3000;
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `pino-from-service`,
+});
 
 const createApp = async () => {
   const app = express();

@@ -1,9 +1,13 @@
 'use strict';
-const pino = require(`pino`);
 
-let logger = pino({
-  name: `pino-and-express`,
+const dateFormat = require(`dateformat`);
+const logger = require(`pino`)({
   level: process.env.LOG_LEVEL || `info`,
+  prettyPrint: {
+    colorize: process.env.COLOR || false,
+    translateTime: dateFormat(new Date(), `dd.m hh:MM`),
+    ignore: `pid,hostname`,
+  },
 });
 
 module.exports = {

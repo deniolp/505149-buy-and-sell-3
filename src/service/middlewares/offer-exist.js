@@ -3,7 +3,9 @@
 const {HttpCode} = require(`../../constants`);
 const {getLogger} = require(`../lib/logger`);
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `pino-from-service`,
+});
 
 module.exports = (service) => (req, res, next) => {
   const {offerId} = req.params;

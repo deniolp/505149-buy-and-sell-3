@@ -3,7 +3,9 @@
 const {getLogger} = require(`../lib/logger`);
 const packageJsonFile = require(`../../../package.json`);
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `pino-from-service`,
+});
 
 module.exports = {
   name: `--version`,

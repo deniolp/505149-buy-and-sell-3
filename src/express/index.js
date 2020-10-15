@@ -8,7 +8,9 @@ const offersRoutes = require(`./routes/offers-routes`);
 const mainRoutes = require(`./routes/main-routes`);
 const {getLogger} = require(`../service/lib/logger`);
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `pino-from-express`,
+});
 
 const app = express();
 const port = 8080;
