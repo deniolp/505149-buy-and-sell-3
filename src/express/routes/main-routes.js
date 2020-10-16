@@ -26,14 +26,14 @@ mainRouter.get(`/search`, async (req, res) => {
   const eightOffers = allOffers.slice(0, 8);
   const moreOffersQty = allOffers.length >= 8 ? (allOffers.length) - 8 : null;
 
-  if (!req.query.search) {
-    res.render(`search-empty`, {eightOffers, moreOffersQty});
-    return;
-  }
-  const encodedURI = encodeURI(req.query.search);
+  const encodedURI = encodeURI(req.query.query);
   const offers = await getSearchResults(encodedURI);
 
-  res.render(`search-result`, {offers, eightOffers, moreOffersQty});
+  if (offers) {
+    res.render(`search-result`, {offers, eightOffers, moreOffersQty});
+  } else {
+    res.render(`search-empty`, {eightOffers, moreOffersQty});
+  }
 });
 
 module.exports = mainRouter;
