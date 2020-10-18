@@ -7,7 +7,7 @@ const {getLogger} = require(`../lib/logger`);
 const {MAX_ID_LENGTH} = require(`../../../src/constants`);
 
 const logger = getLogger({
-  name: `pino-from-service`,
+  name: `api-server`,
 });
 
 class OfferService {

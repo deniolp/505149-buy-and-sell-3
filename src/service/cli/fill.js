@@ -7,7 +7,7 @@ const {getLogger} = require(`../lib/logger`);
 const {getRandomInt, shuffle, OfferType, SumRestrict, PictureRestrict, getPictureFileName, makeMockData, DateRestrict, TXT_FILES_DIR} = require(`../../utils`);
 
 const logger = getLogger({
-  name: `pino-from-service`,
+  name: `api-server-sql`,
 });
 
 const FILE_NAME = `fill-db.sql`;

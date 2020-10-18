@@ -11,7 +11,7 @@ const postOffer = require(`../api/new-offer`);
 const offersRouter = new Router();
 
 const logger = getLogger({
-  name: `pino-from-express`,
+  name: `front-server-formidable`,
 });
 
 let categories = [];

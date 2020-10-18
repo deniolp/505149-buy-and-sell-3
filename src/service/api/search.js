@@ -7,7 +7,7 @@ const {getLogger} = require(`../lib/logger`);
 
 const route = new Router();
 const logger = getLogger({
-  name: `pino-from-service`,
+  name: `api-server`,
 });
 
 module.exports = (app, service) => {

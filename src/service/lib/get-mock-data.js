@@ -7,7 +7,7 @@ const {getLogger} = require(`../lib/logger`);
 const FILENAME = `mocks.json`;
 
 const logger = getLogger({
-  name: `pino-from-service`,
+  name: `api-server`,
 });
 let data = [];
 

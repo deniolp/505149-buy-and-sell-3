@@ -10,7 +10,7 @@ const {
 } = require(`../constants`);
 
 const logger = getLogger({
-  name: `pino-from-service`,
+  name: `api-server`,
 });
 const userArguments = process.argv.slice(USER_ARGV_INDEX);
 const [userCommand] = userArguments;

@@ -9,7 +9,7 @@ const mainRoutes = require(`./routes/main-routes`);
 const {getLogger} = require(`../service/lib/logger`);
 
 const logger = getLogger({
-  name: `pino-from-express`,
+  name: `front-server`,
 });
 
 const app = express();

@@ -12,7 +12,7 @@ const MAX_COMMENTS = 4;
 const FILE_NAME = `mocks.json`;
 
 const logger = getLogger({
-  name: `pino-from-service`,
+  name: `api-server`,
 });
 
 const generateComments = (count, comments) => (

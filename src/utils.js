@@ -5,7 +5,7 @@ const fs = require(`fs`).promises;
 const {getLogger} = require(`./service/lib/logger`);
 
 const logger = getLogger({
-  name: `pino-from-utils`,
+  name: `api-server-utils`,
 });
 
 const readContent = async (fileName) => {
