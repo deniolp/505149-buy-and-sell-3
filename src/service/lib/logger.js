@@ -7,7 +7,7 @@ const {Env} = require(`../../constants`);
 const isDevMode = process.env.NODE_ENV === Env.DEVELOPMENT;
 const isFront = process.env.IS_FRONT;
 const LOG_FILE = isFront ? `src/logs/front.log` : `src/logs/api.log`;
-const defaultLogLevel = isDevMode ? `info` : `error`;
+const defaultLogLevel = isDevMode ? `debug` : `error`;
 
 const logger = pino({
   name: `base-logger`,

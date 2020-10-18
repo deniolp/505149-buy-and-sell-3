@@ -18,14 +18,19 @@ module.exports = (app, service) => {
 
     if (!query) {
       logger.error(`Empty query...`);
-      res.status(HttpCode.BAD_REQUEST).json([]);
+      res.status(HttpCode.BAD_REQUEST).send(null);
       return;
     }
 
     const searchResults = service.findAll(query.toLowerCase());
-    const searchStatus = searchResults.length > 0 ? HttpCode.OK : HttpCode.NOT_FOUND;
 
-    res.status(searchStatus)
+    if (searchResults.length) {
+      res.status(HttpCode.OK)
       .json(searchResults);
+    } else {
+      logger.info(`Did not find offers`);
+      res.status(HttpCode.NOT_FOUND)
+      .send(null);
+    }
   });
 };

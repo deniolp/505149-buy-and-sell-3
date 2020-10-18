@@ -4,9 +4,7 @@ const {Router} = require(`express`);
 const formidable = require(`formidable`);
 const {getLogger} = require(`../../service/lib/logger`);
 
-const getOffer = require(`../api/offer`);
-const getCategories = require(`../api/categories`);
-const postOffer = require(`../api/new-offer`);
+const api = require(`../api`).getAPI();
 
 const offersRouter = new Router();
 
@@ -17,7 +15,7 @@ const logger = getLogger({
 let categories = [];
 
 offersRouter.get(`/add`, async (req, res) => {
-  categories = await getCategories();
+  categories = await api.getCategories();
   res.render(`new-offer`, {categories});
 });
 
@@ -56,7 +54,7 @@ offersRouter.post(`/add`, async (req, res) => {
       })
       .on(`end`, async () => {
         if (isAllowedFormat) {
-          await postOffer(offer);
+          await api.createOffer(offer);
           res.redirect(`/my`);
         } else {
           formData.emit(`error`, `Not correct file's extension.`);
@@ -72,7 +70,7 @@ offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
 offersRouter.get(`/:id`, (req, res) => res.render(`offer`, {}));
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
-  const offer = await getOffer(id);
+  const offer = await api.getOffer(id);
 
   if (offer) {
     res.render(`offer-edit`, {

@@ -30,7 +30,7 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, _next) => {
-  logger.error(`Error status - ${err.status || 500}`);
+  logger.error(`Error status - ${err.status || 500}, ${err}`);
   res.status(err.status || 500);
   res.render(`errors/500`, {title: `Ошибка сервера`});
 });
