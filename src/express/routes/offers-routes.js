@@ -12,14 +12,13 @@ const logger = getLogger({
   name: `front-server-formidable`,
 });
 
-let categories = [];
-
 offersRouter.get(`/add`, async (req, res) => {
-  categories = await api.getCategories();
+  const categories = await api.getCategories();
   res.render(`new-offer`, {categories});
 });
 
 offersRouter.post(`/add`, async (req, res) => {
+  const categories = await api.getCategories();
   const allowedTypes = [`image/jpeg`, `image/png`];
   let isAllowedFormat;
   let offer = {category: []};
@@ -70,12 +69,11 @@ offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
 offersRouter.get(`/:id`, (req, res) => res.render(`offer`, {}));
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
-  const offer = await api.getOffer(id);
+  const [offer, categories] = await Promise.all([api.getOffer(id), api.getCategories()
+  ]);
 
   if (offer) {
-    res.render(`offer-edit`, {
-      offer,
-    });
+    res.render(`offer-edit`, {offer, categories, id});
   } else {
     res.status(404).render(`errors/404`, {title: `Страница не найдена`});
   }
