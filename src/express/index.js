@@ -8,6 +8,9 @@ const offersRoutes = require(`./routes/offers-routes`);
 const mainRoutes = require(`./routes/main-routes`);
 const {getLogger} = require(`../service/lib/logger`);
 
+const PUBLIC_DIR = `files`;
+const UPLOAD_DIR = `upload`;
+
 const logger = getLogger({
   name: `front-server`,
 });
@@ -15,7 +18,8 @@ const logger = getLogger({
 const app = express();
 const port = 8080;
 app.use(express.urlencoded({extended: false}));
-app.use(express.static(path.join(__dirname, `files`)));
+app.use(express.static(path.join(__dirname, PUBLIC_DIR)));
+app.use(express.static(path.join(__dirname, UPLOAD_DIR)));
 
 app.set(`views`, path.join(__dirname, `templates`));
 app.set(`view engine`, `pug`);

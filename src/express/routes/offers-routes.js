@@ -2,11 +2,15 @@
 
 const {Router} = require(`express`);
 const formidable = require(`formidable`);
+const path = require(`path`);
+
 const {getLogger} = require(`../../service/lib/logger`);
 
-const api = require(`../api`).getAPI();
+const UPLOAD_DIR = `../upload/img/`;
 
+const api = require(`../api`).getAPI();
 const offersRouter = new Router();
+const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 
 const logger = getLogger({
   name: `front-server-formidable`,
@@ -38,7 +42,7 @@ offersRouter.post(`/add`, async (req, res) => {
           isAllowedFormat = false;
         } else {
           isAllowedFormat = true;
-          file.path = process.cwd() + `/src/express/files/img/` + file.name;
+          file.path = uploadDirAbsolute + `/` + file.name;
         }
       })
       .on(`file`, (name, file) => {
