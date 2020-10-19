@@ -70,7 +70,12 @@ offersRouter.post(`/add`, async (req, res) => {
 });
 
 offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
-offersRouter.get(`/:id`, (req, res) => res.render(`offer`, {}));
+offersRouter.get(`/:id`, async (req, res) => {
+  const {id} = req.params;
+  const [offer, comments] = await Promise.all([api.getOffer(id), api.getComments(id)]);
+  res.render(`offer`, {offer, comments});
+});
+
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
   const [offer, categories] = await Promise.all([api.getOffer(id), api.getCategories()
