@@ -15,7 +15,7 @@ block content
                 .ticket-card__img
                   img(src=`/img/${offer.picture}` alt='Изображение товара')
                 .ticket-card__info
-                  span.ticket-card__label= offer.type === `buy` ? `Куплю` : `Продам`
+                  +ticketLabel(offer.type)
                   .ticket-card__categories
                     each category in offer.category
                       a(href='#')= category
@@ -41,7 +41,7 @@ block content
                 .ticket-card__img
                   img(src=`/img/${offer.picture}` alt='Изображение товара')
                 .ticket-card__info
-                  span.ticket-card__label= offer.type === `buy` ? `Куплю` : `Продам`
+                  +ticketLabel(offer.type)
                   .ticket-card__categories
                     each category in offer.category
                       a(href='#')= category
