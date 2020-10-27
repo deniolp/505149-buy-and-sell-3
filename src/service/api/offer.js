@@ -9,7 +9,9 @@ const offerExist = require(`../middlewares/offer-exist`);
 const {getLogger} = require(`../lib/logger`);
 
 const route = new Router();
-const logger = getLogger();
+const logger = getLogger({
+  name: `api-server`,
+});
 
 module.exports = (app, offerService, commentService) => {
   app.use(`/offers`, route);

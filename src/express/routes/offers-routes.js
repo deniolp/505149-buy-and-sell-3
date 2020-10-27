@@ -2,24 +2,27 @@
 
 const {Router} = require(`express`);
 const formidable = require(`formidable`);
+const path = require(`path`);
+
 const {getLogger} = require(`../../service/lib/logger`);
 
-const getOffer = require(`../api/offer`);
-const getCategories = require(`../api/categories`);
-const postOffer = require(`../api/new-offer`);
+const UPLOAD_DIR = `../upload/img/`;
 
+const api = require(`../api`).getAPI();
 const offersRouter = new Router();
+const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 
-const logger = getLogger();
-
-let categories = [];
+const logger = getLogger({
+  name: `front-server-formidable`,
+});
 
 offersRouter.get(`/add`, async (req, res) => {
-  categories = await getCategories();
-  res.render(`new-ticket`, {categories});
+  const categories = await api.getCategories();
+  res.render(`new-offer`, {categories});
 });
 
 offersRouter.post(`/add`, async (req, res) => {
+  const categories = await api.getCategories();
   const allowedTypes = [`image/jpeg`, `image/png`];
   let isAllowedFormat;
   let offer = {category: []};
@@ -39,7 +42,7 @@ offersRouter.post(`/add`, async (req, res) => {
           isAllowedFormat = false;
         } else {
           isAllowedFormat = true;
-          file.path = process.cwd() + `/src/express/files/img/` + file.name;
+          file.path = uploadDirAbsolute + `/` + file.name;
         }
       })
       .on(`file`, (name, file) => {
@@ -50,11 +53,11 @@ offersRouter.post(`/add`, async (req, res) => {
       })
       .on(`error`, (err) => {
         logger.error(`There is error while parsing form data. ${err}`);
-        res.render(`new-ticket`, {categories, offer});
+        res.render(`new-offer`, {categories, offer});
       })
       .on(`end`, async () => {
         if (isAllowedFormat) {
-          await postOffer(offer);
+          await api.createOffer(offer);
           res.redirect(`/my`);
         } else {
           formData.emit(`error`, `Not correct file's extension.`);
@@ -62,20 +65,24 @@ offersRouter.post(`/add`, async (req, res) => {
       });
   } catch (error) {
     logger.error(`Error happened: ${error}`);
-    res.render(`new-ticket`, {categories, offer});
+    res.render(`new-offer`, {categories, offer});
   }
 });
 
-offersRouter.get(`/category`, (req, res) => res.render(`category`, {}));
-offersRouter.get(`/:id`, (req, res) => res.render(`ticket`, {}));
+offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
+offersRouter.get(`/:id`, async (req, res) => {
+  const {id} = req.params;
+  const [offer, comments] = await Promise.all([api.getOffer(id), api.getComments(id)]);
+  res.render(`offer`, {offer, comments});
+});
+
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
-  const offer = await getOffer(id);
+  const [offer, categories] = await Promise.all([api.getOffer(id), api.getCategories()
+  ]);
 
   if (offer) {
-    res.render(`ticket-edit`, {
-      offer,
-    });
+    res.render(`offer-edit`, {offer, categories, id});
   } else {
     res.status(404).render(`errors/404`, {title: `Страница не найдена`});
   }

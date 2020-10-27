@@ -3,7 +3,9 @@
 const {HttpCode} = require(`../../constants`);
 const {getLogger} = require(`../lib/logger`);
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `api-server`,
+});
 
 module.exports = (service) => (req, res, next) => {
   const {offerId} = req.params;

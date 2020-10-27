@@ -14,6 +14,7 @@ test/
 coverage/
 mocks.json
 .env
+src/express/upload
 
 # Папка с собранными файлами проекта
 build/

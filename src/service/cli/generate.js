@@ -4,14 +4,16 @@ const fs = require(`fs`).promises;
 const {nanoid} = require(`nanoid`);
 
 const {getLogger} = require(`../lib/logger`);
-const {getRandomInt, shuffle, OfferType, SumRestrict, PictureRestrict, getPictureFileName, makeMockData, TXT_FILES_DIR} = require(`../../utils`);
+const {getRandomInt, shuffle, OfferType, SumRestrict, PictureRestrict, getPictureFileName, makeMockData} = require(`../../utils`);
 
-const {MAX_ID_LENGTH} = require(`../../../src/constants`);
+const {MAX_ID_LENGTH, TXT_FILES_DIR} = require(`../../../src/constants`);
 const DEFAULT_COUNT = 1;
 const MAX_COMMENTS = 4;
 const FILE_NAME = `mocks.json`;
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `api-server`,
+});
 
 const generateComments = (count, comments) => (
   Array(count).fill({}).map(() => ({

@@ -4,9 +4,12 @@ const fs = require(`fs`).promises;
 const {DateTimeFormat} = require(`intl`);
 
 const {getLogger} = require(`../lib/logger`);
-const {getRandomInt, shuffle, OfferType, SumRestrict, PictureRestrict, getPictureFileName, makeMockData, DateRestrict, TXT_FILES_DIR} = require(`../../utils`);
+const {getRandomInt, shuffle, OfferType, SumRestrict, PictureRestrict, getPictureFileName, makeMockData, DateRestrict} = require(`../../utils`);
+const {TXT_FILES_DIR} = require(`../../constants`);
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `api-server-sql`,
+});
 
 const FILE_NAME = `fill-db.sql`;
 const DEFAULT_COUNT = 5;

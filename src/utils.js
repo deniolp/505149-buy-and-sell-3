@@ -4,7 +4,9 @@ const fs = require(`fs`).promises;
 
 const {getLogger} = require(`./service/lib/logger`);
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `api-server-utils`,
+});
 
 const readContent = async (fileName) => {
   try {
@@ -26,7 +28,6 @@ const TimeConstants = {
 };
 
 module.exports = {
-  TXT_FILES_DIR: `./data/`,
   SumRestrict: {
     min: 1000,
     max: 100000,

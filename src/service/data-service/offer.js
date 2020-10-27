@@ -6,7 +6,9 @@ const {getLogger} = require(`../lib/logger`);
 
 const {MAX_ID_LENGTH} = require(`../../../src/constants`);
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `api-server`,
+});
 
 class OfferService {
   constructor(offers) {

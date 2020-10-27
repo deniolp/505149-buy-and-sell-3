@@ -9,7 +9,9 @@ const {
   ExitCode
 } = require(`../constants`);
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `api-server`,
+});
 const userArguments = process.argv.slice(USER_ARGV_INDEX);
 const [userCommand] = userArguments;
 

@@ -6,24 +6,31 @@ const {HttpCode} = require(`../../constants`);
 const {getLogger} = require(`../lib/logger`);
 
 const route = new Router();
-const logger = getLogger();
+const logger = getLogger({
+  name: `api-server`,
+});
 
 module.exports = (app, service) => {
   app.use(`/search`, route);
 
   route.get(`/`, (req, res) => {
-    const {search = ``} = req.query;
+    const {query = ``} = req.query;
 
-    if (!search) {
+    if (!query) {
       logger.error(`Empty query...`);
-      res.status(HttpCode.BAD_REQUEST).json([]);
+      res.status(HttpCode.BAD_REQUEST).send(null);
       return;
     }
 
-    const searchResults = service.findAll(search.toLowerCase());
-    const searchStatus = searchResults.length > 0 ? HttpCode.OK : HttpCode.NOT_FOUND;
+    const searchResults = service.findAll(query.toLowerCase());
 
-    res.status(searchStatus)
+    if (searchResults.length) {
+      res.status(HttpCode.OK)
       .json(searchResults);
+    } else {
+      logger.info(`Did not find offers`);
+      res.status(HttpCode.NOT_FOUND)
+      .send(null);
+    }
   });
 };

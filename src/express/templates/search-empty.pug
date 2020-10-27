@@ -5,28 +5,11 @@ block content
     section.search-results
       h1.visually-hidden Результаты поиска
       .search-results__wrapper
-        p.search-results__label
-          | Найдено
-          span.js-results  #{offers.length} публикации
-        ul.search-results__list
-          each offer in offers
-            li.search-results__item
-              .ticket-card.ticket-card--color05
-                .ticket-card__img
-                  img(src=`/img/${offer.picture}` alt='Изображение товара')
-                .ticket-card__info
-                  +ticketLabel(offer.type)
-                  .ticket-card__categories
-                    each category in offer.category
-                      a(href='#')= category
-                    .ticket-card__header
-                      h3.ticket-card__title
-                        a(href=`/offers/${offer.id}`)= offer.title
-                      p.ticket-card__price
-                        span.js-sum= offer.sum
-                        |  ₽
-                    .ticket-card__desc
-                      p= offer.description
+        .search-results__message
+          p
+            | Не найдено
+            br
+            | ни одной публикации
     section.tickets-list
       h2.visually-hidden Самые новые предложения
       .tickets-list__wrapper
@@ -41,7 +24,7 @@ block content
                 .ticket-card__img
                   img(src=`/img/${offer.picture}` alt='Изображение товара')
                 .ticket-card__info
-                  +ticketLabel(offer.type)
+                  span.ticket-card__label= offer.type === `buy` ? `Куплю` : `Продам`
                   .ticket-card__categories
                     each category in offer.category
                       a(href='#')= category

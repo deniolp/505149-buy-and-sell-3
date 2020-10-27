@@ -8,7 +8,7 @@ html.html-not-found(lang="ru")
     title= title
     link(rel='stylesheet' href='/css/style.min.css')
   body.body-not-found
-    main(style='background-color: #aa5913')
+    main
       section.error
         h1.error__title 404
         h2.error__subtitle Страница не найдена
@@ -20,7 +20,7 @@ html.html-not-found(lang="ru")
           li.error__item
             a(href='/') Главная страница
         form.error__search.search.search--small(method='get' action='#' autocomplete='off')
-          input(type='search' name='search' placeholder='Поиск' aria-label='Поиск')
+          input(type='search' name='query' placeholder='Поиск' aria-label='Поиск')
           .search__icon
           .search__close-btn
         a.error__logo.logo(href='/')

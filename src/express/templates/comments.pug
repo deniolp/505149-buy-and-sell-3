@@ -12,7 +12,7 @@ block content
                 h2.announce-card__title= offer.title
                 span.announce-card__info
                   span.announce-card__price= `₽ ${offer.sum}`
-                  span.announce-card__type= offer.type === `buy` ? `Куплю` : `Продам`
+                  +ticketLabel(offer.type)(class=`announce-card__type`)
             each comment in offer.comments
               ul.comments-list
                 li.js-card

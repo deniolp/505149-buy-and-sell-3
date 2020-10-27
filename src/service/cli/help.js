@@ -2,7 +2,9 @@
 
 const {getLogger} = require(`../lib/logger`);
 
-const logger = getLogger();
+const logger = getLogger({
+  name: `api-server`,
+});
 
 module.exports = {
   name: `--help`,
