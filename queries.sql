@@ -129,7 +129,8 @@ SELECT
 	title AS "Заголовок"
 FROM offers
 WHERE type = 'buy'
-GROUP BY offers.id;
+GROUP BY offers.id
+LIMIT 2;
 
 -- Обновить заголовок определённого объявления на «Уникальное предложение!»
 UPDATE offers
