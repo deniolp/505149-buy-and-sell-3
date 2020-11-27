@@ -44,5 +44,16 @@ module.exports = {
     });
 
     return User;
+  },
+
+  createUserLinks: (Offer, User, Comment) => {
+    User.hasMany(Offer, {
+      as: `offers`,
+      foreignKey: `user_id`,
+    });
+    User.hasMany(Comment, {
+      as: `comments`,
+      foreignKey: `user_id`,
+    });
   }
 };

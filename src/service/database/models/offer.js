@@ -44,14 +44,17 @@ module.exports = {
     return Offer;
   },
 
-  createOfferLinks: (Offer, User, Category) => {
+  createOfferLinks: (Offer, User, Category, Comment) => {
+    Offer.hasMany(Comment, {
+      as: `comments`,
+      foreignKey: `offer_id`,
+    });
     Offer.belongsTo(User, {
       foreignKey: `user_id`,
       as: `user`,
     });
     Offer.belongsToMany(Category, {
       through: `offers_categories`,
-      as: `categories`,
       foreignKey: `offer_id`,
       timestamps: false,
       paranoid: false,

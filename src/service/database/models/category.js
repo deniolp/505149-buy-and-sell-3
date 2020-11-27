@@ -33,7 +33,6 @@ module.exports = {
   createCategoryLinks: (Offer, Category) => {
     Category.belongsToMany(Offer, {
       through: `offers_categories`,
-      as: `categories`,
       foreignKey: `category_id`,
       timestamps: false,
       paranoid: false,
