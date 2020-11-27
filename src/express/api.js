@@ -3,10 +3,10 @@
 const axios = require(`axios`).default;
 
 const {getLogger} = require(`../service/lib/logger`);
+const {API_PORT, APP_URL} = require(`../../config`);
 
 const TIMEOUT = 1000;
-const port = process.env.API_PORT || 3000;
-const defaultUrl = `http://localhost:${port}/api/`;
+const defaultUrl = `${APP_URL}:${API_PORT}/api/`;
 
 const logger = getLogger({
   name: `api-axios`,
