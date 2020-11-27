@@ -2,7 +2,7 @@
 
 const Sequelize = require(`sequelize`);
 
-const {createUserModel} = require(`./models/user`);
+const {createUserModel, createUserLinks} = require(`./models/user`);
 const {createOfferModel, createOfferLinks} = require(`./models/offer`);
 const {createCategoryModel, createCategoryLinks} = require(`./models/category`);
 const {createCommentModel, createCommentLinks} = require(`./models/comment`);
@@ -24,7 +24,8 @@ const Offer = createOfferModel(sequelize);
 const Category = createCategoryModel(sequelize);
 const Comment = createCommentModel(sequelize);
 
-createOfferLinks(Offer, User, Category);
+createUserLinks(Offer, User, Comment);
+createOfferLinks(Offer, User, Category, Comment);
 createCategoryLinks(Offer, Category);
 createCommentLinks(Comment, User, Offer);
 
