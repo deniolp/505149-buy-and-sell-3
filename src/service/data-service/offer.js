@@ -2,17 +2,12 @@
 
 const {nanoid} = require(`nanoid`);
 
-const {getLogger} = require(`../lib/logger`);
-
 const {MAX_ID_LENGTH} = require(`../../../src/constants`);
 
-const logger = getLogger({
-  name: `api-server`,
-});
-
 class OfferService {
-  constructor(offers) {
-    this._offers = offers;
+  constructor(db, logger) {
+    this._models = db.models;
+    this._logger = logger;
   }
 
   create(offer) {
@@ -27,7 +22,7 @@ class OfferService {
     const offer = this._offers.find((item) => item.id === id);
 
     if (!offer) {
-      logger.error(`Did not find offer`);
+      this._logger.error(`Did not find offer`);
       return null;
     }
 
@@ -35,12 +30,41 @@ class OfferService {
     return offer;
   }
 
-  findAll() {
-    return this._offers;
+  async findAll() {
+    const {Offer} = this._models;
+
+    try {
+      const offers = await Offer.findAll();
+      const preparedOffers = [];
+
+      for (const offer of offers) {
+        const categories = await offer.getCategories({raw: true});
+        const comments = await offer.getComments({raw: true});
+        offer.dataValues.category = categories;
+        offer.dataValues.comments = comments;
+        preparedOffers.push(offer.dataValues);
+      }
+
+      return preparedOffers;
+    } catch (error) {
+      this._logger.error(`Can not find offers. Error: ${error}`);
+      return [];
+    }
   }
 
-  findOne(id) {
-    return this._offers.find((item) => item.id === id);
+  async findOne(id) {
+    const {Offer} = this._models;
+    const offerId = Number.parseInt(id, 10);
+
+    try {
+      const offer = await Offer.findByPk(offerId);
+      const categories = await offer.getCategories({raw: true});
+      offer.dataValues.category = categories;
+      return offer.dataValues;
+    } catch (error) {
+      this._logger.error(`Can not find offer. Error: ${error}`);
+      return null;
+    }
   }
 
   update(id, offer) {

@@ -16,16 +16,16 @@ const logger = getLogger({
 module.exports = (app, offerService, commentService) => {
   app.use(`/offers`, route);
 
-  route.get(`/`, (req, res) => {
-    const offers = offerService.findAll();
+  route.get(`/`, async (req, res) => {
+    const offers = await offerService.findAll();
 
     return res.status(HttpCode.OK)
         .json(offers);
   });
 
-  route.get(`/:offerId`, (req, res) => {
+  route.get(`/:offerId`, async (req, res) => {
     const {offerId} = req.params;
-    const offer = offerService.findOne(offerId);
+    const offer = await offerService.findOne(offerId);
 
     if (!offer) {
       logger.error(`Error status - ${HttpCode.NOT_FOUND}, url: /api/offers${req.url}`);
@@ -74,10 +74,10 @@ module.exports = (app, offerService, commentService) => {
       .json(offer);
   });
 
-  route.get(`/:offerId/comments`, offerExist(offerService), (req, res) => {
+  route.get(`/:offerId/comments`, offerExist(offerService), async (req, res) => {
     const {offer} = res.locals;
 
-    const comments = commentService.findAll(offer);
+    const comments = await commentService.findAll(offer.id);
 
     return res.status(HttpCode.OK)
       .json(comments);
