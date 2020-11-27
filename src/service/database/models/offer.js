@@ -42,5 +42,19 @@ module.exports = {
     });
 
     return Offer;
+  },
+
+  createOfferLinks: (Offer, User, Category) => {
+    Offer.belongsTo(User, {
+      foreignKey: `user_id`,
+      as: `user`,
+    });
+    Offer.belongsToMany(Category, {
+      through: `offers_categories`,
+      as: `categories`,
+      foreignKey: `offer_id`,
+      timestamps: false,
+      paranoid: false,
+    });
   }
 };

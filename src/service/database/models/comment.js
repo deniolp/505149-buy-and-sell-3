@@ -26,5 +26,16 @@ module.exports = {
     });
 
     return Comment;
+  },
+
+  createCommentLinks: (Comment, User, Offer) => {
+    Comment.belongsTo(User, {
+      foreignKey: `user_id`,
+      as: `user`,
+    });
+    Comment.belongsTo(Offer, {
+      foreignKey: `offer_id`,
+      as: `offer`,
+    });
   }
 };
