@@ -15,7 +15,7 @@ GET http://localhost:3000/api/offers HTTP/1.1
 
 # Запрашивает объявление с идентификатором :id done
 
-GET http://localhost:3000/api/offers/6wbq1Q HTTP/1.1
+GET http://localhost:3000/api/offers/2 HTTP/1.1
 
 ###
 
@@ -59,7 +59,7 @@ Content-Type: application/json
 
 # Список комментариев done
 
-GET http://localhost:3000/api/offers/6wbq1Q/comments HTTP/1.1
+GET http://localhost:3000/api/offers/3/comments HTTP/1.1
 
 ###
 
@@ -71,9 +71,9 @@ DELETE http://localhost:3000/api/offers/6wbq1Q/comments/4EoY-Q HTTP/1.1
 
 # Добавляет новый комментарий к публикации done
 
-POST http://localhost:3000/api/offers/6wbq1Q/comments HTTP/1.1
+POST http://localhost:3000/api/offers/3/comments HTTP/1.1
 Content-Type: application/json
 
 {
-  "text": "Это новый комментарий"
+  "text": "Это новый очень хороший комментарий!"
 }

@@ -1,22 +1,28 @@
 'use strict';
 
-const {nanoid} = require(`nanoid`);
-
-const {MAX_ID_LENGTH} = require(`../../constants`);
-
 class CommentService {
   constructor(db, logger) {
     this._models = db.models;
     this._logger = logger;
   }
 
-  create(offer, comment) {
-    const newComment = Object.assign({
-      id: nanoid(MAX_ID_LENGTH),
-    }, comment);
+  async create(id, comment) {
+    const {Offer, Comment} = this._models;
 
-    offer.comments.push(newComment);
-    return comment;
+    try {
+      const offer = await Offer.findByPk(id);
+      const newComment = await offer.createComment({
+        text: comment.text,
+        [`user_id`]: 1,
+      });
+      console.log(newComment);
+
+      return await Comment.findByPk(newComment.id, {raw: true});
+    } catch (error) {
+      this._logger.error(`Can not create comment for offer with ${id}. Error: ${error}`);
+
+      return null;
+    }
   }
 
   delete(offer, commentId) {
@@ -40,7 +46,7 @@ class CommentService {
       const offer = await Offer.findByPk(id);
       return await offer.getComments({raw: true});
     } catch (error) {
-      this._logger.error(`Can not find offer. Error: ${error}`);
+      this._logger.error(`Can not find comments of offer with id ${id}. Error: ${error}`);
 
       return null;
     }
