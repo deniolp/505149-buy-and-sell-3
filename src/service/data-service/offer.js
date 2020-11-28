@@ -38,16 +38,28 @@ class OfferService {
     }
   }
 
-  delete(id) {
-    const offer = this._offers.find((item) => item.id === id);
+  async delete(id) {
+    const {Offer} = this._db.models;
 
-    if (!offer) {
-      this._logger.error(`Did not find offer`);
+    try {
+      const offerForDelete = await Offer.findByPk(id, {raw: true});
+      const deletedRows = await Offer.destroy({
+        returning: true,
+        where: {
+          id,
+        }
+      });
+
+      if (!deletedRows) {
+        return null;
+      }
+
+      return offerForDelete;
+    } catch (error) {
+      this._logger.error(`Can not delete offer. Error: ${error}`);
+
       return null;
     }
-
-    this._offers = this._offers.filter((item) => item.id !== id);
-    return offer;
   }
 
   async findAll() {

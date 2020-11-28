@@ -21,7 +21,7 @@ GET http://localhost:3000/api/offers/6wbq1Q HTTP/1.1
 
 # Удаление объявления с идентификатором :id done
 
-DELETE http://localhost:3000/api/offers/6wbq1Q HTTP/1.1
+DELETE http://localhost:3000/api/offers/19 HTTP/1.1
 
 ###
 
