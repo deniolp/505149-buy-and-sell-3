@@ -1,21 +1,41 @@
 'use strict';
 
-const {nanoid} = require(`nanoid`);
-
-const {MAX_ID_LENGTH} = require(`../../../src/constants`);
-
 class OfferService {
   constructor(db, logger) {
-    this._models = db.models;
+    this._db = db;
     this._logger = logger;
   }
 
-  create(offer) {
-    const newOffer = Object
-      .assign({id: nanoid(MAX_ID_LENGTH), comments: []}, offer);
+  async create(offer) {
+    const {sequelize} = this._db;
+    const {Category, Offer, User} = this._db.models;
+    const allCategories = await Category.findAll({raw: true});
+    const categoriesIds = allCategories.reduce((acc, item) => {
+      if (offer.category.filter((cat) => cat === item.title).length) {
+        acc.push(item.id);
+      }
+      return acc;
+    }, []);
 
-    this._offers.push(newOffer);
-    return newOffer;
+    try {
+      const offerCategories = await Category.findAll({
+        where: {
+          id: {
+            [sequelize.Sequelize.Op.or]: categoriesIds,
+          },
+        }
+      });
+
+      const user = await User.findByPk(1);
+      const newOffer = await user.createOffer(offer);
+      await newOffer.addCategories(offerCategories);
+
+      return await Offer.findByPk(newOffer.id, {raw: true});
+    } catch (error) {
+      this._logger.error(`Can not create offer. Error: ${error}`);
+
+      return null;
+    }
   }
 
   delete(id) {
@@ -31,7 +51,7 @@ class OfferService {
   }
 
   async findAll() {
-    const {Offer} = this._models;
+    const {Offer} = this._db.models;
 
     try {
       const offers = await Offer.findAll();
@@ -53,7 +73,7 @@ class OfferService {
   }
 
   async findOne(id) {
-    const {Offer} = this._models;
+    const {Offer} = this._db.models;
     const offerId = Number.parseInt(id, 10);
 
     try {
