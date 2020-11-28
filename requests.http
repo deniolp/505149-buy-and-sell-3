@@ -43,16 +43,16 @@ Content-Type: application/json
 
 # Обновление объявления done
 
-PUT http://localhost:3000/api/offers/6wbq1Q HTTP/1.1
+PUT http://localhost:3000/api/offers/3 HTTP/1.1
 Content-Type: application/json
 
 {
-  "category": ["Игры"],
-  "description": "Пользовались бережно и только по большим праздникам.",
-  "picture": "item17.jpg",
-  "title": "Изменение заголовка!",
+  "category": ["Разное", "Игры", "Книги"],
+  "description": "Мой дед не мог её сломать. Бонусом отдам все аксессуары. Кому нужен этот новый телефон, если тут такое.",
+  "picture": "item06.jpg",
+  "title": "Продам книги Стивена Кинга!",
   "sum": 900,
-  "type": "offer"
+  "type": "buy"
 }
 
 ###

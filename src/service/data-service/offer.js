@@ -68,6 +68,7 @@ class OfferService {
       return preparedOffers;
     } catch (error) {
       this._logger.error(`Can not find offers. Error: ${error}`);
+
       return [];
     }
   }
@@ -80,18 +81,52 @@ class OfferService {
       const offer = await Offer.findByPk(offerId);
       const categories = await offer.getCategories({raw: true});
       offer.dataValues.category = categories;
+
       return offer.dataValues;
     } catch (error) {
       this._logger.error(`Can not find offer. Error: ${error}`);
+
       return null;
     }
   }
 
-  update(id, offer) {
-    const oldOffer = this._offers
-      .find((item) => item.id === id);
+  async update(id, offer) {
+    const {sequelize} = this._db;
+    const {Offer, Category} = this._db.models;
+    const allCategories = await Category.findAll({raw: true});
+    const categoriesIds = allCategories.reduce((acc, item) => {
+      if (offer.category.filter((cat) => cat === item.title).length) {
+        acc.push(item.id);
+      }
+      return acc;
+    }, []);
 
-    return Object.assign(oldOffer, offer);
+    try {
+      const [rows] = await Offer.update(offer, {
+        where: {
+          id,
+        }
+      });
+
+      if (!rows) {
+        return null;
+      }
+
+      const updatedOffer = await Offer.findByPk(id);
+      const offerCategories = await Category.findAll({
+        where: {
+          id: {
+            [sequelize.Sequelize.Op.or]: categoriesIds,
+          },
+        }
+      });
+      await updatedOffer.addCategories(offerCategories);
+      return await Offer.findByPk(updatedOffer.id, {raw: true});
+    } catch (error) {
+      this._logger.error(`Can not update offer. Error: ${error}`);
+
+      return null;
+    }
   }
 
 }
