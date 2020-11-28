@@ -80,9 +80,13 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
   const [offer, categories] = await Promise.all([api.getOffer(id), api.getCategories()
   ]);
+  const plainOfferCategories = offer.category.reduce((acc, item) => {
+    acc.push(item.title);
+    return acc;
+  }, []);
 
   if (offer) {
-    res.render(`offer-edit`, {offer, categories, id});
+    res.render(`offer-edit`, {offer, categories, plainOfferCategories, id});
   } else {
     res.status(404).render(`errors/404`, {title: `Страница не найдена`});
   }

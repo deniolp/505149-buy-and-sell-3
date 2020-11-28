@@ -37,8 +37,8 @@ module.exports = (app, offerService, commentService) => {
         .json(offer);
   });
 
-  route.post(`/`, offerValidator, (req, res) => {
-    const offer = offerService.create(req.body);
+  route.post(`/`, offerValidator, async (req, res) => {
+    const offer = await offerService.create(req.body);
 
     return res.status(HttpCode.CREATED)
       .json(offer);
