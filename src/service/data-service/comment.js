@@ -15,7 +15,6 @@ class CommentService {
         text: comment.text,
         [`user_id`]: 1,
       });
-      console.log(newComment);
 
       return await Comment.findByPk(newComment.id, {raw: true});
     } catch (error) {
@@ -25,18 +24,27 @@ class CommentService {
     }
   }
 
-  delete(offer, commentId) {
-    const commentToDelete = offer.comments
-      .find((item) => item.id === commentId);
+  async delete(commentId) {
+    const {Comment} = this._models;
 
-    if (!commentToDelete) {
+    try {
+      const commentForDelete = await Comment.findByPk(commentId, {raw: true});
+      const deletedRows = await Comment.destroy({
+        where: {
+          id: commentId,
+        }
+      });
+
+      if (!deletedRows) {
+        return null;
+      }
+
+      return commentForDelete;
+    } catch (error) {
+      this._logger.error(`Can not delete comment. Error: ${error}`);
+
       return null;
     }
-
-    offer.comments = offer.comments
-      .filter((item) => item.id !== commentId);
-
-    return commentToDelete;
   }
 
   async findAll(id) {

@@ -65,7 +65,7 @@ GET http://localhost:3000/api/offers/3/comments HTTP/1.1
 
 # Удаляет комментарий done
 
-DELETE http://localhost:3000/api/offers/6wbq1Q/comments/4EoY-Q HTTP/1.1
+DELETE http://localhost:3000/api/offers/3/comments/13 HTTP/1.1
 
 ###
 

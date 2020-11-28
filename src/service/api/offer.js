@@ -84,9 +84,8 @@ module.exports = (app, offerService, commentService) => {
   });
 
   route.delete(`/:offerId/comments/:commentId`, offerExist(offerService), (req, res) => {
-    const {offer} = res.locals;
     const {commentId} = req.params;
-    const deletedComment = commentService.delete(offer, commentId);
+    const deletedComment = commentService.delete(commentId);
 
     if (!deletedComment) {
       logger.error(`Error status - ${HttpCode.NOT_FOUND}, url: /api/offers${req.url}`);
