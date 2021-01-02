@@ -8,13 +8,8 @@ class CategoryService {
 
   async findAll() {
     const {Category} = this._models;
-    try {
-      return await Category.findAll({raw: true});
-    } catch (error) {
-      this._logger.error(`Can not find categories. Error: ${error}`);
 
-      return null;
-    }
+    return await Category.findAll({raw: true});
   }
 }
 

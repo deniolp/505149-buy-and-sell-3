@@ -17,89 +17,65 @@ class OfferService {
       return acc;
     }, []);
 
-    try {
-      const offerCategories = await Category.findAll({
-        where: {
-          id: {
-            [sequelize.Sequelize.Op.or]: categoriesIds,
-          },
-        }
-      });
+    const offerCategories = await Category.findAll({
+      where: {
+        id: {
+          [sequelize.Sequelize.Op.or]: categoriesIds,
+        },
+      }
+    });
 
-      const user = await User.findByPk(1);
-      const newOffer = await user.createOffer(offer);
-      await newOffer.addCategories(offerCategories);
+    const user = await User.findByPk(1);
+    const newOffer = await user.createOffer(offer);
+    await newOffer.addCategories(offerCategories);
 
-      return await Offer.findByPk(newOffer.id, {raw: true});
-    } catch (error) {
-      this._logger.error(`Can not create offer. Error: ${error}`);
-
-      return null;
-    }
+    return await Offer.findByPk(newOffer.id, {raw: true});
   }
 
   async delete(id) {
     const {Offer} = this._db.models;
 
-    try {
-      const offerForDelete = await Offer.findByPk(id, {raw: true});
-      const deletedRows = await Offer.destroy({
-        returning: true,
-        where: {
-          id,
-        }
-      });
-
-      if (!deletedRows) {
-        return null;
+    const offerForDelete = await Offer.findByPk(id, {raw: true});
+    const deletedRows = await Offer.destroy({
+      returning: true,
+      where: {
+        id,
       }
+    });
 
-      return offerForDelete;
-    } catch (error) {
-      this._logger.error(`Can not delete offer. Error: ${error}`);
-
+    if (!deletedRows) {
       return null;
     }
+
+    return offerForDelete;
   }
 
   async findAll() {
     const {Offer} = this._db.models;
 
-    try {
-      const offers = await Offer.findAll();
-      const preparedOffers = [];
+    const offers = await Offer.findAll();
+    const preparedOffers = [];
 
-      for (const offer of offers) {
-        const categories = await offer.getCategories({raw: true});
-        const comments = await offer.getComments({raw: true});
-        offer.dataValues.category = categories;
-        offer.dataValues.comments = comments;
-        preparedOffers.push(offer.dataValues);
-      }
-
-      return preparedOffers;
-    } catch (error) {
-      this._logger.error(`Can not find offers. Error: ${error}`);
-
-      return [];
+    for (const offer of offers) {
+      const categories = await offer.getCategories({raw: true});
+      const comments = await offer.getComments({raw: true});
+      offer.dataValues.category = categories;
+      offer.dataValues.comments = comments;
+      preparedOffers.push(offer.dataValues);
     }
+
+    return preparedOffers;
   }
 
   async findOne(id) {
     const {Offer} = this._db.models;
     const offerId = Number.parseInt(id, 10);
 
-    try {
-      const offer = await Offer.findByPk(offerId);
-      const categories = await offer.getCategories({raw: true});
-      offer.dataValues.category = categories;
+    const offer = await Offer.findByPk(offerId);
+    const categories = await offer.getCategories({raw: true});
+    offer.dataValues.category = categories;
 
-      return offer.dataValues;
-    } catch (error) {
-      this._logger.error(`Can not find offer. Error: ${error}`);
-
-      return null;
-    }
+    return offer.dataValues;
   }
 
   async update(id, offer) {
@@ -113,32 +89,26 @@ class OfferService {
       return acc;
     }, []);
 
-    try {
-      const [rows] = await Offer.update(offer, {
-        where: {
-          id,
-        }
-      });
-
-      if (!rows) {
-        return null;
+    const [rows] = await Offer.update(offer, {
+      where: {
+        id,
       }
+    });
 
-      const updatedOffer = await Offer.findByPk(id);
-      const offerCategories = await Category.findAll({
-        where: {
-          id: {
-            [sequelize.Sequelize.Op.or]: categoriesIds,
-          },
-        }
-      });
-      await updatedOffer.addCategories(offerCategories);
-      return await Offer.findByPk(updatedOffer.id, {raw: true});
-    } catch (error) {
-      this._logger.error(`Can not update offer. Error: ${error}`);
-
+    if (!rows) {
       return null;
     }
+
+    const updatedOffer = await Offer.findByPk(id);
+    const offerCategories = await Category.findAll({
+      where: {
+        id: {
+          [sequelize.Sequelize.Op.or]: categoriesIds,
+        },
+      }
+    });
+    await updatedOffer.addCategories(offerCategories);
+    return await Offer.findByPk(updatedOffer.id, {raw: true});
   }
 
 }
