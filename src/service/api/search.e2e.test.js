@@ -3,7 +3,8 @@
 const request = require(`supertest`);
 
 const {createApp} = require(`../cli/server`);
-const {HttpCode} = require(`../../constants`);
+const dataBase = require(`../database/test-db`);
+const {HttpCode, ExitCode} = require(`../../constants`);
 
 describe(`Search API end-points:`, () => {
   const query = `Продам`;
@@ -11,7 +12,16 @@ describe(`Search API end-points:`, () => {
   let res;
 
   beforeAll(async () => {
-    app = await createApp();
+    try {
+      await dataBase.sequelize.sync();
+      app = await createApp(dataBase);
+    } catch (error) {
+      process.exit(ExitCode.error);
+    }
+  });
+
+  afterAll(() => {
+    dataBase.sequelize.close();
   });
 
   test(`status code of get search query should be 200`, async () => {

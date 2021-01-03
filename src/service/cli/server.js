@@ -15,9 +15,9 @@ const logger = getLogger({
   name: `api-server`,
 });
 
-const createApp = async () => {
+const createApp = async (db) => {
   const app = express();
-  const apiRoutes = await createApi(dataBase, logger);
+  const apiRoutes = await createApi(db, logger);
 
   app.use(express.json());
   app.use((req, res, next) => {
@@ -62,7 +62,7 @@ module.exports = {
       process.exit(ExitCode.error);
     }
 
-    const app = await createApp();
+    const app = await createApp(dataBase);
 
     app.listen(port, (err) => {
       if (err) {

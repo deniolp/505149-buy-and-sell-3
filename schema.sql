@@ -21,6 +21,15 @@ CREATE DATABASE buy_and_sell
     LC_CTYPE = 'C'
     CONNECTION LIMIT = -1;
 
+CREATE DATABASE test_buy_and_sell
+    WITH
+    OWNER = buy_sell
+    TEMPLATE = template0
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'C'
+    LC_CTYPE = 'C'
+    CONNECTION LIMIT = -1;
+
 /* There are commands under buy_sell user*/
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS offers_categories;

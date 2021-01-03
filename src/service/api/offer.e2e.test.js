@@ -3,36 +3,41 @@
 const request = require(`supertest`);
 
 const {createApp} = require(`../cli/server`);
-const {HttpCode} = require(`../../constants`);
+const dataBase = require(`../database/test-db`);
+const {HttpCode, ExitCode} = require(`../../constants`);
 
 const offerMock = {
-  "id": `1`,
   "title": `Title`,
-  "picture": `01.jpg`,
+  "picture": `02.jpg`,
   "description": `Some description`,
   "type": `offer`,
   "sum": 1,
   "category": [
-    `Журналы`,
-  ],
-  "comments": [
-    {
-      "id": `1`,
-      "text": `Some comment`
-    }
+    `Разное`,
   ],
 };
 
 let app = null;
+let mockOfferId;
+let mockCommentId;
 
 beforeAll(async () => {
-  app = await createApp();
+  try {
+    await dataBase.sequelize.sync();
+    app = await createApp(dataBase);
+  } catch (error) {
+    process.exit(ExitCode.error);
+  }
+});
+
+afterAll(() => {
+  dataBase.sequelize.close();
 });
 
 describe(`Offer API end-points:`, () => {
   let res;
 
-  test(`status code of GET offer query should be 200`, async () => {
+  test(`status code of GET offers query should be 200`, async () => {
     res = await request(app).get(`/api/offers`);
     expect(res.statusCode).toBe(HttpCode.OK);
   });
@@ -44,7 +49,7 @@ describe(`Offer API end-points:`, () => {
   });
 
   test(`status code for wrong GET offer request should be 404`, async () => {
-    res = await request(app).get(`/api/offers/xx`);
+    res = await request(app).get(`/api/offers/999999`);
 
     expect(res.statusCode).toBe(HttpCode.NOT_FOUND);
   });
@@ -53,6 +58,8 @@ describe(`Offer API end-points:`, () => {
     res = await request(app)
       .post(`/api/offers`)
       .send(offerMock);
+
+    mockOfferId = res.body.id;
 
     expect(res.statusCode).toBe(HttpCode.CREATED);
   });
@@ -66,89 +73,61 @@ describe(`Offer API end-points:`, () => {
   });
 
   test(`status code for GET offer query by id should be 200`, async () => {
-    res = await request(app).get(`/api/offers/${offerMock.id}`);
+    res = await request(app).get(`/api/offers/${mockOfferId}`);
 
     expect(res.statusCode).toBe(HttpCode.OK);
   });
 
-  test(`PUT request should work and status code  should be 200`, async () => {
+  test(`PUT request should work and status code should be 200`, async () => {
     res = await request(app)
-      .put(`/api/offers/${offerMock.id}`)
+      .put(`/api/offers/${mockOfferId}`)
       .send({
-        "id": `1`,
         "title": `Title`,
         "picture": `01.jpg`,
-        "description": `Some description`,
+        "description": `New description`,
         "type": `offer`,
         "sum": 999,
         "category": [
-          `Журналы`,
-        ],
-        "comments": [
-          {
-            "id": `1`,
-            "text": `Some comment`
-          }
+          `Книги`,
         ],
       });
     expect(res.statusCode).toBe(HttpCode.OK);
-    expect(res.body.sum).toBe(999);
+    expect(res.body.sum).toBe(`999`);
   });
 
   test(`wrong PUT request should not work and status code  should be 400`, async () => {
     res = await request(app)
-      .put(`/api/offers/${offerMock.id}`)
+      .put(`/api/offers/${mockOfferId}`)
       .send({
-        "id": `1`,
         "title": `Title`,
       });
     expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
   });
 
   test(`DELETE offer request should work and status code after deleting should be 200`, async () => {
-    res = await request(app).delete(`/api/offers/${offerMock.id}`);
+    res = await request(app).delete(`/api/offers/${mockOfferId}`);
     expect(res.statusCode).toBe(HttpCode.OK);
-    expect(res.body).toEqual({
-      "id": `1`,
-      "title": `Title`,
-      "picture": `01.jpg`,
-      "description": `Some description`,
-      "type": `offer`,
-      "sum": 999,
-      "category": [
-        `Журналы`,
-      ],
-      "comments": [
-        {
-          "id": `1`,
-          "text": `Some comment`
-        }
-      ],
-    });
   });
 
-  test(`status for incorrect DELETE offer request should be 404`, async () => {
+  test(`status for incorrect DELETE offer request should be 500`, async () => {
     res = await request(app).delete(`/api/offers/xx`);
 
-    expect(res.statusCode).toBe(HttpCode.NOT_FOUND);
+    expect(res.statusCode).toBe(HttpCode.INTERNAL_SERVER_ERROR);
   });
 });
 
 describe(`Offer comments API end-points`, () => {
   let res;
 
-  test(`status code after GET request for comments should be 200 and `, async () => {
-    await request(app)
+  test(`status code after GET request for comments should be 200 and and output should be array`, async () => {
+    res = await request(app)
       .post(`/api/offers`)
       .send(offerMock);
-    res = await request(app).get((`/api/offers/${offerMock.id}/comments`));
+
+    mockOfferId = res.body.id;
+    res = await request(app).get((`/api/offers/${mockOfferId}/comments`));
 
     expect(res.statusCode).toBe(HttpCode.OK);
-  });
-
-  test(`output after GET for comments should be an array with at least length 1`, async () => {
-    res = await request(app).get(`/api/offers/${offerMock.id}/comments`);
-    expect(res.body.length).toBeGreaterThan(0);
     expect(Array.isArray(res.body)).toBeTruthy();
   });
 
@@ -160,17 +139,18 @@ describe(`Offer comments API end-points`, () => {
 
   test(`status code after POST comment request should be 201`, async () => {
     res = await request(app)
-      .post((`/api/offers/${offerMock.id}/comments`))
+      .post((`/api/offers/${mockOfferId}/comments`))
       .send({
         "text": `Some text`,
       });
 
+    mockCommentId = res.body.id;
     expect(res.statusCode).toBe(HttpCode.CREATED);
   });
 
   test(`status code after wrong POST request of comment should be 400`, async () => {
     res = await request(app)
-      .post((`/api/offers/${offerMock.id}/comments`))
+      .post((`/api/offers/${mockOfferId}/comments`))
       .send({
         "some": `Some`,
       });
@@ -179,11 +159,11 @@ describe(`Offer comments API end-points`, () => {
   });
 
   test(`delete comment request should delete comment and status code after should be 200`, async () => {
-    res = await request(app).delete((`/api/offers/${offerMock.id}/comments/1`));
+    res = await request(app).delete((`/api/offers/${mockOfferId}/comments/${mockCommentId}`));
     expect(res.statusCode).toBe(HttpCode.OK);
 
-    res = await request(app).get((`/api/offers/${offerMock.id}/comments`));
-    expect(res.body.length).toBe(1);
+    res = await request(app).get((`/api/offers/${mockOfferId}/comments`));
+    expect(res.body.length).toBe(0);
   });
 
   test(`status code after delete comment request with wrong comment id should return 404`, async () => {

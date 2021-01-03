@@ -59,7 +59,7 @@ module.exports = (app, offerService, commentService) => {
         .send(`Did not find offer with id: ${offerId}`);
     }
 
-    const updatedOffer = offerService.update(offerId, req.body);
+    const updatedOffer = await offerService.update(offerId, req.body);
 
     if (!updatedOffer) {
       logger.error(`Error status - ${HttpCode.INTERNAL_SERVER_ERROR}`);
