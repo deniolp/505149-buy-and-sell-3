@@ -40,6 +40,11 @@ module.exports = (app, offerService, commentService) => {
   route.post(`/`, offerValidator, async (req, res) => {
     const offer = await offerService.create(req.body);
 
+    if (!offer) {
+      logger.error(`Error status - ${HttpCode.INTERNAL_SERVER_ERROR}`);
+      return res.status(HttpCode.INTERNAL_SERVER_ERROR).send(`Can not create offer`);
+    }
+
     return res.status(HttpCode.CREATED)
       .json(offer);
   });
@@ -56,6 +61,11 @@ module.exports = (app, offerService, commentService) => {
 
     const updatedOffer = offerService.update(offerId, req.body);
 
+    if (!updatedOffer) {
+      logger.error(`Error status - ${HttpCode.INTERNAL_SERVER_ERROR}`);
+      return res.status(HttpCode.INTERNAL_SERVER_ERROR).send(`Can not update offer`);
+    }
+
     return res.status(HttpCode.OK)
       .json(updatedOffer);
   });
@@ -65,9 +75,8 @@ module.exports = (app, offerService, commentService) => {
     const offer = await offerService.delete(offerId);
 
     if (!offer) {
-      logger.error(`Error status - ${HttpCode.NOT_FOUND}, url: /api/offers${req.url}`);
-      return res.status(HttpCode.NOT_FOUND)
-        .send(`Did not find offer with id: ${offerId}`);
+      logger.error(`Error status - ${HttpCode.INTERNAL_SERVER_ERROR}`);
+      return res.status(HttpCode.INTERNAL_SERVER_ERROR).send(`Can not delete offer`);
     }
 
     return res.status(HttpCode.OK)
@@ -79,6 +88,11 @@ module.exports = (app, offerService, commentService) => {
 
     const comments = await commentService.findAll(offer.id);
 
+    if (!comments) {
+      logger.error(`Error status - ${HttpCode.NOT_FOUND}`);
+      return res.status(HttpCode.NOT_FOUND).send(`Can not find comments for offer with id ${offer.id}.`);
+    }
+
     return res.status(HttpCode.OK)
       .json(comments);
   });
@@ -88,9 +102,9 @@ module.exports = (app, offerService, commentService) => {
     const deletedComment = await commentService.delete(commentId);
 
     if (!deletedComment) {
-      logger.error(`Error status - ${HttpCode.NOT_FOUND}, url: /api/offers${req.url}`);
-      return res.status(HttpCode.NOT_FOUND)
-        .send(`Did not find comment with id: ${commentId}`);
+      logger.error(`Error status - ${HttpCode.INTERNAL_SERVER_ERROR}`);
+      return res.status(HttpCode.INTERNAL_SERVER_ERROR)
+        .send(`Can not delete comment`);
     }
 
     return res.status(HttpCode.OK)
@@ -100,6 +114,11 @@ module.exports = (app, offerService, commentService) => {
   route.post(`/:offerId/comments`, [offerExist(offerService), commentValidator], async (req, res) => {
     const {offer} = res.locals;
     const comment = await commentService.create(offer.id, req.body);
+
+    if (!comment) {
+      logger.error(`Error status - ${HttpCode.INTERNAL_SERVER_ERROR}`);
+      return res.status(HttpCode.INTERNAL_SERVER_ERROR).send(`Can not create comment`);
+    }
 
     return res.status(HttpCode.CREATED)
       .json(comment);
