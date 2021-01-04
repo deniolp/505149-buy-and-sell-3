@@ -7,24 +7,19 @@ module.exports = {
     class Category extends Model {}
 
     Category.init({
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-      },
       title: {
-        type: DataTypes.STRING(50), /* eslint-disable-line */
+        type: DataTypes.STRING,
         allowNull: false,
       },
       picture: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING,
       },
     }, {
       sequelize,
       timestamps: false,
       paranoid: false,
       modelName: `category`,
+      tableName: `categories`,
     });
 
     return Category;

@@ -7,31 +7,24 @@ module.exports = {
     class Offer extends Model {}
 
     Offer.init({
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-      },
       type: {
-        type: DataTypes.ENUM,
-        values: [`buy`, `offer`],
+        type: DataTypes.STRING,
         allowNull: false,
       },
       title: {
-        type: DataTypes.STRING(100), /* eslint-disable-line */
+        type: DataTypes.STRING,
         allowNull: false,
       },
       description: {
-        type: DataTypes.STRING(1000), /* eslint-disable-line */
+        type: DataTypes.STRING,
         allowNull: false,
       },
       sum: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       picture: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING,
       },
     }, {
       sequelize,
@@ -39,6 +32,7 @@ module.exports = {
       updatedAt: false,
       paranoid: false,
       modelName: `offer`,
+      tableName: `offers`,
     });
 
     return Offer;

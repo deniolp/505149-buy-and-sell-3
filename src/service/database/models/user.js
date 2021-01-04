@@ -7,40 +7,35 @@ module.exports = {
     class User extends Model {}
 
     User.init({
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-      },
       firstName: {
-        type: DataTypes.STRING(50), /* eslint-disable-line */
+        type: DataTypes.STRING,
         field: `first_name`,
         allowNull: false,
       },
       lastName: {
-        type: DataTypes.STRING(50), /* eslint-disable-line */
+        type: DataTypes.STRING,
         field: `last_name`,
         allowNull: false,
       },
       email: {
-        type: DataTypes.STRING(50), /* eslint-disable-line */
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true,
       },
       password: {
-        type: DataTypes.STRING(50), /* eslint-disable-line */
+        type: DataTypes.STRING,
         allowNull: false,
         // Как валидировать длину пароля?
       },
       avatar: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING,
       },
     }, {
       sequelize,
       timestamps: false,
       paranoid: false,
       modelName: `user`,
+      tableName: `users`,
     });
 
     return User;

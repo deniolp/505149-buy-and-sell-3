@@ -7,14 +7,8 @@ module.exports = {
     class Comment extends Model {}
 
     Comment.init({
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-      },
       text: {
-        type: DataTypes.STRING(300), /* eslint-disable-line */
+        type: DataTypes.STRING,
         allowNull: false,
       },
     }, {
@@ -23,6 +17,7 @@ module.exports = {
       updatedAt: false,
       paranoid: false,
       modelName: `comment`,
+      tableName: `comments`,
     });
 
     return Comment;
