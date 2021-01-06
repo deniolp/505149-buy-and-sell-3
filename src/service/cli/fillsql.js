@@ -86,7 +86,7 @@ ${createOffersAndCategoriesRelations(amount, mockData.categories.length)}
 };
 
 module.exports = {
-  name: `--fill`,
+  name: `--fillsql`,
   async run(args) {
     const [qty] = args;
     const amount = Number.parseInt(qty, 10) || DEFAULT_COUNT;

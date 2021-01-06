@@ -7,7 +7,7 @@
     "test": "npm run eslint && npm run test::rest",
     "test::rest": "jest",
     "eslint": "eslint --ext .js src/",
-    "help": "node ./src/service/service.js --help",
+    "help": "cross-env NODE_ENV=development COLOR=true node ./src/service/service.js --help",
     "generate": "node ./src/service/service.js --generate",
     "filldb": "cross-env NODE_ENV=development COLOR=true node ./src/service/service.js --filldb",
     "version": "node ./src/service/service.js --version",

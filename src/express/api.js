@@ -24,8 +24,12 @@ class API {
   }
 
   async getOffer(id) {
-    const {data: offer} = await axios.get(`${this._baseUrl}offers/${id}`);
-    return offer;
+    try {
+      const {data: offer} = await axios.get(`${this._baseUrl}offers/${id}`);
+      return offer;
+    } catch (error) {
+      return logger.error(`Error while search: ${error.message}`);
+    }
   }
 
   async search(query) {
