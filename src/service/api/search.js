@@ -13,7 +13,7 @@ const logger = getLogger({
 module.exports = (app, service) => {
   app.use(`/search`, route);
 
-  route.get(`/`, (req, res) => {
+  route.get(`/`, async (req, res) => {
     const {query = ``} = req.query;
 
     if (!query) {
@@ -22,7 +22,7 @@ module.exports = (app, service) => {
       return;
     }
 
-    const searchResults = service.findAll(query.toLowerCase());
+    const searchResults = await service.findAll(query.toLowerCase());
 
     if (searchResults.length) {
       res.status(HttpCode.OK)

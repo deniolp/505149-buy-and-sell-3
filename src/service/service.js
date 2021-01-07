@@ -35,12 +35,17 @@ switch (userCommand) {
     Cli[userCommand].run(port);
     break;
 
-  case `--fill`:
+  case `--fillsql`:
     const qty = userArguments.slice(1);
     Cli[userCommand].run(qty);
     break;
 
   default:
-    Cli[userCommand].run();
-    break;
+    try {
+      Cli[userCommand].run();
+      break;
+    } catch (error) {
+      Cli[DEFAULT_COMMAND].run();
+      break;
+    }
 }

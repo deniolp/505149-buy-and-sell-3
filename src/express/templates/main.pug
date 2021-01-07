@@ -18,7 +18,7 @@ block content
                   +ticketLabel(offer.type)
                   .ticket-card__categories
                     each category in offer.category
-                      a(href='#')= category
+                      a(href='#')= category.title
                   .ticket-card__header
                       h3.ticket-card__title
                         a(href=`/offers/${offer.id}`)= offer.title
@@ -42,7 +42,7 @@ block content
                   +ticketLabel(offer.type)
                   .ticket-card__categories
                     each category in offer.category
-                      a(href='#')= category
+                      a(href='#')= category.title
                   .ticket-card__header
                       h3.ticket-card__title
                         a(href=`/offers/${offer.id}`)= offer.title

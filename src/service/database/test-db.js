@@ -6,29 +6,12 @@ const {createUserModel, createUserLinks} = require(`./models/user`);
 const {createOfferModel, createOfferLinks} = require(`./models/offer`);
 const {createCategoryModel, createCategoryLinks} = require(`./models/category`);
 const {createCommentModel, createCommentLinks} = require(`./models/comment`);
-const {getLogger} = require(`../lib/logger`);
-const {DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_DIALECT} = require(`../../../config`);
+const {TEST_DB_NAME, DB_USER, TEST_DB_PASSWORD, DB_HOST, DB_DIALECT} = require(`../../../config`);
 
-const somethingIsNotDefined = [DB_NAME, DB_USER, DB_PASSWORD, DB_HOST].some((it) => it === undefined);
-
-if (somethingIsNotDefined) {
-  throw new Error(`One or more environmental variables are not defined`);
-}
-
-const logger = getLogger({
-  name: `db-server`,
-});
-
-const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+const sequelize = new Sequelize(TEST_DB_NAME, DB_USER, TEST_DB_PASSWORD, {
   host: DB_HOST,
   dialect: DB_DIALECT,
-  logging: (msg) => logger.debug(msg),
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 10000,
-    idle: 10000
-  }
+  logging: false,
 });
 
 const User = createUserModel(sequelize);

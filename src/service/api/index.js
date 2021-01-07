@@ -5,7 +5,6 @@ const {Router} = require(`express`);
 const category = require(`../api/category`);
 const offer = require(`../api/offer`);
 const search = require(`../api/search`);
-const getMockData = require(`../lib/get-mock-data`);
 
 const {
   CategoryService,
@@ -14,14 +13,12 @@ const {
   CommentService,
 } = require(`../data-service`);
 
-const createApi = async () => {
+const createApi = async (db, logger) => {
   const agregatingRouter = new Router();
 
-  const mockData = await getMockData();
-
-  category(agregatingRouter, new CategoryService(mockData));
-  offer(agregatingRouter, new OfferService(mockData), new CommentService());
-  search(agregatingRouter, new SearchService(mockData));
+  category(agregatingRouter, new CategoryService(db, logger));
+  offer(agregatingRouter, new OfferService(db, logger), new CommentService(db, logger));
+  search(agregatingRouter, new SearchService(db, logger));
 
   return agregatingRouter;
 };

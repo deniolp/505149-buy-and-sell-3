@@ -29,7 +29,7 @@ block content
               .ticket-form__row
                 select#category-field.form__select.js-multiple-select(name='category' data-label='Выбрать категорию публикации' multiple)
                   each category, index in categories
-                    option(value=index selected=offer.category.includes(category)) #{category}
+                    option(value=index selected=plainOfferCategories.includes(category.title)) #{category.title}
               .ticket-form__row
                 .form__field.form__field--price
                   input#price-field.js-field.js-price(type='number' name='sum' min='1' value=`${offer.sum}` required)

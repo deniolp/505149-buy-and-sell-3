@@ -1,20 +1,15 @@
 'use strict';
 
 class CategoryService {
-  constructor(offers) {
-    this._offers = offers;
+  constructor(db, logger) {
+    this._models = db.models;
+    this._logger = logger;
   }
 
-  findAll() {
-    const categories = this._offers.reduce((acc, offer) => {
-      for (const category of offer.category) {
-        acc.add(category);
-      }
+  async findAll() {
+    const {Category} = this._models;
 
-      return acc;
-    }, new Set());
-
-    return [...categories];
+    return await Category.findAll({raw: true});
   }
 }
 

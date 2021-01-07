@@ -16,7 +16,8 @@ module.exports = {
       --version:            выводит номер версии
       --help:               печатает этот текст
       --generate <count>    формирует файл mocks.json
-      --fill <count>    формирует файл fill-db.sql
+      --fillsql <count>    формирует файл fill-db.sql
+      --filldb <count>    автоматически заполняет базу данных начальными данными
     `;
 
     logger.info(text);

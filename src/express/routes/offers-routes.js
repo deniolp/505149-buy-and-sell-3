@@ -72,17 +72,25 @@ offersRouter.post(`/add`, async (req, res) => {
 offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
 offersRouter.get(`/:id`, async (req, res) => {
   const {id} = req.params;
-  const [offer, comments] = await Promise.all([api.getOffer(id), api.getComments(id)]);
-  res.render(`offer`, {offer, comments});
+  try {
+    const [offer, comments] = await Promise.all([api.getOffer(id), api.getComments(id)]);
+    res.render(`offer`, {offer, comments});
+  } catch (error) {
+    res.status(error.response.status).render(`errors/404`, {title: `Страница не найдена`});
+  }
 });
 
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
   const [offer, categories] = await Promise.all([api.getOffer(id), api.getCategories()
   ]);
+  const plainOfferCategories = offer.category.reduce((acc, item) => {
+    acc.push(item.title);
+    return acc;
+  }, []);
 
   if (offer) {
-    res.render(`offer-edit`, {offer, categories, id});
+    res.render(`offer-edit`, {offer, categories, plainOfferCategories, id});
   } else {
     res.status(404).render(`errors/404`, {title: `Страница не найдена`});
   }
