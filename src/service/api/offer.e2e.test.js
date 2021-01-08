@@ -3,7 +3,7 @@
 const request = require(`supertest`);
 
 const {createApp} = require(`../cli/server`);
-const dataBase = require(`../database/test-db`);
+const {sequelize} = require(`../database`);
 const {HttpCode, ExitCode} = require(`../../constants`);
 
 const offerMock = {
@@ -23,15 +23,14 @@ let mockCommentId;
 
 beforeAll(async () => {
   try {
-    await dataBase.sequelize.sync();
-    app = await createApp(dataBase);
+    app = await createApp();
   } catch (error) {
     process.exit(ExitCode.error);
   }
 });
 
 afterAll(() => {
-  dataBase.sequelize.close();
+  sequelize.close();
 });
 
 describe(`Offer API end-points:`, () => {

@@ -7,7 +7,10 @@ const {createOfferModel, createOfferLinks} = require(`./models/offer`);
 const {createCategoryModel, createCategoryLinks} = require(`./models/category`);
 const {createCommentModel, createCommentLinks} = require(`./models/comment`);
 const {getLogger} = require(`../lib/logger`);
-const {DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_DIALECT} = require(`../../../config`);
+const {DB_NAME, TEST_DB_NAME, DB_USER, DB_PASSWORD, TEST_DB_PASSWORD, DB_HOST, DB_DIALECT} = require(`../../../config`);
+const {Env} = require(`../../constants`);
+
+const isTestMode = process.env.NODE_ENV === Env.TEST;
 
 const somethingIsNotDefined = [DB_NAME, DB_USER, DB_PASSWORD, DB_HOST].some((it) => it === undefined);
 
@@ -19,10 +22,14 @@ const logger = getLogger({
   name: `db-server`,
 });
 
-const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+const dbName = isTestMode ? TEST_DB_NAME : DB_NAME;
+const dbPswd = isTestMode ? TEST_DB_PASSWORD : DB_PASSWORD;
+const loggingMode = isTestMode ? false : (msg) => logger.debug(msg);
+
+const sequelize = new Sequelize(dbName, DB_USER, dbPswd, {
   host: DB_HOST,
   dialect: DB_DIALECT,
-  logging: (msg) => logger.debug(msg),
+  logging: loggingMode,
   pool: {
     max: 5,
     min: 0,
