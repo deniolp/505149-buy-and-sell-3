@@ -9,7 +9,7 @@ block content
           a.tickets-list__btn.btn.btn--big(href='/offers/add')
             span Новая публикация
         ul
-          each offer in myOffers
+          each offer in offers
             li.tickets-list__item.js-card
               .ticket-card.ticket-card--color06
                 .ticket-card__img
@@ -26,3 +26,4 @@ block content
                         span.js-sum= offer.sum
                         |  ₽
                   button.ticket-card__del.js-delete(type='button') Удалить
+    +pagination(page, totalPages, 2, `?`)
