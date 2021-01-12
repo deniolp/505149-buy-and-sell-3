@@ -18,9 +18,9 @@ class API {
     this._timeout = timeout;
   }
 
-  async getOffers() {
-    const {data: offers} = await axios.get(`${this._baseUrl}offers`);
-    return offers;
+  async getOffers({limit, offset}) {
+    const response = await axios.get(`${this._baseUrl}offers`, {params: {offset, limit}});
+    return response.data;
   }
 
   async getOffer(id) {

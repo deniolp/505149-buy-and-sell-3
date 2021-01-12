@@ -17,10 +17,17 @@ module.exports = (app, offerService, commentService) => {
   app.use(`/offers`, route);
 
   route.get(`/`, async (req, res) => {
-    const offers = await offerService.findAll();
+    const {limit, offset} = req.query;
+    let result;
+
+    if (limit || offset) {
+      result = await offerService.findPage({limit, offset});
+    } else {
+      result = await offerService.findAll();
+    }
 
     return res.status(HttpCode.OK)
-        .json(offers);
+        .json(result);
   });
 
   route.get(`/:offerId`, async (req, res) => {

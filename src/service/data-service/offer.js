@@ -85,6 +85,31 @@ class OfferService {
     }
   }
 
+  async findPage({limit, offset}) {
+    const {Offer} = this._db.models;
+
+    try {
+      const {count, rows} = await Offer.findAndCountAll({
+        limit,
+        offset,
+      });
+      const offers = [];
+
+      for (const offer of rows) {
+        const categories = await offer.getCategories({raw: true});
+        const comments = await offer.getComments({raw: true});
+        offer.dataValues.category = categories;
+        offer.dataValues.comments = comments;
+        offers.push(offer.dataValues);
+      }
+      return {count, offers};
+    } catch (error) {
+      this._logger.error(`Can not find offers. Error: ${error}`);
+
+      return null;
+    }
+  }
+
   async findOne(id) {
     const {Offer} = this._db.models;
     const offerId = Number.parseInt(id, 10);
