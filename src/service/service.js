@@ -30,6 +30,11 @@ switch (userCommand) {
     Cli[userCommand].run(count);
     break;
 
+  case `--filldb`:
+    const amount = userArguments.slice(1);
+    Cli[userCommand].run(amount);
+    break;
+
   case `--server`:
     const port = userArguments.slice(1);
     Cli[userCommand].run(port);
