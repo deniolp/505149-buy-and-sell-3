@@ -8,7 +8,7 @@ const {getRandomInt, shuffle, OfferType, SumRestrict, PictureRestrict, getPictur
 
 const {TXT_FILES_DIR, ExitCode} = require(`../../constants`);
 const DEFAULT_COUNT = 5;
-const MAX_COMMENTS = 10;
+const MAX_COMMENTS = 50;
 
 const users = [
   {

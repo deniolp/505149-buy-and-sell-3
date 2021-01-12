@@ -2,7 +2,6 @@
 
 const {Router} = require(`express`);
 
-const {getSortedByCommentAmount} = require(`../../utils`);
 const api = require(`../api`).getAPI();
 
 const OFFERS_PER_PAGE = 8;
@@ -15,12 +14,12 @@ mainRouter.get(`/`, async (req, res) => {
 
   const limit = OFFERS_PER_PAGE;
   const offset = (page - 1) * OFFERS_PER_PAGE;
-  const {count, offers} = await api.getOffers({limit, offset});
+  const {count, offers, mostDiscussed} = await api.getOffers({limit, offset});
   const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
   res.render(`main`, {
     offers,
     title: `Главная страница`,
-    mostDiscussed: getSortedByCommentAmount(offers),
+    mostDiscussed,
     page,
     totalPages,
   });
