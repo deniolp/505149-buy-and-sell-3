@@ -66,7 +66,11 @@ class OfferService {
     const {Offer} = this._db.models;
 
     try {
-      const offers = await Offer.findAll();
+      const offers = await Offer.findAll({
+        order: [
+          [`id`, `DESC`],
+        ]
+      });
       const preparedOffers = [];
 
       for (const offer of offers) {
@@ -92,6 +96,9 @@ class OfferService {
       const {count, rows} = await Offer.findAndCountAll({
         limit,
         offset,
+        order: [
+          [`id`, `DESC`],
+        ]
       });
       const offers = [];
 
