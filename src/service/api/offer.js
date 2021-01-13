@@ -18,15 +18,10 @@ module.exports = (app, offerService, commentService) => {
   app.use(`/offers`, route);
 
   route.get(`/`, async (req, res) => {
-    const {limit, offset} = req.query;
-    let result = null;
+    const {limit = 8, offset = 0} = req.query;
     const allOffers = await offerService.findAll();
 
-    if (limit || offset) {
-      result = await offerService.findPage({limit, offset});
-    } else {
-      result = allOffers;
-    }
+    const result = await offerService.findPage({limit, offset});
     result.mostDiscussed = getSortedByCommentAmount(allOffers);
 
     if (!result) {
