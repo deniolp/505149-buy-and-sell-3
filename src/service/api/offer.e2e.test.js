@@ -43,8 +43,9 @@ describe(`Offer API end-points:`, () => {
 
   test(`output after GET should be an array with at least length 1`, async () => {
     res = await request(app).get(`/api/offers`);
-    expect(res.body.length).toBeGreaterThan(0);
-    expect(Array.isArray(res.body)).toBeTruthy();
+    expect(res.body.offers.length).toBeGreaterThan(0);
+    expect(res.body.count).toBeGreaterThan(0);
+    expect(Array.isArray(res.body.offers)).toBeTruthy();
   });
 
   test(`status code for wrong GET offer request should be 404`, async () => {
