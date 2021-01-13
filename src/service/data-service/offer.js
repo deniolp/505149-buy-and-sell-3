@@ -66,7 +66,11 @@ class OfferService {
     const {Offer} = this._db.models;
 
     try {
-      const offers = await Offer.findAll();
+      const offers = await Offer.findAll({
+        order: [
+          [`created_date`, `DESC`],
+        ]
+      });
       const preparedOffers = [];
 
       for (const offer of offers) {
@@ -82,6 +86,34 @@ class OfferService {
       this._logger.error(`Can not find offers. Error: ${error}`);
 
       return [];
+    }
+  }
+
+  async findPage({limit, offset}) {
+    const {Offer} = this._db.models;
+
+    try {
+      const {count, rows} = await Offer.findAndCountAll({
+        limit,
+        offset,
+        order: [
+          [`created_date`, `DESC`],
+        ]
+      });
+      const offers = [];
+
+      for (const offer of rows) {
+        const categories = await offer.getCategories({raw: true});
+        const comments = await offer.getComments({raw: true});
+        offer.dataValues.category = categories;
+        offer.dataValues.comments = comments;
+        offers.push(offer.dataValues);
+      }
+      return {count, offers};
+    } catch (error) {
+      this._logger.error(`Can not find offers. Error: ${error}`);
+
+      return null;
     }
   }
 

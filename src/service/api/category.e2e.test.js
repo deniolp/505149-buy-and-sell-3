@@ -3,7 +3,7 @@
 const request = require(`supertest`);
 
 const {createApp} = require(`../cli/server`);
-const dataBase = require(`../database/test-db`);
+const {sequelize} = require(`../database`);
 const {HttpCode, ExitCode} = require(`../../constants`);
 
 describe(`Categories API end-points:`, () => {
@@ -12,8 +12,7 @@ describe(`Categories API end-points:`, () => {
 
   beforeAll(async () => {
     try {
-      await dataBase.sequelize.sync();
-      app = await createApp(dataBase);
+      app = await createApp();
       res = await request(app).get(`/api/categories`);
     } catch (error) {
       process.exit(ExitCode.error);
@@ -21,7 +20,7 @@ describe(`Categories API end-points:`, () => {
   });
 
   afterAll(() => {
-    dataBase.sequelize.close();
+    sequelize.close();
   });
 
   test(`status code of get query should be 200`, () => {

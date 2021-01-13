@@ -3,7 +3,7 @@
 const request = require(`supertest`);
 
 const {createApp} = require(`../cli/server`);
-const dataBase = require(`../database/test-db`);
+const {sequelize} = require(`../database`);
 const {HttpCode, ExitCode} = require(`../../constants`);
 
 const offerMock = {
@@ -23,15 +23,14 @@ let mockCommentId;
 
 beforeAll(async () => {
   try {
-    await dataBase.sequelize.sync();
-    app = await createApp(dataBase);
+    app = await createApp();
   } catch (error) {
     process.exit(ExitCode.error);
   }
 });
 
 afterAll(() => {
-  dataBase.sequelize.close();
+  sequelize.close();
 });
 
 describe(`Offer API end-points:`, () => {
@@ -44,8 +43,9 @@ describe(`Offer API end-points:`, () => {
 
   test(`output after GET should be an array with at least length 1`, async () => {
     res = await request(app).get(`/api/offers`);
-    expect(res.body.length).toBeGreaterThan(0);
-    expect(Array.isArray(res.body)).toBeTruthy();
+    expect(res.body.offers.length).toBeGreaterThan(0);
+    expect(res.body.count).toBeGreaterThan(0);
+    expect(Array.isArray(res.body.offers)).toBeTruthy();
   });
 
   test(`status code for wrong GET offer request should be 404`, async () => {

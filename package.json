@@ -5,8 +5,8 @@
   "main": "./src/service/service.js",
   "scripts": {
     "test": "npm run eslint && npm run test::rest",
-    "test::rest": "jest",
-    "eslint": "eslint --ext .js src/",
+    "test::rest": "cross-env NODE_ENV=test jest",
+    "eslint": "cross-env NODE_ENV=test eslint --ext .js src/",
     "help": "cross-env NODE_ENV=development COLOR=true node ./src/service/service.js --help",
     "generate": "node ./src/service/service.js --generate",
     "filldb": "cross-env NODE_ENV=development COLOR=true node ./src/service/service.js --filldb",
