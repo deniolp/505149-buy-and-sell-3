@@ -68,7 +68,7 @@ class OfferService {
     try {
       const offers = await Offer.findAll({
         order: [
-          [`id`, `DESC`],
+          [`created_date`, `DESC`],
         ]
       });
       const preparedOffers = [];
@@ -97,7 +97,7 @@ class OfferService {
         limit,
         offset,
         order: [
-          [`id`, `DESC`],
+          [`created_date`, `DESC`],
         ]
       });
       const offers = [];
