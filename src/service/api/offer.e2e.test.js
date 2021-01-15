@@ -6,7 +6,7 @@ const {createApp} = require(`../cli/server`);
 const {sequelize} = require(`../database`);
 const {HttpCode, ExitCode} = require(`../../constants`);
 
-const offerMock = {
+const mockOffer = {
   "title": `Title`,
   "picture": `02.jpg`,
   "description": `Some description`,
@@ -57,7 +57,7 @@ describe(`Offer API end-points:`, () => {
   test(`status code for POST offer request should be 201`, async () => {
     res = await request(app)
       .post(`/api/offers`)
-      .send(offerMock);
+      .send(mockOffer);
 
     mockOfferId = res.body.id;
 
@@ -122,7 +122,7 @@ describe(`Offer comments API end-points`, () => {
   test(`status code after GET request for comments should be 200 and and output should be array`, async () => {
     res = await request(app)
       .post(`/api/offers`)
-      .send(offerMock);
+      .send(mockOffer);
 
     mockOfferId = res.body.id;
     res = await request(app).get((`/api/offers/${mockOfferId}/comments`));
@@ -167,7 +167,7 @@ describe(`Offer comments API end-points`, () => {
   });
 
   test(`status code after delete comment request with wrong comment id should return 404`, async () => {
-    res = await request(app).delete((`/api/offers/${offerMock.id}/comments/xx`));
+    res = await request(app).delete((`/api/offers/${mockOffer.id}/comments/xx`));
 
     expect(res.statusCode).toBe(HttpCode.NOT_FOUND);
   });

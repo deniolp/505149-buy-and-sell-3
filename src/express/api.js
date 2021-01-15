@@ -28,7 +28,7 @@ class API {
       const {data: offer} = await axios.get(`${this._baseUrl}offers/${id}`);
       return offer;
     } catch (error) {
-      return logger.error(`Error while search: ${error.message}`);
+      return logger.error(`Did not find offer: ${error.message}`);
     }
   }
 
@@ -47,12 +47,16 @@ class API {
   }
 
   async createOffer(data) {
-    const {data: offer} = await axios({
-      method: `post`,
-      url: `${this._baseUrl}offers`,
-      data
-    });
-    return offer;
+    try {
+      const {data: offer} = await axios({
+        method: `post`,
+        url: `${this._baseUrl}offers`,
+        data,
+      });
+      return offer;
+    } catch (error) {
+      return logger.error(`Can not create offer: ${error.message}`);
+    }
   }
 
   async getComments(id) {

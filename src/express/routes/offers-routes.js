@@ -57,10 +57,13 @@ offersRouter.post(`/add`, async (req, res) => {
       })
       .on(`end`, async () => {
         if (isAllowedFormat) {
-          await api.createOffer(offer);
-          res.redirect(`/my`);
+          const result = await api.createOffer(offer);
+          if (result) {
+            return res.redirect(`/my`);
+          }
+          return formData.emit(`error`, `Did not create offer.`);
         } else {
-          formData.emit(`error`, `Not correct file's extension.`);
+          return formData.emit(`error`, `Not correct file's extension.`);
         }
       });
   } catch (error) {
