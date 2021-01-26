@@ -12,7 +12,7 @@ const mockOffer = {
   "description": `Some description`,
   "type": `offer`,
   "sum": 1,
-  "category": [
+  "categories": [
     `Разное`,
   ],
 };
@@ -87,7 +87,7 @@ describe(`Offer API end-points:`, () => {
         "description": `New description`,
         "type": `offer`,
         "sum": 999,
-        "category": [
+        "categories": [
           `Книги`,
         ],
       });
