@@ -1,5 +1,7 @@
 'use strict';
 
+const {getFourSortedByCommentsAmount} = require(`../../utils`);
+
 class OfferService {
   constructor(db, logger) {
     this._db = db;
@@ -11,7 +13,7 @@ class OfferService {
     const {Category, Offer, User} = this._db.models;
     const allCategories = await Category.findAll({raw: true});
     const categoriesIds = allCategories.reduce((acc, item) => {
-      if (offer.category.filter((cat) => cat === item.title).length) {
+      if (offer.categories.filter((cat) => cat === item.title).length) {
         acc.push(item.id);
       }
       return acc;
@@ -63,25 +65,26 @@ class OfferService {
   }
 
   async findAll() {
-    const {Offer} = this._db.models;
+    const {Offer, Comment, Category} = this._db.models;
 
     try {
       const offers = await Offer.findAll({
+        include: [
+          {
+            model: Comment,
+            as: `comments`,
+          },
+          {
+            model: Category,
+            as: `categories`,
+          }
+        ],
         order: [
           [`created_date`, `DESC`],
-        ]
+        ],
       });
-      const preparedOffers = [];
 
-      for (const offer of offers) {
-        const categories = await offer.getCategories({raw: true});
-        const comments = await offer.getComments({raw: true});
-        offer.dataValues.category = categories;
-        offer.dataValues.comments = comments;
-        preparedOffers.push(offer.dataValues);
-      }
-
-      return preparedOffers;
+      return offers;
     } catch (error) {
       this._logger.error(`Can not find offers. Error: ${error}`);
 
@@ -90,28 +93,57 @@ class OfferService {
   }
 
   async findPage({limit, offset}) {
-    const {Offer} = this._db.models;
+    const {Offer, Comment, Category} = this._db.models;
 
     try {
       const {count, rows} = await Offer.findAndCountAll({
+        include: [
+          {
+            model: Comment,
+            as: `comments`,
+          },
+          {
+            model: Category,
+            as: `categories`,
+          }
+        ],
+        distinct: true,
         limit,
         offset,
         order: [
           [`created_date`, `DESC`],
         ]
       });
-      const offers = [];
+      const offers = rows;
 
-      for (const offer of rows) {
-        const categories = await offer.getCategories({raw: true});
-        const comments = await offer.getComments({raw: true});
-        offer.dataValues.category = categories;
-        offer.dataValues.comments = comments;
-        offers.push(offer.dataValues);
-      }
       return {count, offers};
     } catch (error) {
       this._logger.error(`Can not find offers. Error: ${error}`);
+
+      return null;
+    }
+  }
+
+  async findMostDiscussed() {
+    const {Offer, Comment, Category} = this._db.models;
+
+    try {
+      const offers = await Offer.findAll({
+        include: [
+          {
+            model: Comment,
+            as: `comments`,
+          },
+          {
+            model: Category,
+            as: `categories`,
+          }
+        ]
+      });
+
+      return getFourSortedByCommentsAmount(offers);
+    } catch (error) {
+      this._logger.error(`Can not find most discussed offers. Error: ${error}`);
 
       return null;
     }
@@ -124,7 +156,7 @@ class OfferService {
     try {
       const offer = await Offer.findByPk(offerId);
       const categories = await offer.getCategories({raw: true});
-      offer.dataValues.category = categories;
+      offer.dataValues.categories = categories;
 
       return offer.dataValues;
     } catch (error) {
@@ -139,7 +171,7 @@ class OfferService {
     const {Offer, Category} = this._db.models;
     const allCategories = await Category.findAll({raw: true});
     const categoriesIds = allCategories.reduce((acc, item) => {
-      if (offer.category.filter((cat) => cat === item.title).length) {
+      if (offer.categories.filter((cat) => cat === item.title).length) {
         acc.push(item.id);
       }
       return acc;

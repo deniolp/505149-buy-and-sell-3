@@ -74,7 +74,7 @@ const fillDataBase = async (categories, comments, offers) => {
 
     for (const offer of offers) {
       const categoriesIds = rawCategories.reduce((acc, item) => {
-        if (offer.category.filter((cat) => cat === item.title).length) {
+        if (offer.categories.filter((cat) => cat === item.title).length) {
           acc.push(item.id);
         }
         return acc;

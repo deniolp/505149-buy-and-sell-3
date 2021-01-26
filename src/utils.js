@@ -57,7 +57,7 @@ module.exports = {
     }
     return someArray;
   },
-  getSortedByCommentAmount: (someArray) => someArray.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 4),
+  getFourSortedByCommentsAmount: (someArray) => someArray.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 4),
   readContent,
   getPictureFileName: (number) => number >= 10 ? `item${number}.jpg` : `item0${number}.jpg`,
   makeMockData: async (files) => {

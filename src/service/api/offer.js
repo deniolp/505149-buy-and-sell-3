@@ -7,7 +7,6 @@ const offerValidator = require(`../middlewares/offer-validator`);
 const commentValidator = require(`../middlewares/comment-validator`);
 const offerExist = require(`../middlewares/offer-exist`);
 const {getLogger} = require(`../lib/logger`);
-const {getSortedByCommentAmount} = require(`../../utils`);
 
 const route = new Router();
 const logger = getLogger({
@@ -19,10 +18,10 @@ module.exports = (app, offerService, commentService) => {
 
   route.get(`/`, async (req, res) => {
     const {limit = 8, offset = 0} = req.query;
-    const allOffers = await offerService.findAll();
+    const mostDiscussedOffers = await offerService.findMostDiscussed();
 
     const result = await offerService.findPage({limit, offset});
-    result.mostDiscussed = getSortedByCommentAmount(allOffers);
+    result.mostDiscussed = mostDiscussedOffers;
 
     if (!result) {
       logger.error(`Error status - ${HttpCode.NOT_FOUND}`);

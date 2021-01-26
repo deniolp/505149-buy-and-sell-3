@@ -25,14 +25,14 @@ offersRouter.post(`/add`, async (req, res) => {
   const categories = await api.getCategories();
   const allowedTypes = [`image/jpeg`, `image/png`];
   let isAllowedFormat;
-  let offer = {category: []};
+  let offer = {categories: []};
 
   const formData = new formidable.IncomingForm({maxFileSize: 2 * 1024 * 1024});
   try {
     formData.parse(req)
       .on(`field`, (name, field) => {
         if (name === `category`) {
-          offer[name].push(field);
+          offer.categories.push(field);
         } else {
           offer[name] = field;
         }
@@ -87,7 +87,7 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
   const [offer, categories] = await Promise.all([api.getOffer(id), api.getCategories()
   ]);
-  const plainOfferCategories = offer.category.reduce((acc, item) => {
+  const plainOfferCategories = offer.categories.reduce((acc, item) => {
     acc.push(item.title);
     return acc;
   }, []);
