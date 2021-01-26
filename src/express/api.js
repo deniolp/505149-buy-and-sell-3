@@ -34,8 +34,8 @@ class API {
 
   async search(query) {
     try {
-      const {data: offers} = await axios.get(`${this._baseUrl}search?query=${query}`);
-      return offers;
+      const {data: result} = await axios.get(`${this._baseUrl}search?query=${query}`);
+      return result;
     } catch (error) {
       return logger.error(`Error while search: ${error.message}`);
     }
