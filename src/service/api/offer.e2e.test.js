@@ -78,6 +78,14 @@ describe(`Offer API end-points:`, () => {
     expect(res.statusCode).toBe(HttpCode.OK);
   });
 
+  test(`status code for GET query to my/comments should be 200`, async () => {
+    res = await request(app).get(`/api/offers/my-comments`);
+
+    expect(res.statusCode).toBe(HttpCode.OK);
+    expect(res.body.slicedOffers.length).toBe(3);
+    expect(Array.isArray(res.body.slicedOffers)).toBeTruthy();
+  });
+
   test(`PUT request should work and status code should be 200`, async () => {
     res = await request(app)
       .put(`/api/offers/${mockOfferId}`)
@@ -144,7 +152,6 @@ describe(`Offer comments API end-points`, () => {
         "text": `Some text`,
       });
 
-    mockCommentId = res.body.id;
     expect(res.statusCode).toBe(HttpCode.CREATED);
   });
 
@@ -159,11 +166,18 @@ describe(`Offer comments API end-points`, () => {
   });
 
   test(`delete comment request should delete comment and status code after should be 200`, async () => {
+    res = await request(app)
+    .post((`/api/offers/${mockOfferId}/comments`))
+    .send({
+      "text": `Some text`,
+    });
+    mockCommentId = res.body.id;
+
     res = await request(app).delete((`/api/offers/${mockOfferId}/comments/${mockCommentId}`));
     expect(res.statusCode).toBe(HttpCode.OK);
 
     res = await request(app).get((`/api/offers/${mockOfferId}/comments`));
-    expect(res.body.length).toBe(0);
+    expect(res.body.length).toBe(1);
   });
 
   test(`status code after delete comment request with wrong comment id should return 404`, async () => {
