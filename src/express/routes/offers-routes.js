@@ -11,6 +11,9 @@ const UPLOAD_DIR = `../upload/img/`;
 const api = require(`../api`).getAPI();
 const offersRouter = new Router();
 const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
+let picture = ``;
+let offerId = 0;
+let isUpdating = false;
 
 const logger = getLogger({
   name: `front-server-formidable`,
@@ -38,15 +41,25 @@ offersRouter.post(`/add`, async (req, res) => {
         }
       })
       .on(`fileBegin`, (name, file) => {
-        if (!allowedTypes.includes(file.type)) {
-          isAllowedFormat = false;
-        } else {
-          isAllowedFormat = true;
-          file.path = uploadDirAbsolute + `/` + file.name;
+        if (!isUpdating) {
+          if (!allowedTypes.includes(file.type)) {
+            isAllowedFormat = false;
+            return;
+          } else {
+            isAllowedFormat = true;
+            file.path = uploadDirAbsolute + `/` + file.name;
+            return;
+          }
         }
+
+        isAllowedFormat = true;
       })
       .on(`file`, (name, file) => {
-        offer.picture = file.path.match(/\/([^\/]+)\/?$/)[1];
+        if (!isUpdating) {
+          offer.picture = file.path.match(/\/([^\/]+)\/?$/)[1];
+          return;
+        }
+        offer.picture = picture;
       })
       .on(`aborted`, () => {
         formData.emit(`error`, `Request aborted by the user.`);
@@ -57,11 +70,14 @@ offersRouter.post(`/add`, async (req, res) => {
       })
       .on(`end`, async () => {
         if (isAllowedFormat) {
-          const result = await api.createOffer(offer);
+          const result = picture ? await api.updateOffer(offerId, offer) : await api.createOffer(offer);
           if (result) {
+            picture = ``;
+            offerId = 0;
+            isUpdating = false;
             return res.redirect(`/my`);
           }
-          return formData.emit(`error`, `Did not create offer.`);
+          return formData.emit(`error`, `Did not create/update offer.`);
         } else {
           return formData.emit(`error`, `Not correct file's extension.`);
         }
@@ -93,6 +109,9 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
   }, []);
 
   if (offer) {
+    picture = offer.picture;
+    offerId = offer.id;
+    isUpdating = true;
     res.render(`offer-edit`, {offer, categories, plainOfferCategories, id});
   } else {
     res.status(404).render(`errors/404`, {title: `Страница не найдена`});

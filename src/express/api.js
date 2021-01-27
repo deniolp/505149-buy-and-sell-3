@@ -32,6 +32,15 @@ class API {
     }
   }
 
+  async updateOffer(id, offer) {
+    try {
+      const {data: result} = await axios.put(`${this._baseUrl}offers/${id}`, offer);
+      return result;
+    } catch (error) {
+      return logger.error(`Did not update offer: ${error.message}`);
+    }
+  }
+
   async search(query) {
     try {
       const {data: result} = await axios.get(`${this._baseUrl}search?query=${query}`);
