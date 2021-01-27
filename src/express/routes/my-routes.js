@@ -32,20 +32,12 @@ myRouter.get(`/comments`, async (req, res) => {
 
   const limit = OFFERS_PER_PAGE_COMMENTS;
   const offset = (page - 1) * OFFERS_PER_PAGE_COMMENTS;
-  const {count, offers} = await api.getOffers({limit, offset});
+  const {count, slicedOffers} = await api.getMyComments({limit, offset, page});
   const totalPages = Math.ceil(count / OFFERS_PER_PAGE_COMMENTS);
-
-  const offersId = offers.map((it) => it.id);
-  await Promise.all(offersId.map((id) => api.getComments(id)))
-      .then((results) => {
-        for (const [index, array] of results.entries()) {
-          offers[index].comments = array;
-        }
-      });
 
   res.render(`comments`, {
     title: `Мои комментарии`,
-    offers,
+    slicedOffers,
     page,
     totalPages,
   });

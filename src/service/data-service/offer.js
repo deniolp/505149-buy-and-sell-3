@@ -149,6 +149,62 @@ class OfferService {
     }
   }
 
+  async findCommentsPage({limit, offset, page}) {
+    const {Offer, Comment, Category} = this._db.models;
+
+    try {
+      const count = await Offer.count();
+      const rows = await Offer.findAll({
+        include: [
+          {
+            model: Comment,
+            as: `comments`,
+          },
+          {
+            model: Category,
+            as: `categories`,
+          }
+        ],
+      });
+      const allComments = rows.reduce((acc, it) => {
+        it.dataValues.comments.forEach((item) => acc.push(item.dataValues));
+        return acc;
+      }, []);
+      allComments.sort((a, b) => b[`created_date`] - a[`created_date`]);
+      const offersIds = new Set(allComments.reduce((acc, it) => {
+        acc.push(it[`offer_id`]);
+        return acc;
+      }, []));
+      let sortedOffers = [];
+      for (const id of offersIds) {
+        const offer = await Offer.findByPk(id, {
+          include: [
+            {
+              model: Comment,
+              as: `comments`,
+              order: [
+                [`created_date`],
+              ]
+            },
+            {
+              model: Category,
+              as: `categories`,
+            }
+          ],
+        });
+        offer.dataValues.comments.sort((a, b) => b.dataValues[`created_date`] - a.dataValues[`created_date`]);
+        sortedOffers.push(offer);
+      }
+      const slicedOffers = sortedOffers.slice(offset, limit * page);
+
+      return {count, slicedOffers};
+    } catch (error) {
+      this._logger.error(`Can not find offers with comments. Error: ${error}`);
+
+      return null;
+    }
+  }
+
   async findOne(id) {
     const {Offer} = this._db.models;
     const offerId = Number.parseInt(id, 10);

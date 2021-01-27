@@ -33,6 +33,20 @@ module.exports = (app, offerService, commentService) => {
         .json(result);
   });
 
+  route.get(`/my-comments`, async (req, res) => {
+    const {limit = 3, offset = 0, page = 1} = req.query;
+    const result = await offerService.findCommentsPage({limit, offset, page});
+
+    if (!result) {
+      logger.error(`Error status - ${HttpCode.NOT_FOUND}`);
+      return res.status(HttpCode.NOT_FOUND)
+      .send(`Did not find offers`);
+    }
+
+    return res.status(HttpCode.OK)
+      .json(result);
+  });
+
   route.get(`/:offerId`, async (req, res) => {
     const {offerId} = req.params;
     const offer = await offerService.findOne(offerId);
