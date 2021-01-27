@@ -76,8 +76,8 @@ offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
 offersRouter.get(`/:id`, async (req, res) => {
   const {id} = req.params;
   try {
-    const [offer, comments] = await Promise.all([api.getOffer(id), api.getComments(id)]);
-    res.render(`offer`, {offer, comments});
+    const offer = await api.getOffer(id);
+    res.render(`offer`, {offer});
   } catch (error) {
     res.status(error.response.status).render(`errors/404`, {title: `Страница не найдена`});
   }

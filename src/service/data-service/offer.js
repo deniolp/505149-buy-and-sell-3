@@ -182,9 +182,6 @@ class OfferService {
             {
               model: Comment,
               as: `comments`,
-              order: [
-                [`created_date`],
-              ]
             },
             {
               model: Category,
@@ -206,15 +203,26 @@ class OfferService {
   }
 
   async findOne(id) {
-    const {Offer} = this._db.models;
+    const {Offer, Comment, Category} = this._db.models;
     const offerId = Number.parseInt(id, 10);
 
     try {
-      const offer = await Offer.findByPk(offerId);
-      const categories = await offer.getCategories({raw: true});
-      offer.dataValues.categories = categories;
+      const offer = await Offer.findByPk(offerId, {
+        include: [
+          {
+            model: Comment,
+            as: `comments`,
+          },
+          {
+            model: Category,
+            as: `categories`,
+          }
+        ],
+      });
 
-      return offer.dataValues;
+      offer.dataValues.comments.sort((a, b) => b.dataValues[`created_date`] - a.dataValues[`created_date`]);
+
+      return offer;
     } catch (error) {
       this._logger.error(`Can not find offer. Error: ${error}`);
 
