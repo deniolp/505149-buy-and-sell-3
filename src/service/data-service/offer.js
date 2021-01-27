@@ -235,7 +235,7 @@ class OfferService {
     const {Offer, Category} = this._db.models;
     const allCategories = await Category.findAll({raw: true});
     const categoriesIds = allCategories.reduce((acc, item) => {
-      if (offer.categories.filter((cat) => +cat === item.id).length) {
+      if (offer.categories.filter((cat) => +cat === +item.id).length) {
         acc.push(item.id);
       }
       return acc;
@@ -261,7 +261,14 @@ class OfferService {
         }
       });
       await updatedOffer.setCategories(offerCategories);
-      return await Offer.findByPk(updatedOffer.id, {raw: true});
+      return await Offer.findByPk(updatedOffer.id, {
+        include: [
+          {
+            model: Category,
+            as: `categories`,
+          }
+        ],
+      });
     } catch (error) {
       this._logger.error(`Can not update offer. Error: ${error}`);
 

@@ -95,12 +95,11 @@ describe(`Offer API end-points:`, () => {
         "description": `New description`,
         "type": `offer`,
         "sum": 999,
-        "categories": [
-          `Книги`,
-        ],
+        "categories": [2],
       });
     expect(res.statusCode).toBe(HttpCode.OK);
     expect(res.body.sum).toBe(`999`);
+    expect(res.body.categories[0].id).toBe(`2`);
   });
 
   test(`wrong PUT request should not work and status code  should be 400`, async () => {
