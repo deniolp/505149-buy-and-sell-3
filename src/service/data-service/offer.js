@@ -13,7 +13,7 @@ class OfferService {
     const {Category, Offer, User} = this._db.models;
     const allCategories = await Category.findAll({raw: true});
     const categoriesIds = allCategories.reduce((acc, item) => {
-      if (offer.categories.filter((cat) => cat === item.title).length) {
+      if (offer.category.filter((cat) => cat === item.title).length) {
         acc.push(item.id);
       }
       return acc;
@@ -235,7 +235,7 @@ class OfferService {
     const {Offer, Category} = this._db.models;
     const allCategories = await Category.findAll({raw: true});
     const categoriesIds = allCategories.reduce((acc, item) => {
-      if (offer.categories.filter((cat) => +cat === +item.id).length) {
+      if (offer.category.filter((cat) => +cat === +item.id).length) {
         acc.push(item.id);
       }
       return acc;
