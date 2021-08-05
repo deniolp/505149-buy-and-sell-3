@@ -1,50 +1,34 @@
 'use strict';
 
-const OFFERS_PER_PAGE = 8;
+const {Op} = require(`sequelize`);
+
+const Aliase = require(`../models/aliases`);
 
 class SearchService {
-  constructor(db, logger) {
-    this._models = db.models;
-    this._logger = logger;
+  constructor(sequelize) {
+    this._Offer = sequelize.models.offer;
   }
 
-  async findAll(searchText) {
-    const {Offer, Comment, Category} = this._models;
-    let searchResult;
-
-    try {
-      const offers = await Offer.findAll({
-        include: [
-          {
-            model: Comment,
-            as: `comments`,
-          },
-          {
-            model: Category,
-            as: `categories`,
-          }
-        ],
-        order: [
-          [`created_date`, `DESC`],
-        ],
-      });
-
-      const count = await Offer.count();
-      const eightOffers = offers.slice(0, OFFERS_PER_PAGE);
-      if (!searchText) {
-        searchResult = null;
-      } else {
-        searchResult = offers.filter((offer) => offer.title.toLowerCase().includes(searchText));
+  async findAll({offset, limit, query}) {
+    const include = [Aliase.CATEGORIES];
+    const order = [[`created_date`, `DESC`]];
+    const where = {
+      title: {
+        [Op.substring]: query
       }
+    };
 
-      return {eightOffers, searchResult, count};
-    } catch (error) {
-      this._logger.error(`Can not find offers. Error: ${error}`);
+    const {count, rows} = await this._Offer.findAndCountAll({
+      where,
+      limit,
+      offset,
+      include,
+      order,
+      distinct: true
+    });
 
-      return null;
-    }
+    return {count, foundOffers: rows};
   }
-
 }
 
 module.exports = SearchService;

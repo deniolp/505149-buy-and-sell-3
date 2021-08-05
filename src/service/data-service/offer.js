@@ -28,7 +28,6 @@ class OfferService {
   }
 
   async findPage({limit, offset, comments}) {
-    console.log(comments);
     const include = [Aliase.CATEGORIES];
     const order = [[`created_date`, `DESC`]];
 

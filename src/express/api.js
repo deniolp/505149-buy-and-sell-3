@@ -36,8 +36,8 @@ class API {
     });
   }
 
-  search(query) {
-    return this._load(`/search`, {params: {query}});
+  search({offset, limit, query}) {
+    return this._load(`/search`, {params: {offset, limit, query}});
   }
 
   async getCategories(needCount) {
