@@ -53,9 +53,9 @@ module.exports = {
     try {
       logger.info(`Trying to connect to the database`);
 
-      const result = await dataBase.sequelize.sync();
+      await dataBase.sequelize.authenticate();
 
-      logger.info(`Successfully connected to ${result.config.database} database`);
+      logger.info(`Successfully connected to database`);
     } catch (error) {
       logger.error(`Can not connect to database. Error: ${error}`);
 
