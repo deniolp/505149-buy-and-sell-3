@@ -42,7 +42,7 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
     type: body.type,
     description: body.description,
     title: body[`title`],
-    category: ensureArray(body.category),
+    categories: ensureArray(body.categories),
   };
 
   try {
