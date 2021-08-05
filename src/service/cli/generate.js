@@ -17,7 +17,7 @@ const {
 } = require(`../../../src/constants`);
 
 const logger = getLogger({
-  name: `api-server`,
+  name: `api-generate`,
 });
 
 const generateComments = (count, comments) => (
@@ -37,7 +37,7 @@ const generateOffers = (count, mockData) => (
     description: shuffle(mockData.sentences).slice(0, getRandomInt(1, 5)).join(` `),
     sum: getRandomInt(SumRestrict.min, SumRestrict.max),
     picture: getPictureFileName(getRandomInt(PictureRestrict.min, PictureRestrict.max)),
-    category: shuffle(mockData.categories).slice(0, getRandomInt(1, mockData.categories.length - 1)),
+    categories: shuffle(mockData.categories).slice(0, getRandomInt(1, mockData.categories.length - 1)),
     comments: generateComments(getRandomInt(1, MAX_COMMENTS), mockData.comments),
   }))
 );
