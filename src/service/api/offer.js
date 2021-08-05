@@ -17,20 +17,21 @@ module.exports = (app, offerService, commentService) => {
   app.use(`/offers`, route);
 
   route.get(`/`, async (req, res) => {
-    const {limit = 8, offset = 0} = req.query;
-    const mostDiscussedOffers = await offerService.findMostDiscussed();
+    const {limit, offset, comments} = req.query;
+    let result;
 
-    const result = await offerService.findPage({limit, offset});
-    result.mostDiscussed = mostDiscussedOffers;
+    try {
+      if (limit || offset) {
+        result = await offerService.findPage({limit, offset, comments});
+      } else {
+        result = await offerService.findAll(comments);
+      }
 
-    if (!result) {
-      logger.error(`Error status - ${HttpCode.NOT_FOUND}`);
-      return res.status(HttpCode.NOT_FOUND)
-        .send(`Did not find offers`);
+      res.status(HttpCode.OK).json(result);
+    } catch (err) {
+      logger.error(`Error status - ${HttpCode.INTERNAL_SERVER_ERROR}`);
+      res.status(HttpCode.INTERNAL_SERVER_ERROR).send(err);
     }
-
-    return res.status(HttpCode.OK)
-        .json(result);
   });
 
   route.get(`/my-comments`, async (req, res) => {
