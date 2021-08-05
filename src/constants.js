@@ -10,6 +10,8 @@ module.exports.TXT_FILES_DIR = `./data/`;
 module.exports.FILE_NAME = `mocks.json`;
 module.exports.PUBLIC_DIR = `files`;
 module.exports.UPLOAD_DIR = `upload`;
+module.exports.TIMEOUT = 1000;
+module.exports.OFFERS_PER_PAGE = 8;
 
 module.exports.ExitCode = {
   error: 1,

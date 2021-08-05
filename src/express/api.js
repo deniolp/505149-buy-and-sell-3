@@ -2,81 +2,64 @@
 
 const axios = require(`axios`).default;
 
-const {getLogger} = require(`../service/lib/logger`);
 const {API_PORT, APP_URL} = require(`../../config`);
+const {TIMEOUT} = require(`../constants`);
 
-const TIMEOUT = 1000;
-const defaultUrl = `${APP_URL}:${API_PORT}/api/`;
-
-const logger = getLogger({
-  name: `api-axios`,
-});
+const port = API_PORT || 3000;
+const defaultUrl = `${APP_URL}:${port}/api/`;
 
 class API {
-  constructor(baseUrl, timeout) {
-    this._baseUrl = baseUrl;
-    this._timeout = timeout;
+  constructor(baseURL, timeout) {
+    this._http = axios.create({
+      baseURL,
+      timeout
+    });
   }
 
-  async getOffers({limit, offset}) {
-    const response = await axios.get(`${this._baseUrl}offers`, {params: {offset, limit}});
+  async _load(url, options) {
+    const response = await this._http.request({url, ...options});
     return response.data;
   }
 
-  async getOffer(id) {
-    try {
-      const {data: offer} = await axios.get(`${this._baseUrl}offers/${id}`);
-      return offer;
-    } catch (error) {
-      return logger.error(`Did not find offer: ${error.message}`);
-    }
+  getOffers({offset, limit, comments}) {
+    return this._load(`/offers`, {params: {offset, limit, comments}});
   }
 
-  async updateOffer(id, offer) {
-    try {
-      const {data: result} = await axios.put(`${this._baseUrl}offers/${id}`, offer);
-      return result;
-    } catch (error) {
-      return logger.error(`Did not update offer: ${error.message}`);
-    }
+  getOffer(id, comments) {
+    return this._load(`/offers/${id}`, {params: {comments}});
   }
 
-  async search(query) {
-    try {
-      const {data: result} = await axios.get(`${this._baseUrl}search?query=${query}`);
-      return result;
-    } catch (error) {
-      return logger.error(`Error while search: ${error.message}`);
-    }
+  updateOffer(id, data) {
+    return this._load(`/offers/${id}`, {
+      method: `PUT`,
+      data
+    });
   }
 
-  async getCategories() {
-    const {data: categories} = await axios.get(`${this._baseUrl}categories`);
-    return categories;
+  search(query) {
+    return this._load(`/search`, {params: {query}});
+  }
+
+  async getCategories(needCount) {
+    return this._load(`/categories`, {params: {needCount}});
   }
 
   async createOffer(data) {
-    try {
-      const {data: offer} = await axios({
-        method: `post`,
-        url: `${this._baseUrl}offers`,
-        data,
-      });
-      return offer;
-    } catch (error) {
-      return logger.error(`Can not create offer: ${error.message}`);
-    }
+    return this._load(`/offers`, {
+      method: `POST`,
+      data
+    });
   }
 
-  async getComments(id) {
-    const {data: comments} = await axios.get(`${this._baseUrl}offers/${id}/comments`);
-    return comments;
-  }
+  // async getComments(id) {
+  //   const {data: comments} = await axios.get(`${this._baseUrl}offers/${id}/comments`);
+  //   return comments;
+  // }
 
-  async getMyComments({limit, offset, page}) {
-    const {data: result} = await axios.get(`${this._baseUrl}offers/my-comments`, {params: {offset, limit, page}});
-    return result;
-  }
+  // async getMyComments({limit, offset, page}) {
+  //   const {data: result} = await axios.get(`${this._baseUrl}offers/my-comments`, {params: {offset, limit, page}});
+  //   return result;
+  // }
 }
 
 const defaultAPI = new API(defaultUrl, TIMEOUT);

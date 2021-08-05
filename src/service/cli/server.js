@@ -16,7 +16,7 @@ const logger = getLogger({
 
 const createApp = async () => {
   const app = express();
-  const apiRoutes = await createApi(logger);
+  const apiRoutes = await createApi();
   app.use(express.json());
 
   app.use((req, res, next) => {

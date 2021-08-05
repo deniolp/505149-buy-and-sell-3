@@ -17,12 +17,12 @@ const {
 
 defineModels(sequelize);
 
-const createApi = async (logger) => {
+const createApi = async () => {
   const agregatingRouter = new Router();
 
-  category(agregatingRouter, new CategoryService(sequelize, logger));
-  offer(agregatingRouter, new OfferService(sequelize, logger), new CommentService(sequelize, logger));
-  search(agregatingRouter, new SearchService(sequelize, logger));
+  category(agregatingRouter, new CategoryService(sequelize));
+  offer(agregatingRouter, new OfferService(sequelize), new CommentService(sequelize));
+  search(agregatingRouter, new SearchService(sequelize));
 
   return agregatingRouter;
 };
