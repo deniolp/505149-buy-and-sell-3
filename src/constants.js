@@ -8,6 +8,8 @@ module.exports.MAX_COMMENTS = 4;
 module.exports.DEFAULT_COUNT = 10;
 module.exports.TXT_FILES_DIR = `./data/`;
 module.exports.FILE_NAME = `mocks.json`;
+module.exports.PUBLIC_DIR = `files`;
+module.exports.UPLOAD_DIR = `upload`;
 
 module.exports.ExitCode = {
   error: 1,
