@@ -1,11 +1,49 @@
 'use strict';
 
-const {getFourSortedByCommentsAmount} = require(`../../utils`);
+// const {Op} = require(`sequelize`);
+
+const Aliase = require(`../models/aliases`);
+const {getLogger} = require(`../lib/logger`);
+
+const logger = getLogger({
+  name: `data-service-offer`
+});
 
 class OfferService {
-  constructor(db, logger) {
-    this._db = db;
-    this._logger = logger;
+  constructor(sequelize) {
+    this._Offer = sequelize.models.offer;
+    this._Comment = sequelize.models.comment;
+    this._Category = sequelize.models.category;
+  }
+
+  async findAll(needComments) {
+    const include = [Aliase.CATEGORIES];
+    const order = [[`created_date`, `DESC`]];
+
+    if (needComments) {
+      include.push(Aliase.COMMENTS);
+    }
+    const offers = await this._Offer.findAll({include, order});
+    return offers.map((item) => item.get());
+  }
+
+  async findPage({limit, offset, comments}) {
+    console.log(comments);
+    const include = [Aliase.CATEGORIES];
+    const order = [[`created_date`, `DESC`]];
+
+    if (comments) {
+      include.push(Aliase.COMMENTS);
+    }
+
+    const {count, rows} = await this._Offer.findAndCountAll({
+      limit,
+      offset,
+      include,
+      order,
+      distinct: true
+    });
+    return {count, offers: rows};
   }
 
   async create(offer) {
@@ -58,92 +96,7 @@ class OfferService {
 
       return offerForDelete;
     } catch (error) {
-      this._logger.error(`Can not delete offer. Error: ${error}`);
-
-      return null;
-    }
-  }
-
-  async findAll() {
-    const {Offer, Comment, Category} = this._db.models;
-
-    try {
-      const offers = await Offer.findAll({
-        include: [
-          {
-            model: Comment,
-            as: `comments`,
-          },
-          {
-            model: Category,
-            as: `categories`,
-          }
-        ],
-        order: [
-          [`created_date`, `DESC`],
-        ],
-      });
-
-      return offers;
-    } catch (error) {
-      this._logger.error(`Can not find offers. Error: ${error}`);
-
-      return [];
-    }
-  }
-
-  async findPage({limit, offset}) {
-    const {Offer, Comment, Category} = this._db.models;
-
-    try {
-      const {count, rows} = await Offer.findAndCountAll({
-        include: [
-          {
-            model: Comment,
-            as: `comments`,
-          },
-          {
-            model: Category,
-            as: `categories`,
-          }
-        ],
-        distinct: true,
-        limit,
-        offset,
-        order: [
-          [`created_date`, `DESC`],
-        ]
-      });
-      const offers = rows;
-
-      return {count, offers};
-    } catch (error) {
-      this._logger.error(`Can not find offers. Error: ${error}`);
-
-      return null;
-    }
-  }
-
-  async findMostDiscussed() {
-    const {Offer, Comment, Category} = this._db.models;
-
-    try {
-      const offers = await Offer.findAll({
-        include: [
-          {
-            model: Comment,
-            as: `comments`,
-          },
-          {
-            model: Category,
-            as: `categories`,
-          }
-        ]
-      });
-
-      return getFourSortedByCommentsAmount(offers);
-    } catch (error) {
-      this._logger.error(`Can not find most discussed offers. Error: ${error}`);
+      logger.error(`Can not delete offer. Error: ${error}`);
 
       return null;
     }
