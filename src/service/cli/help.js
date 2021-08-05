@@ -3,7 +3,7 @@
 const {getLogger} = require(`../lib/logger`);
 
 const logger = getLogger({
-  name: `api-server`,
+  name: `api-help`,
 });
 
 module.exports = {

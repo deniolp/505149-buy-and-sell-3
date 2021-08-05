@@ -8,10 +8,12 @@ const {getRandomInt, shuffle, OfferType, SumRestrict, PictureRestrict, getPictur
 
 const {
   MAX_ID_LENGTH,
+  MAX_DATA_COUNT,
   TXT_FILES_DIR,
   MAX_COMMENTS,
   DEFAULT_COUNT,
-  FILE_NAME
+  FILE_NAME,
+  ExitCode
 } = require(`../../../src/constants`);
 
 const logger = getLogger({
@@ -43,10 +45,14 @@ const generateOffers = (count, mockData) => (
 module.exports = {
   name: `--generate`,
   async run(args) {
-    const files = await fs.readdir(TXT_FILES_DIR);
-
-    const mockData = await makeMockData(files);
     const [count] = args;
+    if (count >= MAX_DATA_COUNT) {
+      logger.error(`Не больше 1000 объявлений`);
+      process.exit(ExitCode.error);
+    }
+
+    const files = await fs.readdir(TXT_FILES_DIR);
+    const mockData = await makeMockData(files);
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
     const content = JSON.stringify(generateOffers(countOffer, mockData), null, 2);
 
