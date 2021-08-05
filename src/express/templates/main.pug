@@ -27,6 +27,7 @@ block content
                         |  ₽
                   .ticket-card__desc
                       p= offer.description
+    +pagination(page, totalPages, 2, `?`)
     section.tickets-list
       h2.visually-hidden Самые обсуждаемые предложения
       .tickets-list__wrapper
@@ -51,4 +52,3 @@ block content
                         |  ₽
                   .ticket-card__desc
                       p= offer.description
-    +pagination(page, totalPages, 2, `?`)
