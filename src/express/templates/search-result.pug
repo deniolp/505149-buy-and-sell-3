@@ -7,9 +7,9 @@ block content
       .search-results__wrapper
         p.search-results__label
           | Найдено
-          span.js-results  #{searchResult.length} публикации
+          span.js-results  #{count} публикации
         ul.search-results__list
-          each offer in searchResult
+          each offer in foundOffers
             li.search-results__item
               .ticket-card.ticket-card--color05
                 .ticket-card__img
@@ -27,6 +27,7 @@ block content
                         |  ₽
                     .ticket-card__desc
                       p= offer.description
+    +pagination(page, totalPages, 2, `?`, query)
     section.tickets-list
       h2.visually-hidden Самые новые предложения
       .tickets-list__wrapper
@@ -35,7 +36,7 @@ block content
           unless !moreOffersQty
             a.tickets-list__link(href='#') Еще #{moreOffersQty}
         ul
-          each offer in eightOffers
+          each offer in mostDiscussed
             li.tickets-list__item
               .ticket-card.ticket-card--color01
                 .ticket-card__img
