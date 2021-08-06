@@ -51,28 +51,11 @@ class OfferService {
     return offer.get();
   }
 
-  async delete(id) {
-    const {Offer} = this._db.models;
-
-    try {
-      const offerForDelete = await Offer.findByPk(id, {raw: true});
-      const deletedRows = await Offer.destroy({
-        returning: true,
-        where: {
-          id,
-        }
-      });
-
-      if (!deletedRows) {
-        return null;
-      }
-
-      return offerForDelete;
-    } catch (error) {
-      logger.error(`Can not delete offer. Error: ${error}`);
-
-      return null;
-    }
+  async drop(id) {
+    const deletedRow = await this._Offer.destroy({
+      where: {id}
+    });
+    return !!deletedRow;
   }
 
   async findOne(id, needComments) {

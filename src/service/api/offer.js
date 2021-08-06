@@ -77,15 +77,14 @@ module.exports = (app, offerService, commentService) => {
 
   route.delete(`/:offerId`, async (req, res) => {
     const {offerId} = req.params;
-    const offer = await offerService.delete(offerId);
+    const isOfferDeleted = await offerService.drop(offerId);
 
-    if (!offer) {
+    if (!isOfferDeleted) {
       logger.error(`Error status - ${HttpCode.INTERNAL_SERVER_ERROR}`);
       return res.status(HttpCode.INTERNAL_SERVER_ERROR).send(`Can not delete offer`);
     }
 
-    return res.status(HttpCode.OK)
-      .json(offer);
+    return res.status(HttpCode.OK).send(`Deleted!`);
   });
 
   route.get(`/:offerId/comments`, offerExist(offerService), async (req, res) => {
