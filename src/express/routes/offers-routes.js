@@ -7,8 +7,7 @@ const {nanoid} = require(`nanoid`);
 
 const {getLogger} = require(`../../service/lib/logger`);
 const {ensureArray} = require(`../../utils`);
-
-const UPLOAD_DIR = `../upload/img/`;
+const {UPLOAD_DIR} = require(`../../constants`);
 
 const api = require(`../api`).getAPI();
 const offersRouter = new Router();
@@ -56,20 +55,28 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
 
 offersRouter.get(`/:id`, async (req, res) => {
   const {id} = req.params;
-  const offer = await api.getOffer(id, true);
-  res.render(`offer`, {offer});
+  try {
+    const offer = await api.getOffer(id, true);
+    res.render(`offer`, {offer});
+  } catch (error) {
+    res.status(error.response.status).render(`errors/404`, {title: `Страница не найдена`});
+  }
 });
 
 offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
 
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
-  const [offer, categories] = await Promise.all([
-    api.getOffer(id),
-    api.getCategories(true)
-  ]);
+  try {
+    const [offer, categories] = await Promise.all([
+      api.getOffer(id),
+      api.getCategories(true)
+    ]);
 
-  res.render(`offer-edit`, {offer, categories, id});
+    res.render(`offer-edit`, {offer, categories, id});
+  } catch (error) {
+    res.status(error.response.status).render(`errors/404`, {title: `Страница не найдена`});
+  }
 });
 
 offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
