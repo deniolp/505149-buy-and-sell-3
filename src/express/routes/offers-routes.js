@@ -64,17 +64,31 @@ offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
 
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
-  const [offer, categories] = await Promise.all([api.getOffer(id), api.getCategories()
+  const [offer, categories] = await Promise.all([
+    api.getOffer(id),
+    api.getCategories(true)
   ]);
-  const plainOfferCategories = offer.categories.reduce((acc, item) => {
-    acc.push(item.title);
-    return acc;
-  }, []);
 
-  if (offer) {
-    res.render(`offer-edit`, {offer, categories, plainOfferCategories, id});
-  } else {
-    res.status(404).render(`errors/404`, {title: `Страница не найдена`});
+  res.render(`offer-edit`, {offer, categories, id});
+});
+
+offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+  const {body, file} = req;
+  const {id} = req.params;
+  const offerData = {
+    picture: file ? file.filename : body[`old-image`],
+    sum: body.sum,
+    type: body.action,
+    description: body.description,
+    title: body[`title`],
+    categories: ensureArray(body.categories),
+  };
+  try {
+    await api.updateOffer(id, offerData);
+    res.redirect(`/my`);
+  } catch (err) {
+    logger.error(err);
+    res.redirect(`back`);
   }
 });
 
