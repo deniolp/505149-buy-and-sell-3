@@ -15,6 +15,7 @@ class SearchService {
     const where = {
       title: {
         [Op.substring]: query
+        // как сделать независимость от регистра?
       }
     };
 

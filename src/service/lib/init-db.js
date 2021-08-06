@@ -24,16 +24,12 @@ module.exports = async (sequelize, {categories, offers, users}) => {
       ...acc
     }), {});
 
-    console.log(categoryIdByName);
-
     const userModels = await User.bulkCreate(users, {include: [Aliase.OFFERS, Aliase.COMMENTS]});
 
     const userIdByEmail = userModels.reduce((acc, next) => ({
       [next.email]: next.id,
       ...acc
     }), {});
-
-    console.log(userIdByEmail);
 
     offers.forEach((offer) => {
       offer.userId = userIdByEmail[offer.user];

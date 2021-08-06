@@ -7,7 +7,8 @@ const {nanoid} = require(`nanoid`);
 
 const {getLogger} = require(`../../service/lib/logger`);
 const {ensureArray} = require(`../../utils`);
-const {UPLOAD_DIR} = require(`../../constants`);
+
+const UPLOAD_DIR = `../upload/img/`;
 
 const api = require(`../api`).getAPI();
 const offersRouter = new Router();
