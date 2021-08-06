@@ -36,7 +36,8 @@ module.exports = (app, offerService, commentService) => {
 
   route.get(`/:offerId`, async (req, res) => {
     const {offerId} = req.params;
-    const offer = await offerService.findOne(offerId);
+    const {comments} = req.query;
+    const offer = await offerService.findOne(offerId, comments);
 
     if (!offer) {
       logger.error(`Error status - ${HttpCode.NOT_FOUND}, url: /api/offers${req.url}`);

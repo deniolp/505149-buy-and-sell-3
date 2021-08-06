@@ -154,32 +154,12 @@ class OfferService {
     }
   }
 
-  async findOne(id) {
-    const {Offer, Comment, Category} = this._db.models;
-    const offerId = Number.parseInt(id, 10);
-
-    try {
-      const offer = await Offer.findByPk(offerId, {
-        include: [
-          {
-            model: Comment,
-            as: `comments`,
-          },
-          {
-            model: Category,
-            as: `categories`,
-          }
-        ],
-      });
-
-      offer.dataValues.comments.sort((a, b) => b.dataValues[`created_date`] - a.dataValues[`created_date`]);
-
-      return offer;
-    } catch (error) {
-      this._logger.error(`Can not find offer. Error: ${error}`);
-
-      return null;
+  async findOne(id, needComments) {
+    const include = [Aliase.CATEGORIES];
+    if (needComments) {
+      include.push(Aliase.COMMENTS);
     }
+    return await this._Offer.findByPk(id, {include});
   }
 
   async update(id, offer) {

@@ -15,7 +15,7 @@ const offersRouter = new Router();
 const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 
 const logger = getLogger({
-  name: `front-server-multer`,
+  name: `offers-routes`,
 });
 
 const storage = multer.diskStorage({
@@ -28,6 +28,12 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({storage});
+
+offersRouter.get(`/:id`, async (req, res) => {
+  const {id} = req.params;
+  const offer = await api.getOffer(id, true);
+  res.render(`offer`, {offer});
+});
 
 offersRouter.get(`/add`, async (req, res) => {
   const categories = await api.getCategories();
@@ -55,15 +61,6 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
 });
 
 offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
-offersRouter.get(`/:id`, async (req, res) => {
-  const {id} = req.params;
-  try {
-    const offer = await api.getOffer(id);
-    res.render(`offer`, {offer});
-  } catch (error) {
-    res.status(error.response.status).render(`errors/404`, {title: `Страница не найдена`});
-  }
-});
 
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
