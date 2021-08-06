@@ -45,36 +45,10 @@ class OfferService {
     return {count, offers: rows};
   }
 
-  async create(offer) {
-    const {sequelize} = this._db;
-    const {Category, Offer, User} = this._db.models;
-    const allCategories = await Category.findAll({raw: true});
-    const categoriesIds = allCategories.reduce((acc, item) => {
-      if (offer.category.filter((cat) => cat === item.title).length) {
-        acc.push(item.id);
-      }
-      return acc;
-    }, []);
-
-    try {
-      const offerCategories = await Category.findAll({
-        where: {
-          id: {
-            [sequelize.Sequelize.Op.or]: categoriesIds,
-          },
-        }
-      });
-
-      const user = await User.findByPk(1);
-      const newOffer = await user.createOffer(offer);
-      await newOffer.addCategories(offerCategories);
-
-      return await Offer.findByPk(newOffer.id, {raw: true});
-    } catch (error) {
-      this._logger.error(`Can not create offer. Error: ${error}`);
-
-      return null;
-    }
+  async create(offerData) {
+    const offer = await this._Offer.create(offerData);
+    await offer.addCategories(offerData.categories);
+    return offer.get();
   }
 
   async delete(id) {
