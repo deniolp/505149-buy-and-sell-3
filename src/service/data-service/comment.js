@@ -1,60 +1,53 @@
 'use strict';
 
+const {getLogger} = require(`../lib/logger`);
+
+const logger = getLogger({
+  name: `data-service-comments`,
+});
+
 class CommentService {
-  constructor(db, logger) {
-    this._models = db.models;
-    this._logger = logger;
+  constructor(sequelize) {
+    this._Offer = sequelize.models.offer;
+    this._Comment = sequelize.models.comment;
   }
 
-  async create(id, comment) {
-    const {Offer, Comment} = this._models;
-
+  async create(offerId, comment) {
     try {
-      const offer = await Offer.findByPk(id);
-      const newComment = await offer.createComment({
-        text: comment.text,
-        [`user_id`]: 1,
+      const newComment = await this._Comment.create({
+        offerId,
+        ...comment
       });
 
-      return await Comment.findByPk(newComment.id, {raw: true});
+      return newComment;
     } catch (error) {
-      this._logger.error(`Can not create comment for offer with ${id}. Error: ${error}`);
+      logger.error(`Can not create comment for offer with ${offerId}. Error: ${error}`);
 
       return null;
     }
   }
 
-  async delete(commentId) {
-    const {Comment} = this._models;
-
+  async drop(id) {
     try {
-      const commentForDelete = await Comment.findByPk(commentId, {raw: true});
-      const deletedRows = await Comment.destroy({
-        where: {
-          id: commentId,
-        }
+      const deletedRow = await this._Comment.destroy({
+        where: {id}
       });
-
-      if (!deletedRows) {
-        return null;
-      }
-
-      return commentForDelete;
+      return !!deletedRow;
     } catch (error) {
-      this._logger.error(`Can not delete comment. Error: ${error}`);
+      logger.error(`Can not delete comment. Error: ${error}`);
 
       return null;
     }
   }
 
-  async findAll(id) {
-    const {Offer} = this._models;
-
+  async findAll(offerId) {
     try {
-      const offer = await Offer.findByPk(id);
-      return await offer.getComments({raw: true});
+      return await this._Comment.findAll({
+        where: {offerId},
+        raw: true
+      });
     } catch (error) {
-      this._logger.error(`Can not find comments of offer with id ${id}. Error: ${error}`);
+      logger.error(`Can not find comments of offer with id ${offerId}. Error: ${error}`);
 
       return null;
     }
