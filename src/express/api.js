@@ -50,16 +50,6 @@ class API {
       data
     });
   }
-
-  // async getComments(id) {
-  //   const {data: comments} = await axios.get(`${this._baseUrl}offers/${id}/comments`);
-  //   return comments;
-  // }
-
-  // async getMyComments({limit, offset, page}) {
-  //   const {data: result} = await axios.get(`${this._baseUrl}offers/my-comments`, {params: {offset, limit, page}});
-  //   return result;
-  // }
 }
 
 const defaultAPI = new API(defaultUrl, TIMEOUT);

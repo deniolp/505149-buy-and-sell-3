@@ -10,7 +10,7 @@ const {getLogger} = require(`../lib/logger`);
 
 const route = new Router();
 const logger = getLogger({
-  name: `api-server`,
+  name: `api-server-offer`,
 });
 
 module.exports = (app, offerService, commentService) => {
@@ -32,20 +32,6 @@ module.exports = (app, offerService, commentService) => {
       logger.error(`Error status - ${HttpCode.INTERNAL_SERVER_ERROR}`);
       res.status(HttpCode.INTERNAL_SERVER_ERROR).send(err);
     }
-  });
-
-  route.get(`/my-comments`, async (req, res) => {
-    const {limit = 3, offset = 0, page = 1} = req.query;
-    const result = await offerService.findCommentsPage({limit, offset, page});
-
-    if (!result) {
-      logger.error(`Error status - ${HttpCode.NOT_FOUND}`);
-      return res.status(HttpCode.NOT_FOUND)
-      .send(`Did not find offers`);
-    }
-
-    return res.status(HttpCode.OK)
-      .json(result);
   });
 
   route.get(`/:offerId`, async (req, res) => {
