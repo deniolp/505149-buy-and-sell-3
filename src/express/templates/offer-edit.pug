@@ -30,7 +30,7 @@ block content
               .ticket-form__row
                 select#category-field.form__select.js-multiple-select(name='categories' data-label='Выбрать категорию публикации' multiple)
                   each category in categories
-                    option(value=category.id selected=offer.categories.some(item => item.id === category.id)) #{category.title}
+                    option(value=`${+category.id}` selected=offer.categories.some(item => item.id === category.id)) #{category.title}
               .ticket-form__row
                 .form__field.form__field--price
                   input#price-field.js-field.js-price(type='number' name='sum' min='1' value=`${offer.sum}` required)
@@ -43,4 +43,5 @@ block content
                   .switch__item
                     input#sell-field.visually-hidden(type='radio' name='action' value='sell' checked=(offer.type === 'offer'))
                     label.switch__button(for='sell-field') Продам
+            +errorMessage(error)
             button.form__button.btn.btn--medium.js-button(type='submit') Сохранить

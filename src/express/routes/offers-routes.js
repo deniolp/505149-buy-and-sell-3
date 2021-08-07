@@ -70,6 +70,7 @@ offersRouter.get(`/:id`, async (req, res) => {
 offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
 
 offersRouter.get(`/edit/:id`, async (req, res) => {
+  const {error} = req.query;
   const {id} = req.params;
   try {
     const [offer, categories] = await Promise.all([
@@ -77,9 +78,9 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
       api.getCategories(true)
     ]);
 
-    res.render(`offer-edit`, {offer, categories, id});
-  } catch (error) {
-    res.status(error.response.status).render(`errors/404`, {title: `Страница не найдена`});
+    res.render(`offer-edit`, {offer, categories, id, error});
+  } catch (err) {
+    res.status(err.response.status).render(`errors/404`, {title: `Страница не найдена`});
   }
 });
 
@@ -93,13 +94,15 @@ offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
     description: body.description,
     title: body[`title`],
     categories: ensureArray(body.categories),
+    // временно
+    userId: 1
   };
   try {
     await api.updateOffer(id, offerData);
     res.redirect(`/my`);
   } catch (err) {
     logger.error(err);
-    res.redirect(`back`);
+    res.redirect(`/offers/add?error=${encodeURIComponent(err.response.data)}`);
   }
 });
 
