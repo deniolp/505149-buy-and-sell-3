@@ -3,7 +3,7 @@
 const request = require(`supertest`);
 
 const {createApp} = require(`../cli/server`);
-const {sequelize} = require(`../database`);
+const sequelize = require(`../lib/sequelize`);
 const {HttpCode, ExitCode} = require(`../../constants`);
 
 const mockOffer = {
@@ -12,9 +12,7 @@ const mockOffer = {
   "description": `Some description`,
   "type": `offer`,
   "sum": 1,
-  "categories": [
-    `Разное`,
-  ],
+  "categories": [2],
 };
 
 let app = null;
@@ -43,9 +41,22 @@ describe(`Offer API end-points:`, () => {
 
   test(`output after GET should be an array with at least length 1`, async () => {
     res = await request(app).get(`/api/offers`);
+
+    expect(res.body.length).toBeGreaterThan(0);
+    expect(Array.isArray(res.body)).toBeTruthy();
+  });
+
+  test(`output after GET offers with limit and offset should have an array with at least length 1`, async () => {
+    res = await request(app).get(`/api/offers`).query({limit: 8, offset: 0, comments: false});
+
     expect(res.body.offers.length).toBeGreaterThan(0);
-    expect(res.body.count).toBeGreaterThan(0);
     expect(Array.isArray(res.body.offers)).toBeTruthy();
+  });
+
+  test(`output after GET offers with limit and offset should have count of offers`, async () => {
+    res = await request(app).get(`/api/offers`).query({limit: 8, offset: 0, comments: false});
+
+    expect(res.body.count).toBeGreaterThan(0);
   });
 
   test(`status code for wrong GET offer request should be 404`, async () => {
@@ -78,12 +89,18 @@ describe(`Offer API end-points:`, () => {
     expect(res.statusCode).toBe(HttpCode.OK);
   });
 
-  test(`status code for GET query to my/comments should be 200`, async () => {
-    res = await request(app).get(`/api/offers/my-comments`);
+  test(`status code for GET offers with comments should be 200`, async () => {
+    res = await request(app).get(`/api/offers`).query({comments: true});
 
     expect(res.statusCode).toBe(HttpCode.OK);
-    expect(res.body.slicedOffers.length).toBe(3);
-    expect(Array.isArray(res.body.slicedOffers)).toBeTruthy();
+    expect(res.body.length).toBeGreaterThan(0);
+    expect(Array.isArray(res.body)).toBeTruthy();
+  });
+
+  test(`output after GET offers with comments should have array with comments (at least 0, should be array)`, async () => {
+    res = await request(app).get(`/api/offers`).query({comments: true});
+
+    expect(Array.isArray(res.body[0].comments)).toBeTruthy();
   });
 
   test(`PUT request should work and status code should be 200`, async () => {
@@ -97,9 +114,17 @@ describe(`Offer API end-points:`, () => {
         "sum": 999,
         "categories": [2],
       });
+
     expect(res.statusCode).toBe(HttpCode.OK);
-    expect(res.body.sum).toBe(`999`);
-    expect(res.body.categories[0].id).toBe(`2`);
+  });
+
+  test(`output after PUT request should have updated fields`, async () => {
+    res = await request(app)
+      .get(`/api/offers/${mockOfferId}`);
+
+    expect(res.body.sum).toBe(999);
+    expect(res.body.description).toBe(`New description`);
+    expect(res.body.categories[0].id).toBe(2);
   });
 
   test(`wrong PUT request should not work and status code  should be 400`, async () => {
@@ -117,7 +142,7 @@ describe(`Offer API end-points:`, () => {
   });
 
   test(`status for incorrect DELETE offer request should be 500`, async () => {
-    res = await request(app).delete(`/api/offers/xx`);
+    res = await request(app).delete(`/api/offers/1000`);
 
     expect(res.statusCode).toBe(HttpCode.INTERNAL_SERVER_ERROR);
   });
@@ -139,7 +164,7 @@ describe(`Offer comments API end-points`, () => {
   });
 
   test(`status code after request of comments with wrong offer id should be 404`, async () => {
-    res = await request(app).get((`/api/offers/xx/comments`));
+    res = await request(app).get((`/api/offers/1000/comments`));
 
     expect(res.statusCode).toBe(HttpCode.NOT_FOUND);
   });
@@ -180,7 +205,7 @@ describe(`Offer comments API end-points`, () => {
   });
 
   test(`status code after delete comment request with wrong comment id should return 404`, async () => {
-    res = await request(app).delete((`/api/offers/${mockOffer.id}/comments/xx`));
+    res = await request(app).delete((`/api/offers/${mockOfferId}/comments/1000`));
 
     expect(res.statusCode).toBe(HttpCode.NOT_FOUND);
   });
