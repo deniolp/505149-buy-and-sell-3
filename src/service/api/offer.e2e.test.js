@@ -7,12 +7,13 @@ const sequelize = require(`../lib/sequelize`);
 const {HttpCode, ExitCode} = require(`../../constants`);
 
 const mockOffer = {
-  "title": `Title`,
+  "title": `Title is enough long`,
   "picture": `02.jpg`,
-  "description": `Some description`,
+  "description": `Some description, yes, some description, do not be surprised!`,
   "type": `offer`,
-  "sum": 1,
+  "sum": 200,
   "categories": [2],
+  "userId": 1
 };
 
 let app = null;
@@ -76,11 +77,31 @@ describe(`Offer API end-points:`, () => {
   });
 
   test(`status code for incorrect POST offer query should be 400`, async () => {
-    res = await request(app)
-      .post(`/api/offers`)
-      .send({"some": `some`});
+    const badOffers = [
+      {...mockOffer, sum: true},
+      {...mockOffer, picture: 12345},
+      {...mockOffer, categories: `Котики`}
+    ];
 
-    expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
+    for (const badOffer of badOffers) {
+      res = await request(app).post(`/api/offers`).send(badOffer);
+
+      expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
+    }
+  });
+
+  test(`when field value is wrong response code is 400`, async () => {
+    const badOffers = [
+      {...mockOffer, sum: -1},
+      {...mockOffer, title: `too short`},
+      {...mockOffer, categories: []}
+    ];
+
+    for (const badOffer of badOffers) {
+      res = await request(app).post(`/api/offers`).send(badOffer);
+
+      expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
+    }
   });
 
   test(`status code for GET offer query by id should be 200`, async () => {
@@ -107,12 +128,13 @@ describe(`Offer API end-points:`, () => {
     res = await request(app)
       .put(`/api/offers/${mockOfferId}`)
       .send({
-        "title": `Title`,
+        "title": `Title is enough long`,
         "picture": `01.jpg`,
-        "description": `New description`,
+        "description": `New some description, yes, some description, do not be surprised!`,
         "type": `offer`,
         "sum": 999,
         "categories": [2],
+        "userId": 1
       });
 
     expect(res.statusCode).toBe(HttpCode.OK);
@@ -123,7 +145,7 @@ describe(`Offer API end-points:`, () => {
       .get(`/api/offers/${mockOfferId}`);
 
     expect(res.body.sum).toBe(999);
-    expect(res.body.description).toBe(`New description`);
+    expect(res.body.description).toBe(`New some description, yes, some description, do not be surprised!`);
     expect(res.body.categories[0].id).toBe(2);
   });
 
@@ -171,12 +193,41 @@ describe(`Offer comments API end-points`, () => {
 
   test(`status code after POST comment request should be 201`, async () => {
     res = await request(app)
-      .post((`/api/offers/${mockOfferId}/comments`))
+      .post(`/api/offers/${mockOfferId}/comments`)
       .send({
-        "text": `Some text`,
+        "text": `Это новый очень хороший комментарий!`,
+        "userId": 1
       });
 
     expect(res.statusCode).toBe(HttpCode.CREATED);
+  });
+
+  test(`status code for incorrect POST comment request should be 400`, async () => {
+    const badComments = [
+      {
+        "text": `Это новый очень хороший комментарий!`,
+        "userId": `Странный id`
+      },
+      {
+        "text": 12345,
+        "userId": 1
+      }
+    ];
+
+    for (const badComment of badComments) {
+      res = await request(app).post(`/api/offers/${mockOfferId}/comments`).send(badComment);
+
+      expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
+    }
+  });
+
+  test(`when field value is wrong response code is 400`, async () => {
+    res = await request(app).post(`/api/offers/${mockOfferId}/comments`).send({
+      "text": `Очень короткий`,
+      "userId": 1
+    });
+
+    expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
   });
 
   test(`status code after wrong POST request of comment should be 400`, async () => {
@@ -193,7 +244,8 @@ describe(`Offer comments API end-points`, () => {
     res = await request(app)
     .post((`/api/offers/${mockOfferId}/comments`))
     .send({
-      "text": `Some text`,
+      "text": `Это еще новый очень хороший комментарий!`,
+      "userId": 2
     });
     mockCommentId = res.body.id;
 
