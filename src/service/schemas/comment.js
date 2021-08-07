@@ -5,5 +5,10 @@ const Joi = require(`joi`);
 module.exports = Joi.object({
   text: Joi.string()
     .min(20)
-    .required()
+    .required(),
+
+  userId: Joi.number()
+  .integer()
+  .positive()
+  .required()
 });
