@@ -31,12 +31,13 @@ POST http://localhost:3000/api/offers HTTP/1.1
 Content-Type: application/json
 
 {
-  "categories": ["Журналы"],
+  "categories": [6],
   "description": "При покупке с меня бесплатная доставка в черте города. Две страницы заляпаны свежим кофе. Пользовались бережно и только по большим праздникам., Бонусом отдам все аксессуары.",
   "picture": "item16.jpg",
   "title": "Продам новую приставку Sony Playstation 5.",
   "sum": 42698,
-  "type": "offer"
+  "type": "offer",
+  "userId": 2
 }
 
 ###
