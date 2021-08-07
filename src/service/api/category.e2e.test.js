@@ -3,7 +3,7 @@
 const request = require(`supertest`);
 
 const {createApp} = require(`../cli/server`);
-const {sequelize} = require(`../database`);
+const sequelize = require(`../lib/sequelize`);
 const {HttpCode, ExitCode} = require(`../../constants`);
 
 describe(`Categories API end-points:`, () => {
@@ -23,13 +23,11 @@ describe(`Categories API end-points:`, () => {
     sequelize.close();
   });
 
-  test(`status code of get query should be 200`, () => {
-    expect(res.statusCode).toBe(HttpCode.OK);
-  });
+  test(`status code of get query should be 200`, () => expect(res.statusCode).toBe(HttpCode.OK));
 
-  test(`output should have at least one category`, () => {
-    expect(res.body.length).toBeGreaterThan(0);
-  });
+  test(`output should have at least one category`, () => expect(res.body.length).toBeGreaterThan(0));
+
+  test(`returns list of 6 categories`, () => expect(res.body.length).toBe(6));
 
   test(`each item of output have to be string`, () => {
     expect(Array.isArray(res.body)).toBeTruthy();
