@@ -30,8 +30,9 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 
 offersRouter.get(`/add`, async (req, res) => {
+  const {error} = req.query;
   const categories = await api.getCategories(false);
-  res.render(`new-offer`, {categories});
+  res.render(`new-offer`, {categories, error});
 });
 
 offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
@@ -43,6 +44,8 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
     description: body.description,
     title: body[`title`],
     categories: ensureArray(body.categories),
+    // временно
+    userId: 2
   };
 
   try {
@@ -50,7 +53,7 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
     res.redirect(`/my`);
   } catch (err) {
     logger.error(err);
-    res.redirect(`back`);
+    res.redirect(`/offers/add?error=${encodeURIComponent(err.response.data)}`);
   }
 });
 

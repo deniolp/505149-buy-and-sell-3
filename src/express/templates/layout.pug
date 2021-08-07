@@ -10,6 +10,13 @@ head
     a.active{
       pointer-events: none;
     }
+    .server-error{
+        border-radius: 10px;
+        color: white;
+        background-color: tomato;
+        margin: 20px 0;
+        padding: 10px;
+      }
 body
   -
     const getRandomInt = (max) => Math.ceil(Math.random() * max + 1);
@@ -22,6 +29,10 @@ body
       const idPadded = `0${getRandomInt(5)}`
 
     img(src=`/img/cat${idPadded}.jpg` srcset=`/img/cat${idPadded}@2x.jpg 2x` alt=category.name)
+
+  mixin errorMessage(message)
+    if message
+      .server-error= message
 
   mixin pagination(page, totalPages, width, prefix, query = ``)
     -
