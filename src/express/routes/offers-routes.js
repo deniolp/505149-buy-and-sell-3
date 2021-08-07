@@ -59,11 +59,12 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
 
 offersRouter.get(`/:id`, async (req, res) => {
   const {id} = req.params;
+  const {error} = req.query;
   try {
     const offer = await api.getOffer(id, true);
-    res.render(`offer`, {offer});
-  } catch (error) {
-    res.status(error.response.status).render(`errors/404`, {title: `Страница не найдена`});
+    res.render(`offer`, {offer, id, error});
+  } catch (err) {
+    res.status(err.response.status).render(`errors/404`, {title: `Страница не найдена`});
   }
 });
 
@@ -103,6 +104,23 @@ offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
   } catch (err) {
     logger.error(err);
     res.redirect(`/offers/add?error=${encodeURIComponent(err.response.data)}`);
+  }
+});
+
+offersRouter.post(`/:id/comments`, upload.single(`text`), async (req, res) => {
+  const {id} = req.params;
+  const {text} = req.body;
+
+  // временно
+  let comment = {};
+  comment.userId = 1;
+  comment.text = text;
+
+  try {
+    await api.createComment(id, comment);
+    res.redirect(`/offers/${id}`);
+  } catch (error) {
+    res.redirect(`/offers/${id}?error=${encodeURIComponent(error.response.data)}`);
   }
 });
 

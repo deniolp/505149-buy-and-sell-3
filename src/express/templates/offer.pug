@@ -42,17 +42,18 @@ block content
         .ticket__comments
           h2.ticket__subtitle Коментарии
           .ticket__comment-form
-            form.form.comment-form(action='#' method='post')
+            form.form.comment-form(action=`/offers/${id}/comments` method='post' enctype='multipart/form-data')
               .comment-form__header
                 a.comment-form__avatar.avatar(href='#')
                   img(src='/img/avatar.jpg' srcset='/img/avatar@2x.jpg 2x' alt='Аватар пользователя')
                 p.comment-form__author Вам слово
               .comment-form__field
                 .form__field
-                  textarea#comment-field.js-field(name='comment' cols='30' rows='10' maxlength='400' minlength='50') Нормальное вообще кресло! А как насч
+                  textarea#comment-field.js-field(name='text' cols='30' rows='10' minlength='20' maxlength='400')
                   label(for='comment-field') Текст комментария
                   span Обязательное поле
-              button.comment-form__button.btn.btn--white.js-button(type='submit' disabled) Отправить
+              +errorMessage(error)
+              button.comment-form__button.btn.btn--white.js-button(type='submit' disabled='') Отправить
           .ticket__comments-list
             ul.comments-list
               each comment in offer.comments

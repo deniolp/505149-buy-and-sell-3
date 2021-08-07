@@ -18,6 +18,13 @@ module.exports.ExitCode = {
   success: 0,
 };
 
+module.exports.HttpMethod = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
 module.exports.HttpCode = {
   OK: 200,
   CREATED: 201,
