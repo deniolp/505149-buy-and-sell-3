@@ -6,13 +6,18 @@ const {nanoid} = require(`nanoid`);
 const {getLogger} = require(`../lib/logger`);
 const {getRandomInt, shuffle, OfferType, SumRestrict, PictureRestrict, getPictureFileName, makeMockData} = require(`../../utils`);
 
-const {MAX_ID_LENGTH, TXT_FILES_DIR} = require(`../../../src/constants`);
-const DEFAULT_COUNT = 1;
-const MAX_COMMENTS = 4;
-const FILE_NAME = `mocks.json`;
+const {
+  MAX_ID_LENGTH,
+  MAX_DATA_COUNT,
+  TXT_FILES_DIR,
+  MAX_COMMENTS,
+  DEFAULT_COUNT,
+  FILE_NAME,
+  ExitCode
+} = require(`../../../src/constants`);
 
 const logger = getLogger({
-  name: `api-server`,
+  name: `api-generate`,
 });
 
 const generateComments = (count, comments) => (
@@ -32,7 +37,7 @@ const generateOffers = (count, mockData) => (
     description: shuffle(mockData.sentences).slice(0, getRandomInt(1, 5)).join(` `),
     sum: getRandomInt(SumRestrict.min, SumRestrict.max),
     picture: getPictureFileName(getRandomInt(PictureRestrict.min, PictureRestrict.max)),
-    category: shuffle(mockData.categories).slice(0, getRandomInt(1, mockData.categories.length - 1)),
+    categories: shuffle(mockData.categories).slice(0, getRandomInt(1, mockData.categories.length - 1)),
     comments: generateComments(getRandomInt(1, MAX_COMMENTS), mockData.comments),
   }))
 );
@@ -40,10 +45,14 @@ const generateOffers = (count, mockData) => (
 module.exports = {
   name: `--generate`,
   async run(args) {
-    const files = await fs.readdir(TXT_FILES_DIR);
-
-    const mockData = await makeMockData(files);
     const [count] = args;
+    if (count >= MAX_DATA_COUNT) {
+      logger.error(`Не больше 1000 объявлений`);
+      process.exit(ExitCode.error);
+    }
+
+    const files = await fs.readdir(TXT_FILES_DIR);
+    const mockData = await makeMockData(files);
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
     const content = JSON.stringify(generateOffers(countOffer, mockData), null, 2);
 

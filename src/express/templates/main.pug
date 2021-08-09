@@ -17,7 +17,7 @@ block content
                 .ticket-card__info
                   +ticketLabel(offer.type)
                   .ticket-card__categories
-                    each category in offer.category
+                    each category in offer.categories
                       a(href='#')= category.title
                   .ticket-card__header
                       h3.ticket-card__title
@@ -27,6 +27,7 @@ block content
                         |  ₽
                   .ticket-card__desc
                       p= offer.description
+    +pagination(page, totalPages, 2, `?`)
     section.tickets-list
       h2.visually-hidden Самые обсуждаемые предложения
       .tickets-list__wrapper
@@ -41,7 +42,7 @@ block content
                 .ticket-card__info
                   +ticketLabel(offer.type)
                   .ticket-card__categories
-                    each category in offer.category
+                    each category in offer.categories
                       a(href='#')= category.title
                   .ticket-card__header
                       h3.ticket-card__title
@@ -51,4 +52,3 @@ block content
                         |  ₽
                   .ticket-card__desc
                       p= offer.description
-    +pagination(page, totalPages, 2, `?`)

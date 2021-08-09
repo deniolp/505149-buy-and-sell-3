@@ -1,17 +1,17 @@
 'use strict';
 
-const {HttpCode} = require(`../../constants`);
+const schema = require(`../schemas/comment`);
 
-const commentKeys = [`text`];
+const {HttpCode} = require(`../../constants`);
 
 module.exports = (req, res, next) => {
   const comment = req.body;
-  const keys = Object.keys(comment);
-  const keysExists = commentKeys.every((key) => keys.includes(key));
 
-  if (!keysExists) {
+  const {error} = schema.validate(comment);
+
+  if (error) {
     return res.status(HttpCode.BAD_REQUEST)
-      .send(`Bad request`);
+      .send(error.details.map((err) => err.message).join(`\n`));
   }
 
   return next();

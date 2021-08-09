@@ -1,18 +1,28 @@
 'use strict';
 
 module.exports.DEFAULT_COMMAND = `--help`;
-
 module.exports.MAX_DATA_COUNT = 1000;
-
 module.exports.USER_ARGV_INDEX = 2;
-
 module.exports.MAX_ID_LENGTH = 6;
-
+module.exports.MAX_COMMENTS = 4;
+module.exports.DEFAULT_COUNT = 10;
 module.exports.TXT_FILES_DIR = `./data/`;
+module.exports.FILE_NAME = `mocks.json`;
+module.exports.PUBLIC_DIR = `files`;
+module.exports.UPLOAD_DIR = `upload`;
+module.exports.TIMEOUT = 1000;
+module.exports.OFFERS_PER_PAGE = 8;
 
 module.exports.ExitCode = {
   error: 1,
   success: 0,
+};
+
+module.exports.HttpMethod = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
 };
 
 module.exports.HttpCode = {

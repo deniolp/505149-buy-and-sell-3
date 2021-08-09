@@ -1,10 +1,12 @@
 'use strict';
 
 const {Router} = require(`express`);
-const formidable = require(`formidable`);
+const multer = require(`multer`);
 const path = require(`path`);
+const {nanoid} = require(`nanoid`);
 
 const {getLogger} = require(`../../service/lib/logger`);
+const {ensureArray} = require(`../../utils`);
 
 const UPLOAD_DIR = `../upload/img/`;
 
@@ -13,86 +15,112 @@ const offersRouter = new Router();
 const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 
 const logger = getLogger({
-  name: `front-server-formidable`,
+  name: `offers-routes`,
 });
+
+const storage = multer.diskStorage({
+  destination: uploadDirAbsolute,
+  filename: (req, file, cb) => {
+    const uniqueName = nanoid(10);
+    const extension = file.originalname.split(`.`).pop();
+    cb(null, `${uniqueName}.${extension}`);
+  }
+});
+
+const upload = multer({storage});
 
 offersRouter.get(`/add`, async (req, res) => {
-  const categories = await api.getCategories();
-  res.render(`new-offer`, {categories});
+  const {error} = req.query;
+  const categories = await api.getCategories(false);
+  res.render(`new-offer`, {categories, error});
 });
 
-offersRouter.post(`/add`, async (req, res) => {
-  const categories = await api.getCategories();
-  const allowedTypes = [`image/jpeg`, `image/png`];
-  let isAllowedFormat;
-  let offer = {category: []};
+offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
+  const {body, file} = req;
+  const offerData = {
+    picture: file.filename,
+    sum: body.sum,
+    type: body.action,
+    description: body.description,
+    title: body[`title`],
+    categories: ensureArray(body.categories),
+    // временно
+    userId: 2
+  };
 
-  const formData = new formidable.IncomingForm({maxFileSize: 2 * 1024 * 1024});
   try {
-    formData.parse(req)
-      .on(`field`, (name, field) => {
-        if (name === `category`) {
-          offer[name].push(field);
-        } else {
-          offer[name] = field;
-        }
-      })
-      .on(`fileBegin`, (name, file) => {
-        if (!allowedTypes.includes(file.type)) {
-          isAllowedFormat = false;
-        } else {
-          isAllowedFormat = true;
-          file.path = uploadDirAbsolute + `/` + file.name;
-        }
-      })
-      .on(`file`, (name, file) => {
-        offer.picture = file.path.match(/\/([^\/]+)\/?$/)[1];
-      })
-      .on(`aborted`, () => {
-        formData.emit(`error`, `Request aborted by the user.`);
-      })
-      .on(`error`, (err) => {
-        logger.error(`There is error while parsing form data. ${err}`);
-        res.render(`new-offer`, {categories, offer});
-      })
-      .on(`end`, async () => {
-        if (isAllowedFormat) {
-          await api.createOffer(offer);
-          res.redirect(`/my`);
-        } else {
-          formData.emit(`error`, `Not correct file's extension.`);
-        }
-      });
-  } catch (error) {
-    logger.error(`Error happened: ${error}`);
-    res.render(`new-offer`, {categories, offer});
+    await api.createOffer(offerData);
+    res.redirect(`/my`);
+  } catch (err) {
+    logger.error(err);
+    res.redirect(`/offers/add?error=${encodeURIComponent(err.response.data)}`);
+  }
+});
+
+offersRouter.get(`/:id`, async (req, res) => {
+  const {id} = req.params;
+  const {error} = req.query;
+  try {
+    const offer = await api.getOffer(id, true);
+    res.render(`offer`, {offer, id, error});
+  } catch (err) {
+    res.status(err.response.status).render(`errors/404`, {title: `Страница не найдена`});
   }
 });
 
 offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
-offersRouter.get(`/:id`, async (req, res) => {
+
+offersRouter.get(`/edit/:id`, async (req, res) => {
+  const {error} = req.query;
   const {id} = req.params;
   try {
-    const [offer, comments] = await Promise.all([api.getOffer(id), api.getComments(id)]);
-    res.render(`offer`, {offer, comments});
-  } catch (error) {
-    res.status(error.response.status).render(`errors/404`, {title: `Страница не найдена`});
+    const [offer, categories] = await Promise.all([
+      api.getOffer(id),
+      api.getCategories(true)
+    ]);
+
+    res.render(`offer-edit`, {offer, categories, id, error});
+  } catch (err) {
+    res.status(err.response.status).render(`errors/404`, {title: `Страница не найдена`});
   }
 });
 
-offersRouter.get(`/edit/:id`, async (req, res) => {
+offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+  const {body, file} = req;
   const {id} = req.params;
-  const [offer, categories] = await Promise.all([api.getOffer(id), api.getCategories()
-  ]);
-  const plainOfferCategories = offer.category.reduce((acc, item) => {
-    acc.push(item.title);
-    return acc;
-  }, []);
+  const offerData = {
+    picture: file ? file.filename : body[`old-image`],
+    sum: body.sum,
+    type: body.action,
+    description: body.description,
+    title: body[`title`],
+    categories: ensureArray(body.categories),
+    // временно
+    userId: 1
+  };
+  try {
+    await api.updateOffer(id, offerData);
+    res.redirect(`/my`);
+  } catch (err) {
+    logger.error(err);
+    res.redirect(`/offers/add?error=${encodeURIComponent(err.response.data)}`);
+  }
+});
 
-  if (offer) {
-    res.render(`offer-edit`, {offer, categories, plainOfferCategories, id});
-  } else {
-    res.status(404).render(`errors/404`, {title: `Страница не найдена`});
+offersRouter.post(`/:id/comments`, upload.single(`text`), async (req, res) => {
+  const {id} = req.params;
+  const {text} = req.body;
+
+  // временно
+  let comment = {};
+  comment.userId = 1;
+  comment.text = text;
+
+  try {
+    await api.createComment(id, comment);
+    res.redirect(`/offers/${id}`);
+  } catch (error) {
+    res.redirect(`/offers/${id}?error=${encodeURIComponent(error.response.data)}`);
   }
 });
 

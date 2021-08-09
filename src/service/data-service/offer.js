@@ -1,175 +1,89 @@
 'use strict';
 
+const {Op} = require(`sequelize`);
+
+const Aliase = require(`../models/aliases`);
+const {getLogger} = require(`../lib/logger`);
+
+const logger = getLogger({
+  name: `data-service-offer`
+});
+
 class OfferService {
-  constructor(db, logger) {
-    this._db = db;
-    this._logger = logger;
+  constructor(sequelize) {
+    this._Offer = sequelize.models.offer;
+    this._Comment = sequelize.models.comment;
+    this._Category = sequelize.models.category;
   }
 
-  async create(offer) {
-    const {sequelize} = this._db;
-    const {Category, Offer, User} = this._db.models;
-    const allCategories = await Category.findAll({raw: true});
-    const categoriesIds = allCategories.reduce((acc, item) => {
-      if (offer.category.filter((cat) => cat === item.title).length) {
-        acc.push(item.id);
-      }
-      return acc;
-    }, []);
+  async findAll(needComments) {
+    const include = [Aliase.CATEGORIES];
+    const order = [[`created_date`, `DESC`]];
 
-    try {
-      const offerCategories = await Category.findAll({
-        where: {
-          id: {
-            [sequelize.Sequelize.Op.or]: categoriesIds,
-          },
-        }
-      });
-
-      const user = await User.findByPk(1);
-      const newOffer = await user.createOffer(offer);
-      await newOffer.addCategories(offerCategories);
-
-      return await Offer.findByPk(newOffer.id, {raw: true});
-    } catch (error) {
-      this._logger.error(`Can not create offer. Error: ${error}`);
-
-      return null;
+    if (needComments) {
+      include.push(Aliase.COMMENTS);
     }
+    const offers = await this._Offer.findAll({include, order});
+    return offers.map((item) => item.get());
   }
 
-  async delete(id) {
-    const {Offer} = this._db.models;
+  async findPage({limit, offset, comments}) {
+    const include = [Aliase.CATEGORIES];
+    const order = [[`created_date`, `DESC`]];
 
-    try {
-      const offerForDelete = await Offer.findByPk(id, {raw: true});
-      const deletedRows = await Offer.destroy({
-        returning: true,
-        where: {
-          id,
-        }
-      });
-
-      if (!deletedRows) {
-        return null;
-      }
-
-      return offerForDelete;
-    } catch (error) {
-      this._logger.error(`Can not delete offer. Error: ${error}`);
-
-      return null;
+    if (comments) {
+      include.push(Aliase.COMMENTS);
     }
+
+    const {count, rows} = await this._Offer.findAndCountAll({
+      limit,
+      offset,
+      include,
+      order,
+      distinct: true
+    });
+    return {count, offers: rows};
   }
 
-  async findAll() {
-    const {Offer} = this._db.models;
-
-    try {
-      const offers = await Offer.findAll({
-        order: [
-          [`created_date`, `DESC`],
-        ]
-      });
-      const preparedOffers = [];
-
-      for (const offer of offers) {
-        const categories = await offer.getCategories({raw: true});
-        const comments = await offer.getComments({raw: true});
-        offer.dataValues.category = categories;
-        offer.dataValues.comments = comments;
-        preparedOffers.push(offer.dataValues);
-      }
-
-      return preparedOffers;
-    } catch (error) {
-      this._logger.error(`Can not find offers. Error: ${error}`);
-
-      return [];
-    }
+  async create(offerData) {
+    const offer = await this._Offer.create(offerData);
+    await offer.addCategories(offerData.categories);
+    return offer.get();
   }
 
-  async findPage({limit, offset}) {
-    const {Offer} = this._db.models;
-
-    try {
-      const {count, rows} = await Offer.findAndCountAll({
-        limit,
-        offset,
-        order: [
-          [`created_date`, `DESC`],
-        ]
-      });
-      const offers = [];
-
-      for (const offer of rows) {
-        const categories = await offer.getCategories({raw: true});
-        const comments = await offer.getComments({raw: true});
-        offer.dataValues.category = categories;
-        offer.dataValues.comments = comments;
-        offers.push(offer.dataValues);
-      }
-      return {count, offers};
-    } catch (error) {
-      this._logger.error(`Can not find offers. Error: ${error}`);
-
-      return null;
-    }
+  async drop(id) {
+    const deletedRow = await this._Offer.destroy({
+      where: {id}
+    });
+    return !!deletedRow;
   }
 
-  async findOne(id) {
-    const {Offer} = this._db.models;
-    const offerId = Number.parseInt(id, 10);
-
-    try {
-      const offer = await Offer.findByPk(offerId);
-      const categories = await offer.getCategories({raw: true});
-      offer.dataValues.category = categories;
-
-      return offer.dataValues;
-    } catch (error) {
-      this._logger.error(`Can not find offer. Error: ${error}`);
-
-      return null;
+  async findOne(id, needComments) {
+    const include = [Aliase.CATEGORIES];
+    if (needComments) {
+      include.push(Aliase.COMMENTS);
     }
+    return await this._Offer.findByPk(id, {include});
   }
 
   async update(id, offer) {
-    const {sequelize} = this._db;
-    const {Offer, Category} = this._db.models;
-    const allCategories = await Category.findAll({raw: true});
-    const categoriesIds = allCategories.reduce((acc, item) => {
-      if (offer.category.filter((cat) => cat === item.title).length) {
-        acc.push(item.id);
-      }
-      return acc;
-    }, []);
-
     try {
-      const [rows] = await Offer.update(offer, {
-        where: {
-          id,
-        }
+      const [affectedRows] = await this._Offer.update(offer, {
+        where: {id},
       });
-
-      if (!rows) {
-        return null;
-      }
-
-      const updatedOffer = await Offer.findByPk(id);
-      const offerCategories = await Category.findAll({
+      const offerCategories = await this._Category.findAll({
         where: {
           id: {
-            [sequelize.Sequelize.Op.or]: categoriesIds,
+            [Op.or]: offer.categories,
           },
         }
       });
-      await updatedOffer.addCategories(offerCategories);
-      return await Offer.findByPk(updatedOffer.id, {raw: true});
-    } catch (error) {
-      this._logger.error(`Can not update offer. Error: ${error}`);
+      const updatedOffer = await this._Offer.findByPk(id);
+      await updatedOffer.setCategories(offerCategories);
 
-      return null;
+      return !!affectedRows;
+    } catch (error) {
+      return logger.error(error);
     }
   }
 

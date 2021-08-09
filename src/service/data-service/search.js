@@ -1,26 +1,35 @@
 'use strict';
 
+const {Op} = require(`sequelize`);
+
+const Aliase = require(`../models/aliases`);
+
 class SearchService {
-  constructor(db, logger) {
-    this._models = db.models;
-    this._logger = logger;
+  constructor(sequelize) {
+    this._Offer = sequelize.models.offer;
   }
 
-  async findAll(searchText) {
-    const {Offer} = this._models;
+  async findAll({offset, limit, query}) {
+    const include = [Aliase.CATEGORIES];
+    const order = [[`created_date`, `DESC`]];
+    const where = {
+      title: {
+        [Op.substring]: query
+        // как сделать независимость от регистра?
+      }
+    };
 
-    const offers = await Offer.findAll();
-    const preparedOffers = [];
+    const {count, rows} = await this._Offer.findAndCountAll({
+      where,
+      limit,
+      offset,
+      include,
+      order,
+      distinct: true
+    });
 
-    for (const offer of offers) {
-      const categories = await offer.getCategories({raw: true});
-      offer.dataValues.category = categories;
-      preparedOffers.push(offer.dataValues);
-    }
-
-    return preparedOffers.filter((offer) => offer.title.toLowerCase().includes(searchText));
+    return {count, foundOffers: rows};
   }
-
 }
 
 module.exports = SearchService;
