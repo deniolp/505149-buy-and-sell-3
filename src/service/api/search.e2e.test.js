@@ -34,7 +34,7 @@ describe(`Search API end-points:`, () => {
     expect(Array.isArray(res.body.foundOffers)).toBeTruthy();
   });
 
-  test(`output have to count of offers that were found`, async () => {
+  test(`output have to contain count of offers that were found`, async () => {
     res = await request(app).get(encodeURI(`/api/search?query=${query}`));
 
     expect(res.body.count).toBeGreaterThan(0);
@@ -48,9 +48,9 @@ describe(`Search API end-points:`, () => {
     }
   });
 
-  test(`should return empty array as search result after empty request`, async () => {
-    res = await request(app).get(encodeURI(`/api/search?query=`));
+  test(`should return empty array as search result after wrong request`, async () => {
+    res = await request(app).get(encodeURI(`/api/search?query=kjbjhbwj`));
 
-    expect(res.body).toStrictEqual([]);
+    expect(res.body.foundOffers).toStrictEqual([]);
   });
 });
