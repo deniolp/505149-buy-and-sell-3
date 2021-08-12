@@ -34,7 +34,8 @@ const define = (sequelize) => {
 
   Offer.hasMany(Comment, {
     as: Aliase.COMMENTS,
-    foreignKey: `offerId`
+    foreignKey: `offerId`,
+    onDelete: `cascade`
   });
   Comment.belongsTo(Offer, {
     foreignKey: `offerId`
