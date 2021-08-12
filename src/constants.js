@@ -12,6 +12,13 @@ module.exports.PUBLIC_DIR = `files`;
 module.exports.UPLOAD_DIR = `upload`;
 module.exports.TIMEOUT = 1000;
 module.exports.OFFERS_PER_PAGE = 8;
+module.exports.MAX_FILE_SIZE = 2 * 1024 * 1024;
+module.exports.ALLOWED_TYPES = [`image/jpeg`, `image/png`];
+
+module.exports.MULTER_ERRORS = {
+  FILE_TOO_LARGE: `File too large`,
+  NOT_IMAGE: `The file is not an image!`
+};
 
 module.exports.ExitCode = {
   error: 1,

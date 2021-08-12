@@ -7,6 +7,7 @@ const {nanoid} = require(`nanoid`);
 
 const {getLogger} = require(`../../service/lib/logger`);
 const {ensureArray} = require(`../../utils`);
+const {MAX_FILE_SIZE, ALLOWED_TYPES, MULTER_ERRORS} = require(`../../constants`);
 
 const UPLOAD_DIR = `../upload/img/`;
 
@@ -27,7 +28,17 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({storage});
+const upload = multer({
+  storage,
+  limits: {fileSize: MAX_FILE_SIZE},
+  fileFilter: (req, file, cb) => {
+    if (ALLOWED_TYPES.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error(MULTER_ERRORS.NOT_IMAGE), false);
+    }
+  }
+});
 
 offersRouter.get(`/add`, async (req, res) => {
   const {error} = req.query;
