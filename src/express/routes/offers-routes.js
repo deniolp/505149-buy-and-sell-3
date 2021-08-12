@@ -55,7 +55,7 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
     description: body.description,
     title: body[`title`],
     categories: ensureArray(body.categories),
-    // временно
+    // TODO: временно
     userId: 2
   };
 
@@ -106,7 +106,7 @@ offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
     description: body.description,
     title: body[`title`],
     categories: ensureArray(body.categories),
-    // временно
+    // TODO: временно
     userId: 1
   };
   try {
@@ -122,7 +122,7 @@ offersRouter.post(`/:id/comments`, upload.single(`text`), async (req, res) => {
   const {id} = req.params;
   const {text} = req.body;
 
-  // временно
+  // TODO: временно
   let comment = {};
   comment.userId = 1;
   comment.text = text;

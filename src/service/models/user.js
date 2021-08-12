@@ -22,7 +22,7 @@ const define = (sequelize) => User.init({
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-    // Как валидировать длину пароля?
+    // TODO: Как валидировать длину пароля?
   },
   avatar: {
     type: DataTypes.STRING,
