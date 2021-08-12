@@ -34,7 +34,7 @@ block content
         .tickets-list__header
           p.tickets-list__title Самое свежее
           unless !moreOffersQty
-            a.tickets-list__link(href='#') Еще #{moreOffersQty}
+            a.tickets-list__link(href=`?page=${page + 1}&query=${query}`)= `${moreOffersQty > 0 ? `Еще ` + moreOffersQty : ``}`
         ul
           each offer in mostDiscussed
             li.tickets-list__item
