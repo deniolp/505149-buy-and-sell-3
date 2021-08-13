@@ -21,6 +21,7 @@ const define = (sequelize) => {
     foreignKey: `userId`,
   });
   Offer.belongsTo(User, {
+    as: Aliase.USERS,
     foreignKey: `userId`
   });
 
@@ -29,6 +30,7 @@ const define = (sequelize) => {
     foreignKey: `userId`,
   });
   Comment.belongsTo(User, {
+    as: Aliase.USERS,
     foreignKey: `userId`
   });
 
