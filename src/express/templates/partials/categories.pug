@@ -3,7 +3,7 @@ section.categories-list
       ul.categories-list__wrapper
         each category in categories
           li.categories-list__item
-            a.category-tile.category-tile--default(href="#")
+            a.category-tile.category-tile--default(href=`/offers/category/${category.id}`)
               span.category-tile__image
                 +categoryImage(category)
               span.category-tile__label

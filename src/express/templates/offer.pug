@@ -35,7 +35,7 @@ block content
             ul.ticket__tags
               each category in offer.categories
                 li
-                  a.category-tile.category-tile--small(href='#')
+                  a.category-tile.category-tile--small(href=`/offers/category/${category.id}`)
                     span.category-tile__image
                       +categoryImage(category)
                     span.category-tile__label= category.title

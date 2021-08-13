@@ -121,6 +121,41 @@ class OfferService {
     return await this._Offer.findByPk(id, {include});
   }
 
+  async findByCategory({limit, offset, categoryId}) {
+    const include = [Aliase.CATEGORIES, Aliase.COMMENTS, {
+      model: this._User,
+      as: Aliase.USERS,
+      attributes: {
+        exclude: [`passwordHash`]
+      }
+    }];
+    const {count, rows} = await this._Offer.findAndCountAll({
+      attributes: [`id`],
+      include: [{
+        model: this._Category,
+        as: Aliase.CATEGORIES,
+        attributes: [],
+        where: {
+          id: categoryId
+        },
+      }],
+      limit,
+      offset,
+      raw: true
+    });
+
+    const offers = await this._Offer.findAll({
+      include,
+      where: {
+        id: {
+          [Op.in]: rows.map((it) => it.id)
+        }
+      },
+    });
+
+    return {count, offers};
+  }
+
   async update(id, offer) {
     try {
       const [affectedRows] = await this._Offer.update(offer, {

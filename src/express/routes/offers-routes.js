@@ -5,6 +5,7 @@ const {Router} = require(`express`);
 const {getLogger} = require(`../../service/lib/logger`);
 const {ensureArray} = require(`../../utils`);
 const upload = require(`../middleware/upload`);
+const {OFFERS_PER_PAGE} = require(`../../constants`);
 
 const api = require(`../api`).getAPI();
 const offersRouter = new Router();
@@ -52,7 +53,31 @@ offersRouter.get(`/:id`, async (req, res) => {
   }
 });
 
-offersRouter.get(`/category/:id`, (req, res) => res.render(`category`, {}));
+offersRouter.get(`/category/:id`, async (req, res) => {
+  const {id} = req.params;
+  let {page = 1} = req.query;
+  page = +page;
+
+  const limit = OFFERS_PER_PAGE;
+  const offset = (page - 1) * OFFERS_PER_PAGE;
+
+  const [{count, offers}, categories] = await Promise.all([
+    api.getOffersByCategory({limit, offset, id}),
+    api.getCategories(true)
+  ]);
+
+  const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
+  const category = categories.find((it) => it.id === +id);
+
+  res.render(`category`, {
+    categories,
+    category,
+    offers,
+    id,
+    page,
+    totalPages
+  });
+});
 
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {error} = req.query;

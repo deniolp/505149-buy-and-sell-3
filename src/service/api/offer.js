@@ -50,6 +50,22 @@ module.exports = (app, offerService, commentService) => {
         .json(offer);
   });
 
+  route.get(`/category/:categoryId`, routeParamsValidator, async (req, res) => {
+    const {categoryId} = req.params;
+    const {limit, offset} = req.query;
+
+    const result = await offerService.findByCategory({limit, offset, categoryId});
+
+    if (!result) {
+      logger.error(`Did not find offers with category ${categoryId}`);
+      return res.status(HttpCode.NOT_FOUND)
+        .send(`Did not find offers with category ${categoryId}`);
+    }
+
+    return res.status(HttpCode.OK)
+      .json(result);
+  });
+
   route.post(`/`, offerValidator, async (req, res) => {
     const offer = await offerService.create(req.body);
 
