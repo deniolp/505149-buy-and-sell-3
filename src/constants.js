@@ -20,6 +20,16 @@ module.exports.MULTER_ERRORS = {
   NOT_IMAGE: `The file is not an image!`
 };
 
+module.exports.RegisterMessage = {
+  USER_ALREADY_REGISTER: `User with such email already exists`,
+  WRONG_EMAIL: `Field "name" contains invalid characters`,
+  REQUIRED_FIELD: `Field is required to be filled`,
+  MIN_PASSWORD_LENGTH: `Password has to be at least 6 characters`,
+  PASSWORDS_NOT_EQUALS: `Passwords do not match`,
+  EMPTY_VALUE: `Empty value is not permitted`,
+  EMPTY_VALUE_IMAGE: `No "image" received or invalid file type`,
+};
+
 module.exports.ExitCode = {
   error: 1,
   success: 0,
