@@ -6,6 +6,7 @@ const sequelize = require(`../lib/sequelize`);
 const defineModels = require(`../models`);
 const category = require(`../api/category`);
 const offer = require(`../api/offer`);
+const user = require(`../api/user`);
 const search = require(`../api/search`);
 
 const {
@@ -13,6 +14,7 @@ const {
   SearchService,
   OfferService,
   CommentService,
+  UserService,
 } = require(`../data-service`);
 
 defineModels(sequelize);
@@ -23,6 +25,7 @@ const createApi = async () => {
   category(agregatingRouter, new CategoryService(sequelize));
   offer(agregatingRouter, new OfferService(sequelize), new CommentService(sequelize));
   search(agregatingRouter, new SearchService(sequelize));
+  user(agregatingRouter, new UserService(sequelize));
 
   return agregatingRouter;
 };
