@@ -17,17 +17,15 @@ const {
 
 const users = [
   {
-    firstName: `Иван`,
-    lastName: `Иванов`,
+    name: `Иван Иванов`,
     email: `arteta@gmail.com`,
-    password: `qwertyss`,
+    passwordHash: `qwertyss`,
     avatar: `image.jpg`,
   },
   {
-    firstName: `Сергей`,
-    lastName: `Сидоров`,
+    name: `Сергей Сидоров`,
     email: `barguzin@gmail.com`,
-    password: `qwertyss`,
+    passwordHash: `qwertyss`,
     avatar: `image2.jpg`,
   }
 ];

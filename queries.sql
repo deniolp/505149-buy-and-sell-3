@@ -25,7 +25,7 @@ RIGHT JOIN offers_categories
 GROUP BY id
 ORDER BY count(id) DESC;
 
--- Список объявлений (идентификатор объявления, заголовок объявления, стоимость, тип объявления, текст объявления, дата публикации, имя и фамилия автора, контактный email, количество комментариев, наименование категорий). Сначала свежие объявления
+-- Список объявлений (идентификатор объявления, заголовок объявления, стоимость, тип объявления, текст объявления, дата публикации, имя автора, контактный email, количество комментариев, наименование категорий). Сначала свежие объявления
 SELECT
   offers.id AS "ID",
   offers.title AS "Заголовок",
@@ -33,7 +33,7 @@ SELECT
   offers."type" AS "Тип",
   offers.description AS "Описание",
   offers.created_date AS "Дата создания",
-  concat(users.first_name, ' ', users.last_name) AS "Имя и фамилия",
+  users.name AS "Имя",
   users.email AS "Email",
   count(comments) AS "Количество комментариев",
   aggr_categories.str_categories as "Жанры"
@@ -56,10 +56,10 @@ LEFT JOIN
   ORDER BY offers.id
 ) aggr_categories
   ON offers.id = aggr_categories.offer_id
-GROUP BY offers.id, users.first_name, users.last_name, users.email, aggr_categories.str_categories
+GROUP BY offers.id, users.name, users.email, aggr_categories.str_categories
 ORDER BY offers.id;
 
--- Полная информация определённого объявления (идентификатор объявления, заголовок объявления, стоимость, тип объявления, текст объявления, дата публикации, имя и фамилия автора, контактный email, количество комментариев, наименование категорий)
+-- Полная информация определённого объявления (идентификатор объявления, заголовок объявления, стоимость, тип объявления, текст объявления, дата публикации, имя автора, контактный email, количество комментариев, наименование категорий)
 SELECT
   offers.id AS "ID",
   offers.title AS "Заголовок",
@@ -67,7 +67,7 @@ SELECT
   offers."type" AS "Тип",
   offers.description AS "Описание",
   offers.created_date AS "Дата создания",
-  concat(users.first_name, ' ', users.last_name) AS "Имя и фамилия",
+  users.name AS "Имя",
   users.email AS "Email",
   count(comments) AS "Количество комментариев",
   aggr_categories.str_categories as "Жанры"
@@ -91,28 +91,28 @@ LEFT JOIN
 ) aggr_categories
   ON offers.id = aggr_categories.offer_id
 WHERE offers.id = 4
-GROUP BY offers.id, users.first_name, users.last_name, users.email, aggr_categories.str_categories;
+GROUP BY offers.id, users.name, users.email, aggr_categories.str_categories;
 
--- Список из 5 свежих комментариев (идентификатор комментария, идентификатор объявления, имя и фамилия автора, текст комментария)
+-- Список из 5 свежих комментариев (идентификатор комментария, идентификатор объявления, имя автора, текст комментария)
 SELECT
 	comments.id as "ID Комментария",
 	offers.id AS "ID Объявления",
-	concat(users.first_name, ' ', users.last_name) AS "Имя и фамилия",
+	users.name AS "Имя",
 	comments."text" AS "Текст комментария"
 FROM "comments"
 LEFT JOIN offers
   ON comments.offer_id = offers.id
 LEFT JOIN users
   ON comments.user_id = users.id
-GROUP BY comments.id, offers.id, users.first_name, users.last_name
+GROUP BY comments.id, offers.id, users.name
 ORDER BY comments.created_date DESC
 LIMIT 5;
 
--- Список комментариев для определённого объявления (идентификатор комментария, идентификатор объявления, имя и фамилия автора, текст комментария). Сначала новые комментарии
+-- Список комментариев для определённого объявления (идентификатор комментария, идентификатор объявления, имя автора, текст комментария). Сначала новые комментарии
 SELECT
 	comments.id as "ID Комментария",
 	offers.id AS "ID Объявления",
-	concat(users.first_name, ' ', users.last_name) AS "Имя и фамилия",
+	users.name AS "Имя",
 	comments."text" as "Текст комментария"
 FROM offers
 LEFT JOIN "comments"
@@ -120,7 +120,7 @@ LEFT JOIN "comments"
 LEFT JOIN users
   ON offers.user_id = users.id
 WHERE offers.id = 2
-GROUP BY offers.id, comments.id, users.first_name, users.last_name
+GROUP BY offers.id, comments.id, users.name
 ORDER BY comments.created_date DESC;
 
 -- 2 объявления, соответствующих типу «куплю»

@@ -1,7 +1,6 @@
 -- Список всех объявлений с информацией об авторе
 SELECT
-  users.first_name AS "Имя",
-  users.last_name AS "Фамилия",
+  users.name AS "Имя",
   offers.title AS "Объявление",
   offers.sum AS "Цена",
   offers.created_date AS "Дата"
@@ -11,8 +10,7 @@ INNER JOIN users
 
 -- Список всех комментариев с иформацией об авторе
 SELECT
-  users.first_name AS "Имя",
-  users.last_name AS "Фамилия",
+  users.name AS "Имя",
   offers.title AS "Объявление",
   comments.text AS "Комментарий"
 FROM comments
@@ -20,7 +18,7 @@ INNER JOIN users
   ON comments.user_id = users.id
 INNER JOIN offers
   ON comments.offer_id = offers.id
-ORDER BY users.first_name;
+ORDER BY users.name;
 
 -- Список всех объявлений с указанием всех категорий
 SELECT

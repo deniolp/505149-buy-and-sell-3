@@ -4,14 +4,8 @@ const {Model, DataTypes} = require(`sequelize`);
 
 class User extends Model {}
 const define = (sequelize) => User.init({
-  firstName: {
+  name: {
     type: DataTypes.STRING,
-    field: `first_name`,
-    allowNull: false,
-  },
-  lastName: {
-    type: DataTypes.STRING,
-    field: `last_name`,
     allowNull: false,
   },
   email: {
@@ -19,13 +13,14 @@ const define = (sequelize) => User.init({
     allowNull: false,
     unique: true,
   },
-  password: {
+  passwordHash: {
     type: DataTypes.STRING,
     allowNull: false,
     // TODO: Как валидировать длину пароля?
   },
   avatar: {
     type: DataTypes.STRING,
+    allowNull: false,
   },
 }, {
   sequelize,

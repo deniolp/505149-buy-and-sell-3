@@ -1,6 +1,6 @@
 INSERT INTO users VALUES
-(1, 'Иван', 'Иванов', 'arteta@gmail.com', 'qwertyss', 'image.jpg'),
-(2, 'Сергей', 'Сидоров', 'barguzin@gmail.com', 'qwertyss', 'image2.jpg');
+(1, 'Иван Иванов', 'arteta@gmail.com', 'qwertyss', 'image.jpg'),
+(2, 'Сергей Сидоров', 'barguzin@gmail.com', 'qwertyss', 'image2.jpg');
 
 INSERT INTO categories VALUES
 (1, 'Книги', 'picture.png'),
