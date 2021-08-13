@@ -14,7 +14,7 @@ module.exports.TIMEOUT = 1000;
 module.exports.OFFERS_PER_PAGE = 8;
 module.exports.SALT_ROUNDS = 10;
 module.exports.MAX_FILE_SIZE = 2 * 1024 * 1024;
-module.exports.ALLOWED_TYPES = [`image/jpeg`, `image/png`];
+module.exports.ALLOWED_TYPES = [`image/jpeg`, `image/png`, `image/jpg`];
 
 module.exports.MULTER_ERRORS = {
   FILE_TOO_LARGE: `File too large`,
