@@ -7,12 +7,19 @@ const Aliase = require(`../models/aliases`);
 class SearchService {
   constructor(sequelize) {
     this._Offer = sequelize.models.offer;
+    this._User = sequelize.models.user;
   }
 
   async findAll({offset, limit, query}) {
     const queryWithCapFirst = query.charAt(0).toUpperCase() + query.slice(1);
     const queryWithLowFirst = query.charAt(0).toLowerCase() + query.slice(1);
-    const include = [Aliase.CATEGORIES];
+    const include = [Aliase.CATEGORIES, {
+      model: this._User,
+      as: Aliase.USERS,
+      attributes: {
+        exclude: [`passwordHash`]
+      }
+    }];
     const order = [[`created_date`, `DESC`]];
     const where = {
       title: {
