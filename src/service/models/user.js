@@ -16,7 +16,6 @@ const define = (sequelize) => User.init({
   passwordHash: {
     type: DataTypes.STRING,
     allowNull: false,
-    // TODO: Как валидировать длину пароля?
   },
   avatar: {
     type: DataTypes.STRING,
