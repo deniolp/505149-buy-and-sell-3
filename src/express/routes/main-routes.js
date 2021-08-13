@@ -21,12 +21,13 @@ mainRouter.get(`/`, async (req, res) => {
   const offset = (page - 1) * OFFERS_PER_PAGE;
 
   try {
+    const allOffers = await api.getOffers({comments: true});
     const [{count, offers}, categories] = await Promise.all([
-      api.getOffers({limit, offset, comments: true}),
+      api.getOffers({limit, offset, comments: false}),
       api.getCategories(true)
     ]);
 
-    const mostDiscussed = offers.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 8);
+    const mostDiscussed = allOffers.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 8);
 
     const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
     return res.render(`main`, {
