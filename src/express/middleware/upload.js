@@ -25,7 +25,6 @@ const upload = multer({
     if (ALLOWED_TYPES.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      // TODO: Как отправлять в разные места
       cb(new Error(MULTER_ERRORS.NOT_IMAGE), false);
     }
   }
