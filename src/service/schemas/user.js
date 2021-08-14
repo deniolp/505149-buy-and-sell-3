@@ -8,7 +8,7 @@ module.exports = Joi.object({
   name: Joi.string().pattern(/[^0-9$&+,:;=?@#|'<>.^*()%!]+$/)
     .required()
     .messages({
-      'string.pattern.base': RegisterMessage.WRONG_EMAIL,
+      'string.pattern.base': RegisterMessage.WRONG_NAME,
       'any.required': RegisterMessage.REQUIRED_FIELD,
     }),
 
