@@ -23,7 +23,7 @@ offersRouter.get(`/add`, async (req, res) => {
 offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
   const {body, file} = req;
   const offerData = {
-    picture: file.filename,
+    picture: file ? file.filename : res.redirect(`/offers/add?error=There is no file was selected.`),
     sum: body.sum,
     type: body.action,
     description: body.description,
