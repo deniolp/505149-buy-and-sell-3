@@ -4,7 +4,7 @@ const {HttpCode} = require(`../../constants`);
 const {getLogger} = require(`../lib/logger`);
 
 const logger = getLogger({
-  name: `api-server`,
+  name: `api-server-mdwr-offer-exist`,
 });
 
 module.exports = (service) => async (req, res, next) => {

@@ -7,7 +7,7 @@ const {getLogger} = require(`../lib/logger`);
 const FILENAME = `mocks.json`;
 
 const logger = getLogger({
-  name: `api-server`,
+  name: `api-server-make-mock-data`,
 });
 let data = [];
 

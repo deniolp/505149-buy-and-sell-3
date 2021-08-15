@@ -4,7 +4,7 @@ const {getLogger} = require(`../lib/logger`);
 const packageJsonFile = require(`../../../package.json`);
 
 const logger = getLogger({
-  name: `api-server`,
+  name: `api-server-version`,
 });
 
 module.exports = {
