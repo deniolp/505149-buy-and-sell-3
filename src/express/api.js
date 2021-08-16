@@ -44,6 +44,10 @@ class API {
     return this._load(`/categories`, {params: {needCount}});
   }
 
+  async getOffersByCategory({id, offset, limit}) {
+    return this._load(`/offers/category/${id}`, {params: {offset, limit}});
+  }
+
   async createOffer(data) {
     return this._load(`/offers`, {
       method: HttpMethod.POST,
@@ -53,6 +57,13 @@ class API {
 
   createComment(id, data) {
     return this._load(`/offers/${id}/comments`, {
+      method: HttpMethod.POST,
+      data
+    });
+  }
+
+  createUser(data) {
+    return this._load(`/user`, {
       method: HttpMethod.POST,
       data
     });

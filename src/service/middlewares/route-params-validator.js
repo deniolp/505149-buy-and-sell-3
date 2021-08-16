@@ -10,6 +10,9 @@ const schema = Joi.object({
     .min(1),
   commentId: Joi.number()
     .integer()
+    .min(1),
+  categoryId: Joi.number()
+    .integer()
     .min(1)
 });
 

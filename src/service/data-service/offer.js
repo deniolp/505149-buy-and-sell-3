@@ -14,25 +14,62 @@ class OfferService {
     this._Offer = sequelize.models.offer;
     this._Comment = sequelize.models.comment;
     this._Category = sequelize.models.category;
+    this._User = sequelize.models.user;
   }
 
   async findAll(needComments) {
-    const include = [Aliase.CATEGORIES];
+    const include = [Aliase.CATEGORIES, {
+      model: this._User,
+      as: Aliase.USERS,
+      attributes: {
+        exclude: [`passwordHash`]
+      }
+    }];
     const order = [[`created_date`, `DESC`]];
 
     if (needComments) {
-      include.push(Aliase.COMMENTS);
+      include.push({
+        model: this._Comment,
+        as: Aliase.COMMENTS,
+        include: [
+          {
+            model: this._User,
+            as: Aliase.USERS,
+            attributes: {
+              exclude: [`passwordHash`]
+            }
+          }
+        ]
+      });
     }
     const offers = await this._Offer.findAll({include, order});
     return offers.map((item) => item.get());
   }
 
   async findPage({limit, offset, comments}) {
-    const include = [Aliase.CATEGORIES];
+    const include = [Aliase.CATEGORIES, {
+      model: this._User,
+      as: Aliase.USERS,
+      attributes: {
+        exclude: [`passwordHash`]
+      }
+    }];
     const order = [[`created_date`, `DESC`]];
 
     if (comments) {
-      include.push(Aliase.COMMENTS);
+      include.push({
+        model: this._Comment,
+        as: Aliase.COMMENTS,
+        include: [
+          {
+            model: this._User,
+            as: Aliase.USERS,
+            attributes: {
+              exclude: [`passwordHash`]
+            }
+          }
+        ]
+      });
     }
 
     const {count, rows} = await this._Offer.findAndCountAll({
@@ -59,11 +96,64 @@ class OfferService {
   }
 
   async findOne(id, needComments) {
-    const include = [Aliase.CATEGORIES];
+    const include = [Aliase.CATEGORIES, {
+      model: this._User,
+      as: Aliase.USERS,
+      attributes: {
+        exclude: [`passwordHash`]
+      }
+    }];
     if (needComments) {
-      include.push(Aliase.COMMENTS);
+      include.push({
+        model: this._Comment,
+        as: Aliase.COMMENTS,
+        include: [
+          {
+            model: this._User,
+            as: Aliase.USERS,
+            attributes: {
+              exclude: [`passwordHash`]
+            }
+          }
+        ]
+      });
     }
     return await this._Offer.findByPk(id, {include});
+  }
+
+  async findByCategory({limit, offset, categoryId}) {
+    const include = [Aliase.CATEGORIES, Aliase.COMMENTS, {
+      model: this._User,
+      as: Aliase.USERS,
+      attributes: {
+        exclude: [`passwordHash`]
+      }
+    }];
+    const {count, rows} = await this._Offer.findAndCountAll({
+      attributes: [`id`],
+      include: [{
+        model: this._Category,
+        as: Aliase.CATEGORIES,
+        attributes: [],
+        where: {
+          id: categoryId
+        },
+      }],
+      limit,
+      offset,
+      raw: true
+    });
+
+    const offers = await this._Offer.findAll({
+      include,
+      where: {
+        id: {
+          [Op.in]: rows.map((it) => it.id)
+        }
+      },
+    });
+
+    return {count, offers};
   }
 
   async update(id, offer) {

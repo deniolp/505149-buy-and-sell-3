@@ -20,7 +20,7 @@ const createApp = async () => {
   app.use(express.json());
 
   app.use((req, res, next) => {
-    logger.debug(`Start request to url ${req.url}`);
+    logger.debug(`Start request to url ${req.url}, ${req.method} method`);
     res.on(`finish`, () => {
       logger.info(`Response status code: ${res.statusCode}`);
     });

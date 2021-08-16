@@ -21,6 +21,7 @@ const define = (sequelize) => {
     foreignKey: `userId`,
   });
   Offer.belongsTo(User, {
+    as: Aliase.USERS,
     foreignKey: `userId`
   });
 
@@ -29,12 +30,14 @@ const define = (sequelize) => {
     foreignKey: `userId`,
   });
   Comment.belongsTo(User, {
+    as: Aliase.USERS,
     foreignKey: `userId`
   });
 
   Offer.hasMany(Comment, {
     as: Aliase.COMMENTS,
-    foreignKey: `offerId`
+    foreignKey: `offerId`,
+    onDelete: `cascade`
   });
   Comment.belongsTo(Offer, {
     foreignKey: `offerId`

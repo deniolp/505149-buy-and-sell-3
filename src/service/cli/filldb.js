@@ -5,6 +5,7 @@ const fs = require(`fs`).promises;
 const sequelize = require(`../lib/sequelize`);
 const {getLogger} = require(`../lib/logger`);
 const initDatabase = require(`../lib/init-db`);
+const passwordUtils = require(`../lib/password`);
 const {getRandomInt, shuffle, OfferType, SumRestrict, PictureRestrict, getPictureFileName, makeMockData, readContent} = require(`../../utils`);
 
 const {
@@ -15,28 +16,28 @@ const {
   MAX_COMMENTS
 } = require(`../../constants`);
 
-const users = [
-  {
-    firstName: `Иван`,
-    lastName: `Иванов`,
-    email: `arteta@gmail.com`,
-    password: `qwertyss`,
-    avatar: `image.jpg`,
-  },
-  {
-    firstName: `Сергей`,
-    lastName: `Сидоров`,
-    email: `barguzin@gmail.com`,
-    password: `qwertyss`,
-    avatar: `image2.jpg`,
-  }
-];
-
 const logger = getLogger({
   name: `api-filldb`,
 });
 
-const generateComments = (count, comments) => (
+const getUsers = async () => {
+  return [
+    {
+      name: `Иван Иванов`,
+      email: `arteta@gmail.com`,
+      passwordHash: await passwordUtils.hash(`ivanov`),
+      avatar: `avatar01.jpg`,
+    },
+    {
+      name: `Сергей Сидоров`,
+      email: `barguzin@gmail.com`,
+      passwordHash: await passwordUtils.hash(`sidorov`),
+      avatar: `avatar02.jpg`,
+    }
+  ];
+};
+
+const generateComments = (count, comments, users) => (
   Array(count).fill({}).map(() => ({
     text: shuffle(comments)
       .slice(0, getRandomInt(1, 3))
@@ -45,7 +46,7 @@ const generateComments = (count, comments) => (
   }))
 );
 
-const generateOffers = (count, mockData) => (
+const generateOffers = (count, mockData, users) => (
   Array(count).fill({}).map(() => ({
     type: Object.keys(OfferType)[Math.floor(Math.random() * Object.keys(OfferType).length)],
     title: mockData.titles[getRandomInt(0, mockData.titles.length - 1)],
@@ -53,7 +54,7 @@ const generateOffers = (count, mockData) => (
     sum: getRandomInt(SumRestrict.min, SumRestrict.max),
     picture: getPictureFileName(getRandomInt(PictureRestrict.min, PictureRestrict.max)),
     categories: shuffle(mockData.categories).slice(0, getRandomInt(1, mockData.categories.length - 1)),
-    comments: generateComments(getRandomInt(1, MAX_COMMENTS), mockData.comments),
+    comments: generateComments(getRandomInt(1, MAX_COMMENTS), mockData.comments, users),
     user: users[getRandomInt(0, users.length - 1)].email,
   }))
 );
@@ -81,7 +82,8 @@ module.exports = {
     const files = await fs.readdir(TXT_FILES_DIR);
     const mockData = await makeMockData(files);
     const categories = await readContent(`categories`);
-    const offers = generateOffers(countOffers, mockData);
+    const users = await getUsers();
+    const offers = generateOffers(countOffers, mockData, users);
 
     return initDatabase(sequelize, {offers, categories, users});
   }

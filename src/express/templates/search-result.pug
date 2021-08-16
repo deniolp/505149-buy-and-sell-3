@@ -18,7 +18,7 @@ block content
                   +ticketLabel(offer.type)
                   .ticket-card__categories
                     each category in offer.categories
-                      a(href='#')= category.title
+                      a(href=`/offers/category/${category.id}`)= category.title
                     .ticket-card__header
                       h3.ticket-card__title
                         a(href=`/offers/${offer.id}`)= offer.title
@@ -34,7 +34,7 @@ block content
         .tickets-list__header
           p.tickets-list__title Самое свежее
           unless !moreOffersQty
-            a.tickets-list__link(href='#') Еще #{moreOffersQty}
+            a.tickets-list__link(href=`?page=${page + 1}&query=${query}`)= `${moreOffersQty > 0 ? `Еще ` + moreOffersQty : ``}`
         ul
           each offer in mostDiscussed
             li.tickets-list__item
@@ -45,7 +45,7 @@ block content
                   +ticketLabel(offer.type)
                   .ticket-card__categories
                     each category in offer.categories
-                      a(href='#')= category.title
+                      a(href=`/offers/category/${category.id}`)= category.title
                     .ticket-card__header
                       h3.ticket-card__title
                         a(href=`/offers/${offer.id}`)= offer.title

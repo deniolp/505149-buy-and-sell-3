@@ -1,6 +1,7 @@
 'use strict';
 
 const {getLogger} = require(`../lib/logger`);
+const Aliase = require(`../models/aliases`);
 
 const logger = getLogger({
   name: `data-service-comments`,
@@ -10,6 +11,7 @@ class CommentService {
   constructor(sequelize) {
     this._Offer = sequelize.models.offer;
     this._Comment = sequelize.models.comment;
+    this._User = sequelize.models.user;
   }
 
   async create(offerId, comment) {
@@ -44,7 +46,13 @@ class CommentService {
     try {
       return await this._Comment.findAll({
         where: {offerId},
-        raw: true
+        include: {
+          model: this._User,
+          as: Aliase.USERS,
+          attributes: {
+            exclude: [`passwordHash`]
+          }
+        },
       });
     } catch (error) {
       logger.error(`Can not find comments of offer with id ${offerId}. Error: ${error}`);

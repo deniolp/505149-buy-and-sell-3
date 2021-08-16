@@ -12,6 +12,24 @@ module.exports.PUBLIC_DIR = `files`;
 module.exports.UPLOAD_DIR = `upload`;
 module.exports.TIMEOUT = 1000;
 module.exports.OFFERS_PER_PAGE = 8;
+module.exports.SALT_ROUNDS = 10;
+module.exports.MAX_FILE_SIZE = 2 * 1024 * 1024;
+module.exports.ALLOWED_TYPES = [`image/jpeg`, `image/png`, `image/jpg`];
+
+module.exports.MULTER_ERRORS = {
+  FILE_TOO_LARGE: `File too large`,
+  NOT_IMAGE: `The file is not an image!`
+};
+
+module.exports.RegisterMessage = {
+  USER_ALREADY_REGISTER: `User with such email already exists`,
+  WRONG_NAME: `Field "name" contains invalid characters`,
+  REQUIRED_FIELD: `Field is required to be filled`,
+  MIN_PASSWORD_LENGTH: `Password has to be at least 6 characters`,
+  PASSWORDS_NOT_EQUALS: `Passwords do not match`,
+  EMPTY_VALUE: `Empty value is not permitted`,
+  EMPTY_VALUE_IMAGE: `No "image" received or invalid file type`,
+};
 
 module.exports.ExitCode = {
   error: 1,

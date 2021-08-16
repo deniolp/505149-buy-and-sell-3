@@ -10,11 +10,7 @@ module.exports = (app, service) => {
   app.use(`/search`, route);
 
   route.get(`/`, async (req, res) => {
-    const {offset, limit, query = ``} = req.query;
-    if (!query) {
-      res.status(HttpCode.BAD_REQUEST).json([]);
-      return;
-    }
+    const {offset, limit, query} = req.query;
 
     const searchResults = await service.findAll({offset, limit, query});
 

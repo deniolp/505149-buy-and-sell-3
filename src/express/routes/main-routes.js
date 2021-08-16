@@ -3,9 +3,15 @@
 const {Router} = require(`express`);
 
 const api = require(`../api`).getAPI();
+const {getLogger} = require(`../../service/lib/logger`);
+const upload = require(`../middleware/upload`);
 const {OFFERS_PER_PAGE} = require(`../../constants`);
 
 const mainRouter = new Router();
+
+const logger = getLogger({
+  name: `main-routes`,
+});
 
 mainRouter.get(`/`, async (req, res) => {
   let {page = 1} = req.query;
@@ -14,25 +20,52 @@ mainRouter.get(`/`, async (req, res) => {
   const limit = OFFERS_PER_PAGE;
   const offset = (page - 1) * OFFERS_PER_PAGE;
 
-  const [{count, offers}, categories] = await Promise.all([
-    api.getOffers({limit, offset, comments: true}),
-    api.getCategories(true)
-  ]);
+  try {
+    const allOffers = await api.getOffers({comments: true});
+    const [{count, offers}, categories] = await Promise.all([
+      api.getOffers({limit, offset, comments: false}),
+      api.getCategories(true)
+    ]);
 
-  const mostDiscussed = offers.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 8);
+    const mostDiscussed = allOffers.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 8);
 
-  const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
-  res.render(`main`, {
-    offers,
-    categories,
-    title: `Главная страница`,
-    mostDiscussed,
-    page,
-    totalPages,
-  });
+    const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
+    return res.render(`main`, {
+      offers,
+      categories,
+      title: `Главная страница`,
+      mostDiscussed,
+      page,
+      totalPages,
+    });
+  } catch (error) {
+    logger.error(error.message);
+    return res.render(`errors/500`, {title: `Ошибка сервера`});
+  }
 });
 
-mainRouter.get(`/register`, (req, res) => res.render(`register`, {}));
+mainRouter.get(`/register`, (req, res) => {
+  const {error} = req.query;
+  res.render(`register`, {error});
+});
+
+mainRouter.post(`/register`, upload.single(`avatar`), async (req, res) => {
+  const {body, file} = req;
+  const userData = {
+    avatar: file.filename,
+    name: body[`user-name`],
+    email: body[`user-email`],
+    password: body[`user-password`],
+    passwordRepeated: body[`user-password-again`]
+  };
+
+  try {
+    await api.createUser(userData);
+    res.redirect(`/login`);
+  } catch (error) {
+    res.redirect(`/register?error=${encodeURIComponent(error.response.data)}`);
+  }
+});
 
 mainRouter.get(`/login`, (req, res) => res.render(`login`, {}));
 
@@ -44,21 +77,29 @@ mainRouter.get(`/search`, async (req, res) => {
   const limit = OFFERS_PER_PAGE;
   const offset = (page - 1) * OFFERS_PER_PAGE;
 
-  const [offers, {count, foundOffers}] = await Promise.all([
-    api.getOffers({comments: true}),
-    api.search({limit, offset, query})
-  ]);
+  try {
+    const offers = await api.getOffers({comments: true});
 
-  const mostDiscussed = offers.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 8);
+    const mostDiscussed = offers.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 8);
 
-  const moreOffersQty = count >= OFFERS_PER_PAGE ? (count) - OFFERS_PER_PAGE : null;
+    if (!query) {
+      return res.render(`search-empty`, {mostDiscussed});
+    }
 
-  const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
+    const {count, foundOffers} = await api.search({limit, offset, query});
 
-  if (foundOffers.length > 0) {
-    res.render(`search-result`, {count, foundOffers, mostDiscussed, page, totalPages, query, moreOffersQty});
-  } else {
-    res.render(`search-empty`, {mostDiscussed});
+    const moreOffersQty = count >= OFFERS_PER_PAGE ? (count - offset) - OFFERS_PER_PAGE : null;
+
+    const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
+
+    if (foundOffers.length > 0) {
+      return res.render(`search-result`, {count, foundOffers, mostDiscussed, page, totalPages, query, moreOffersQty});
+    } else {
+      return res.render(`search-empty`, {mostDiscussed});
+    }
+  } catch (error) {
+    logger.error(error.message);
+    return res.render(`errors/500`, {title: `Ошибка сервера`});
   }
 });
 
