@@ -28,10 +28,10 @@ block content
                 span  #{`${formatDate(offer[`created_date`])}`}
               p
                 b Автор:
-                a(href='#')  #{user.name}
+                a(href='#')  #{offer.users.name}
               p
                 b Контакты:
-                a(href=`mailto:${user.email}`)  #{user.email}
+                a(href=`mailto:${offer.users.email}`)  #{offer.users.email}
             ul.ticket__tags
               each category in offer.categories
                 li
@@ -41,19 +41,20 @@ block content
                     span.category-tile__label= category.title
         .ticket__comments
           h2.ticket__subtitle Коментарии
-          .ticket__comment-form
-            form.form.comment-form(action=`/offers/${id}/comments` method='post' enctype='multipart/form-data')
-              .comment-form__header
-                a.comment-form__avatar.avatar(href='#')
-                  img(src=`/img/${user.avatar}` alt='Аватар пользователя')
-                p.comment-form__author Вам слово
-              .comment-form__field
-                .form__field
-                  textarea#comment-field.js-field(name='text' cols='30' rows='10' minlength='20' maxlength='400')
-                  label(for='comment-field') Текст комментария
-                  span Обязательное поле
-              +errorMessage(error)
-              button.comment-form__button.btn.btn--white.js-button(type='submit' disabled='') Отправить
+          if user
+            .ticket__comment-form
+              form.form.comment-form(action=`/offers/${id}/comments` method='post' enctype='multipart/form-data')
+                .comment-form__header
+                  a.comment-form__avatar.avatar(href='#')
+                    img(src=`/img/${user.avatar}` alt='Аватар пользователя')
+                  p.comment-form__author Вам слово
+                .comment-form__field
+                  .form__field
+                    textarea#comment-field.js-field(name='text' cols='30' rows='10' minlength='20' maxlength='400')
+                    label(for='comment-field') Текст комментария
+                    span Обязательное поле
+                +errorMessage(error)
+                button.comment-form__button.btn.btn--white.js-button(type='submit' disabled='') Отправить
           .ticket__comments-list
             ul.comments-list
               each comment in offer.comments
