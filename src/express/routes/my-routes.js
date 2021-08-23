@@ -14,7 +14,7 @@ myRouter.get(`/`, async (req, res) => {
 
 myRouter.get(`/comments`, async (req, res) => {
   const {user} = req.session;
-  const offers = await api.getOffers({comments: true});
+  const offers = await api.getOffers({comments: true, userId: user.id});
   res.render(`comments`, {offers, user});
 });
 

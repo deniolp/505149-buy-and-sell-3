@@ -82,6 +82,36 @@ class OfferService {
     return {count, offers: rows};
   }
 
+  async findAllByUser(userId) {
+    const include = [{
+      model: this._User,
+      as: Aliase.USERS,
+      attributes: {
+        exclude: [`passwordHash`]
+      }
+    },
+    {
+      model: this._Comment,
+      as: Aliase.COMMENTS,
+      include: [
+        {
+          model: this._User,
+          as: Aliase.USERS,
+          attributes: {
+            exclude: [`passwordHash`]
+          }
+        }
+      ],
+      where: {
+        userId
+      }
+    }];
+
+    const order = [[`created_date`, `DESC`]];
+    const offers = await this._Offer.findAll({include, order});
+    return offers.map((item) => item.get());
+  }
+
   async create(offerData) {
     const offer = await this._Offer.create(offerData);
     await offer.addCategories(offerData.categories);
