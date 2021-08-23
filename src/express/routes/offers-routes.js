@@ -1,6 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
+const csrf = require(`csurf`);
 
 const {getLogger} = require(`../../service/lib/logger`);
 const {ensureArray} = require(`../../utils`);
@@ -15,14 +16,16 @@ const logger = getLogger({
   name: `offers-routes`,
 });
 
-offersRouter.get(`/add`, auth, async (req, res) => {
+const csrfProtection = csrf();
+
+offersRouter.get(`/add`, auth, csrfProtection, async (req, res) => {
   const {user} = req.session;
   const {error} = req.query;
   const categories = await api.getCategories(false);
-  res.render(`new-offer`, {categories, error, user});
+  res.render(`new-offer`, {categories, error, user, csrfToken: req.csrfToken()});
 });
 
-offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
+offersRouter.post(`/add`, upload.single(`avatar`), csrfProtection, async (req, res) => {
   const {user} = req.session;
   const {body, file} = req;
   const offerData = {
@@ -44,13 +47,13 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
   }
 });
 
-offersRouter.get(`/:id`, async (req, res) => {
+offersRouter.get(`/:id`, csrfProtection, async (req, res) => {
   const {user} = req.session;
   const {id} = req.params;
   const {error} = req.query;
   try {
     const offer = await api.getOffer(id, true);
-    res.render(`offer`, {offer, id, error, user});
+    res.render(`offer`, {offer, id, error, user, csrfToken: req.csrfToken()});
   } catch (err) {
     res.status(err.response.status).render(`errors/404`, {title: `Страница не найдена`});
   }
@@ -84,7 +87,7 @@ offersRouter.get(`/category/:id`, async (req, res) => {
   });
 });
 
-offersRouter.get(`/edit/:id`, auth, async (req, res) => {
+offersRouter.get(`/edit/:id`, auth, csrfProtection, async (req, res) => {
   const {user} = req.session;
   const {error} = req.query;
   const {id} = req.params;
@@ -94,13 +97,20 @@ offersRouter.get(`/edit/:id`, auth, async (req, res) => {
       api.getCategories(true)
     ]);
 
-    res.render(`offer-edit`, {offer, categories, id, error, user});
+    res.render(`offer-edit`, {
+      offer,
+      categories,
+      id,
+      error,
+      user,
+      csrfToken: req.csrfToken()
+    });
   } catch (err) {
     res.status(err.response.status).render(`errors/404`, {title: `Страница не найдена`});
   }
 });
 
-offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+offersRouter.post(`/edit/:id`, upload.single(`avatar`), csrfProtection, async (req, res) => {
   const {user} = req.session;
   const {body, file} = req;
   const {id} = req.params;
@@ -122,7 +132,7 @@ offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
   }
 });
 
-offersRouter.post(`/:id/comments`, upload.single(`text`), async (req, res) => {
+offersRouter.post(`/:id/comments`, upload.single(`text`), csrfProtection, async (req, res) => {
   const {user} = req.session;
   const {id} = req.params;
   const {text} = req.body;

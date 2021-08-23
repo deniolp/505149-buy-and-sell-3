@@ -50,6 +50,7 @@ block content
                   p.comment-form__author Вам слово
                 .comment-form__field
                   .form__field
+                    input(type='hidden' name='_csrf' value=`${csrfToken}`)
                     textarea#comment-field.js-field(name='text' cols='30' rows='10' minlength='20' maxlength='400')
                     label(for='comment-field') Текст комментария
                     span Обязательное поле
