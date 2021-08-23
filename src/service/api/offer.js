@@ -26,7 +26,7 @@ module.exports = (app, offerService, commentService) => {
         result = await offerService.findPage({limit, offset, comments});
       } else {
         if (userId) {
-          result = await offerService.findAllByUser(userId);
+          result = await offerService.findAllByUser(userId, comments);
         } else {
           result = await offerService.findAll(comments);
         }

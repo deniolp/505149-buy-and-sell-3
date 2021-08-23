@@ -8,7 +8,7 @@ const myRouter = new Router();
 
 myRouter.get(`/`, async (req, res) => {
   const {user} = req.session;
-  const offers = await api.getOffers({comments: false});
+  const offers = await api.getOffers({comments: false, userId: user.id});
   res.render(`my-offers`, {offers, user});
 });
 
