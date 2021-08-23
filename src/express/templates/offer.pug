@@ -61,7 +61,7 @@ block content
                   .comment-card
                     .comment-card__header
                       a.comment-card__avatar.avatar(href='#')
-                        img(src=`/img/${user.avatar}` alt='Аватар пользователя')
-                      p.comment-card__author= user.name
+                        img(src=`/img/${comment.users.avatar}` alt='Аватар пользователя')
+                      p.comment-card__author #{comment.users.name}
                     .comment-card__content
                       p #{comment.text}
