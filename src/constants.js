@@ -29,6 +29,8 @@ module.exports.RegisterMessage = {
   PASSWORDS_NOT_EQUALS: `Passwords do not match`,
   EMPTY_VALUE: `Empty value is not permitted`,
   EMPTY_VALUE_IMAGE: `No "image" received or invalid file type`,
+  WRONG_EMAIL: `Email is incorrect`,
+  WRONG_PASSWORD: `Password is incorrect`,
 };
 
 module.exports.ExitCode = {
