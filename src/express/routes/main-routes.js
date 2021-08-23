@@ -14,6 +14,7 @@ const logger = getLogger({
 });
 
 mainRouter.get(`/`, async (req, res) => {
+  const {user} = req.session;
   let {page = 1} = req.query;
   page = +page;
 
@@ -37,6 +38,7 @@ mainRouter.get(`/`, async (req, res) => {
       mostDiscussed,
       page,
       totalPages,
+      user
     });
   } catch (error) {
     logger.error(error.message);
@@ -45,8 +47,9 @@ mainRouter.get(`/`, async (req, res) => {
 });
 
 mainRouter.get(`/register`, (req, res) => {
+  const {user} = req.session;
   const {error} = req.query;
-  res.render(`register`, {error});
+  res.render(`register`, {error, user});
 });
 
 mainRouter.post(`/register`, upload.single(`avatar`), async (req, res) => {
@@ -68,8 +71,9 @@ mainRouter.post(`/register`, upload.single(`avatar`), async (req, res) => {
 });
 
 mainRouter.get(`/login`, (req, res) => {
+  const {user} = req.session;
   const {error} = req.query;
-  res.render(`login`, {error});
+  res.render(`login`, {error, user});
 });
 
 mainRouter.post(`/login`, async (req, res) => {
@@ -88,6 +92,7 @@ mainRouter.get(`/logout`, (req, res) => {
 });
 
 mainRouter.get(`/search`, async (req, res) => {
+  const {user} = req.session;
   let {page = 1} = req.query;
   const query = req.query.query;
   page = +page;
@@ -101,7 +106,7 @@ mainRouter.get(`/search`, async (req, res) => {
     const mostDiscussed = offers.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 8);
 
     if (!query) {
-      return res.render(`search-empty`, {mostDiscussed});
+      return res.render(`search-empty`, {mostDiscussed, user});
     }
 
     const {count, foundOffers} = await api.search({limit, offset, query});
@@ -111,9 +116,18 @@ mainRouter.get(`/search`, async (req, res) => {
     const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
 
     if (foundOffers.length > 0) {
-      return res.render(`search-result`, {count, foundOffers, mostDiscussed, page, totalPages, query, moreOffersQty});
+      return res.render(`search-result`, {
+        count,
+        foundOffers,
+        mostDiscussed,
+        page,
+        totalPages,
+        query,
+        moreOffersQty,
+        user
+      });
     } else {
-      return res.render(`search-empty`, {mostDiscussed});
+      return res.render(`search-empty`, {mostDiscussed, user});
     }
   } catch (error) {
     logger.error(error.message);

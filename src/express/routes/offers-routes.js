@@ -15,12 +15,14 @@ const logger = getLogger({
 });
 
 offersRouter.get(`/add`, async (req, res) => {
+  const {user} = req.session;
   const {error} = req.query;
   const categories = await api.getCategories(false);
-  res.render(`new-offer`, {categories, error});
+  res.render(`new-offer`, {categories, error, user});
 });
 
 offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
+  const {user} = req.session;
   const {body, file} = req;
   const offerData = {
     picture: file ? file.filename : res.redirect(`/offers/add?error=There is no file was selected.`),
@@ -29,8 +31,7 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
     description: body.description,
     title: body[`title`],
     categories: ensureArray(body.categories),
-    // TODO: временно
-    userId: 2
+    userId: user.id
   };
 
   try {
@@ -43,17 +44,19 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
 });
 
 offersRouter.get(`/:id`, async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
   const {error} = req.query;
   try {
     const offer = await api.getOffer(id, true);
-    res.render(`offer`, {offer, id, error});
+    res.render(`offer`, {offer, id, error, user});
   } catch (err) {
     res.status(err.response.status).render(`errors/404`, {title: `Страница не найдена`});
   }
 });
 
 offersRouter.get(`/category/:id`, async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
   let {page = 1} = req.query;
   page = +page;
@@ -75,11 +78,13 @@ offersRouter.get(`/category/:id`, async (req, res) => {
     offers,
     id,
     page,
-    totalPages
+    totalPages,
+    user
   });
 });
 
 offersRouter.get(`/edit/:id`, async (req, res) => {
+  const {user} = req.session;
   const {error} = req.query;
   const {id} = req.params;
   try {
@@ -88,13 +93,14 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
       api.getCategories(true)
     ]);
 
-    res.render(`offer-edit`, {offer, categories, id, error});
+    res.render(`offer-edit`, {offer, categories, id, error, user});
   } catch (err) {
     res.status(err.response.status).render(`errors/404`, {title: `Страница не найдена`});
   }
 });
 
 offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+  const {user} = req.session;
   const {body, file} = req;
   const {id} = req.params;
   const offerData = {
@@ -104,8 +110,7 @@ offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
     description: body.description,
     title: body[`title`],
     categories: ensureArray(body.categories),
-    // TODO: временно
-    userId: 1
+    userId: user.id
   };
   try {
     await api.updateOffer(id, offerData);
@@ -117,16 +122,12 @@ offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
 });
 
 offersRouter.post(`/:id/comments`, upload.single(`text`), async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
   const {text} = req.body;
 
-  // TODO: временно
-  let comment = {};
-  comment.userId = 1;
-  comment.text = text;
-
   try {
-    await api.createComment(id, comment);
+    await api.createComment(id, {userId: user.id, text});
     res.redirect(`/offers/${id}`);
   } catch (error) {
     logger.error(error.message);
