@@ -10,3 +10,6 @@
 ## Api server
 
 `API_PORT` - порт api сервера;
+
+## Session
+`SESSION_SECRET` - параметр шифрования сессионных данных;
