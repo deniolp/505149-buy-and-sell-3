@@ -5,6 +5,7 @@ const {Router} = require(`express`);
 const {getLogger} = require(`../../service/lib/logger`);
 const {ensureArray} = require(`../../utils`);
 const upload = require(`../middleware/upload`);
+const auth = require(`../middleware/auth`);
 const {OFFERS_PER_PAGE} = require(`../../constants`);
 
 const api = require(`../api`).getAPI();
@@ -14,7 +15,7 @@ const logger = getLogger({
   name: `offers-routes`,
 });
 
-offersRouter.get(`/add`, async (req, res) => {
+offersRouter.get(`/add`, auth, async (req, res) => {
   const {user} = req.session;
   const {error} = req.query;
   const categories = await api.getCategories(false);
@@ -83,7 +84,7 @@ offersRouter.get(`/category/:id`, async (req, res) => {
   });
 });
 
-offersRouter.get(`/edit/:id`, async (req, res) => {
+offersRouter.get(`/edit/:id`, auth, async (req, res) => {
   const {user} = req.session;
   const {error} = req.query;
   const {id} = req.params;
