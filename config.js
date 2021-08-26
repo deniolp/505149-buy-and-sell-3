@@ -14,4 +14,5 @@ module.exports = {
   DB_DIALECT: process.env.DB_DIALECT || `postgres`,
   DB_PASSWORD: process.env.DB_PASSWORD,
   TEST_DB_PASSWORD: process.env.TEST_DB_PASSWORD,
+  SESSION_SECRET: process.env.SESSION_SECRET,
 };

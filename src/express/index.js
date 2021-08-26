@@ -3,19 +3,45 @@
 const express = require(`express`);
 const path = require(`path`);
 const helmet = require(`helmet`);
+const session = require(`express-session`);
+const SequelizeStore = require(`connect-session-sequelize`)(session.Store);
 
 const myRoutes = require(`./routes/my-routes`);
 const offersRoutes = require(`./routes/offers-routes`);
 const mainRoutes = require(`./routes/main-routes`);
 const {getLogger} = require(`../service/lib/logger`);
-const {APP_PORT} = require(`../../config`);
+const {APP_PORT, SESSION_SECRET} = require(`../../config`);
+const sequelize = require(`../service/lib/sequelize`);
 const {PUBLIC_DIR, UPLOAD_DIR, MULTER_ERRORS} = require(`../constants`);
 
 const logger = getLogger({
   name: `front-server`,
 });
 
+if (!SESSION_SECRET) {
+  throw new Error(`SESSION_SECRET environment variable is not defined`);
+}
+
 const app = express();
+
+const mySessionStore = new SequelizeStore({
+  db: sequelize,
+  expiration: 180000,
+  checkExpirationInterval: 60000
+});
+
+sequelize.sync({force: false});
+
+app.use(express.urlencoded({extended: false}));
+
+app.use(session({
+  secret: SESSION_SECRET,
+  store: mySessionStore,
+  resave: false,
+  proxy: true,
+  saveUninitialized: false,
+}));
+
 app.use(express.static(path.join(__dirname, PUBLIC_DIR)));
 app.use(express.static(path.join(__dirname, UPLOAD_DIR)));
 

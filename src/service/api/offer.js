@@ -18,14 +18,18 @@ module.exports = (app, offerService, commentService) => {
   app.use(`/offers`, route);
 
   route.get(`/`, async (req, res) => {
-    const {limit, offset, comments} = req.query;
+    const {limit, offset, comments, userId} = req.query;
     let result;
 
     try {
       if (limit || offset) {
         result = await offerService.findPage({limit, offset, comments});
       } else {
-        result = await offerService.findAll(comments);
+        if (userId) {
+          result = await offerService.findAllByUser(userId, comments);
+        } else {
+          result = await offerService.findAll(comments);
+        }
       }
 
       res.status(HttpCode.OK).json(result);

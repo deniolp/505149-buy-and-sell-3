@@ -21,8 +21,8 @@ class API {
     return response.data;
   }
 
-  getOffers({offset, limit, comments}) {
-    return this._load(`/offers`, {params: {offset, limit, comments}});
+  getOffers({offset, limit, comments, userId}) {
+    return this._load(`/offers`, {params: {offset, limit, comments, userId}});
   }
 
   getOffer(id, comments) {
@@ -66,6 +66,13 @@ class API {
     return this._load(`/user`, {
       method: HttpMethod.POST,
       data
+    });
+  }
+
+  auth(email, password) {
+    return this._load(`/user/auth`, {
+      method: HttpMethod.POST,
+      data: {email, password}
     });
   }
 }

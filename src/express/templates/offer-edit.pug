@@ -10,6 +10,7 @@ block content
             .ticket-form__avatar-container.js-preview-container.uploaded
               .ticket-form__avatar.js-preview
                 img(src=`/img/${offer.picture}` alt='Изображение товара')
+              input(type='hidden' name='_csrf' value=`${csrfToken}`)
               input(type="hidden" name="old-image" value=offer.picture)
               .ticket-form__field-avatar
                 input#avatar.visually-hidden.js-file-field(type='file' name='avatar')

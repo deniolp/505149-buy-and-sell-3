@@ -2,7 +2,7 @@
 
 const schema = require(`../schemas/user`);
 
-const {HttpCode} = require(`../../constants`);
+const {HttpCode, RegisterMessage} = require(`../../constants`);
 
 module.exports = (service) => async (req, res, next) => {
   const newUser = req.body;
@@ -18,7 +18,7 @@ module.exports = (service) => async (req, res, next) => {
 
   if (userByEmail) {
     return res.status(HttpCode.BAD_REQUEST)
-      .send(`Email is already in use`);
+      .send(RegisterMessage.USER_ALREADY_REGISTER);
   }
 
   return next();
