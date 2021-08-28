@@ -80,7 +80,7 @@ mainRouter.post(`/login`, async (req, res) => {
   try {
     const user = await api.auth(req.body[`user-email`], req.body[`user-password`]);
     req.session.user = user;
-    res.redirect(`/`);
+    req.session.save(() => res.redirect(`/`));
   } catch (error) {
     res.redirect(`/login?error=${encodeURIComponent(error.response.data)}`);
   }
@@ -88,7 +88,7 @@ mainRouter.post(`/login`, async (req, res) => {
 
 mainRouter.get(`/logout`, (req, res) => {
   delete req.session.user;
-  res.redirect(`/`);
+  req.session.save(() => res.redirect(`/`));
 });
 
 mainRouter.get(`/search`, async (req, res) => {
