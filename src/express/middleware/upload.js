@@ -1,16 +1,11 @@
 'use strict';
 
 const multer = require(`multer`);
-const path = require(`path`);
 const {nanoid} = require(`nanoid`);
-const {MAX_FILE_SIZE, ALLOWED_TYPES, MULTER_ERRORS} = require(`../../constants`);
-
-const UPLOAD_DIR = `../upload/img/`;
-
-const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
+const {MAX_FILE_SIZE, ALLOWED_TYPES, MULTER_ERRORS, MULTER_UPLOAD_DIR} = require(`../../constants`);
 
 const storage = multer.diskStorage({
-  destination: uploadDirAbsolute,
+  destination: MULTER_UPLOAD_DIR,
   filename: (req, file, cb) => {
     const uniqueName = nanoid(10);
     const extension = file.originalname.split(`.`).pop();
