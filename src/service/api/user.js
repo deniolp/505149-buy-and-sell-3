@@ -26,7 +26,7 @@ module.exports = (app, service) => {
 
   route.post(`/auth`, async (req, res) => {
     const {email, password} = req.body;
-    if (!email && !password) {
+    if (!email || !password) {
       res.status(HttpCode.UNAUTHORIZED).send(RegisterMessage.EMPTY_FIELD);
       return;
     }
