@@ -14,7 +14,7 @@ const logger = pino({
   level: process.env.LOG_LEVEL || defaultLogLevel,
   prettyPrint: {
     colorize: process.env.COLOR || false,
-    translateTime: dateFormat(new Date(), `dd.m h:MM T`),
+    translateTime: `SYS:standard`,
     ignore: `pid,hostname`,
   },
 }, isDevMode ? process.stdout : pino.destination(LOG_FILE));
