@@ -13,14 +13,11 @@
     "filldb::test": "cross-env NODE_ENV=test node ./src/service/service.js --filldb",
     "version": "node ./src/service/service.js --version",
     "start": "cross-env NODE_ENV=production nodemon -q ./src/service/service.js -- --server",
-    "start::prod": "cross-env NODE_ENV=production node ./src/service/service.js -- --server",
     "start::debug": "cross-env NODE_ENV=development COLOR=true nodemon ./src/service/service.js -- --server",
     "start-front-server": "cross-env NODE_ENV=production IS_FRONT=true nodemon -q ./src/express/index.js",
-    "start-front-server::prod": "cross-env NODE_ENV=production IS_FRONT=true node ./src/express/index.js",
     "start-front-server::debug": "cross-env NODE_ENV=development COLOR=true IS_FRONT=true nodemon ./src/express/index.js",
     "dev": "concurrently \"npm run start\" \"npm run start-front-server\"",
-    "dev::debug": "concurrently --names \"BACK,FRONT\" -c \"bgGreen.bold,bgMagenta.bold\" \"npm run start::debug\" \"npm run start-front-server::debug\"",
-    "run::prod": "concurrently \"npm run start::prod\" \"npm run start-front-server::prod\""
+    "dev::debug": "concurrently --names \"BACK,FRONT\" -c \"bgGreen.bold,bgMagenta.bold\" \"npm run start::debug\" \"npm run start-front-server::debug\""
   },
   "repository": {
     "type": "git",
