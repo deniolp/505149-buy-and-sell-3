@@ -30,7 +30,6 @@
   },
   "homepage": "https://github.com/deniolp/505149-buy-and-sell-3#readme",
   "devDependencies": {
-    "concurrently": "5.2.0",
     "debug": "4.1.1",
     "eslint": "6.8.0",
     "eslint-config-htmlacademy": "0.5.2",
@@ -59,6 +58,7 @@
     "pino": "6.2.0",
     "pug": "2.0.4",
     "sequelize": "6.3.5",
-    "socket.io": "4.5.3"
+    "socket.io": "4.5.3",
+    "concurrently": "5.2.0"
   }
 }
