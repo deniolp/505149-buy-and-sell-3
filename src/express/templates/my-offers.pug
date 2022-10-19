@@ -25,5 +25,6 @@ block content
                       p.ticket-card__price
                         span.js-sum= offer.sum
                         |  ₽
-                  button.ticket-card__del.js-delete(type='button') Удалить
+                  form(action=`/offers/delete/${offer.id}` method='post' autocomplete='off')
+                    button.ticket-card__del.js-delete(type='submit') Удалить
     +pagination(page, totalPages, 2, `?`)
