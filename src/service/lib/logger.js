@@ -16,7 +16,7 @@ const logger = pino({
     translateTime: `SYS:standard`,
     ignore: `pid,hostname`,
   },
-}, isDevMode ? pino.destination(LOG_FILE) : process.stdout);
+}, isDevMode ? process.stdout : pino.destination(LOG_FILE));
 
 module.exports = {
   logger,
