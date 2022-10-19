@@ -1,1 +1,1 @@
-web: npm run filldb
+web: npm run dev
