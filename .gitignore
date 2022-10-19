@@ -16,5 +16,8 @@ mocks.json
 .env
 src/express/upload
 
+# Папка с собранными файлами проекта
+build/
+
 # Папка с логами
 src/logs
