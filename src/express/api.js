@@ -22,7 +22,6 @@ class API {
   }
 
   getOffers({offset, limit, comments, userId}) {
-    console.log(`object`);
     return this._load(`/offers`, {params: {offset, limit, comments, userId}});
   }
 

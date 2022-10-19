@@ -18,6 +18,7 @@ module.exports = (app, offerService, commentService) => {
   app.use(`/offers`, route);
 
   route.get(`/`, async (req, res) => {
+    console.log(req.query);
     const {limit, offset, comments, userId} = req.query;
     let result;
 
