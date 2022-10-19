@@ -4,8 +4,8 @@ require(`dotenv`).config();
 
 module.exports = {
   APP_URL: process.env.APP_URL || `http://localhost`,
-  APP_PORT: process.env.PORT || 8080,
-  API_PORT: process.env.API_PORT || 3000,
+  APP_PORT: process.env.APP_PORT || 8080,
+  API_PORT: process.env.PORT || 3000,
   DB_PORT: process.env.DB_PORT || 5432,
   DB_NAME: process.env.DATABASE_NAME || `buy_and_sell`,
   TEST_DB_NAME: process.env.TEST_DB_NAME || `test_buy_and_sell`,
