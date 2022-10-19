@@ -9,7 +9,7 @@
     "eslint": "cross-env NODE_ENV=test eslint --ext .js src/",
     "help": "cross-env NODE_ENV=development COLOR=true node ./src/service/service.js --help",
     "generate": "node ./src/service/service.js --generate",
-    "filldb": "cross-env NODE_ENV=development COLOR=true node ./src/service/service.js --filldb",
+    "filldb": "cross-env NODE_ENV=production COLOR=true node ./src/service/service.js --filldb",
     "filldb::test": "cross-env NODE_ENV=test node ./src/service/service.js --filldb",
     "version": "node ./src/service/service.js --version",
     "start": "cross-env NODE_ENV=production nodemon -q ./src/service/service.js -- --server",
