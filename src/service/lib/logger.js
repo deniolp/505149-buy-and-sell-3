@@ -1,7 +1,6 @@
 'use strict';
 
 const pino = require(`pino`);
-const dateFormat = require(`dateformat`);
 const {Env} = require(`../../constants`);
 
 const isDevMode = process.env.NODE_ENV === Env.DEVELOPMENT;
