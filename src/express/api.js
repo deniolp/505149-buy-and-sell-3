@@ -2,11 +2,11 @@
 
 const axios = require(`axios`).default;
 
-const {API_PORT, APP_URL} = require(`../../config`);
+const {API_PORT, API_URL} = require(`../../config`);
 const {TIMEOUT, HttpMethod} = require(`../constants`);
 
 const port = API_PORT;
-const defaultUrl = `${APP_URL}:${port}/api`;
+const defaultUrl = `${API_URL}:${port}/api`;
 
 class API {
   constructor(baseURL, timeout) {
