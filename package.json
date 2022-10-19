@@ -59,6 +59,7 @@
     "socket.io": "4.5.3",
     "concurrently": "5.2.0",
     "nodemon": "2.0.2",
-    "pino-pretty": "4.0.0"
+    "pino-pretty": "4.0.0",
+    "intl": "1.2.5"
   }
 }
