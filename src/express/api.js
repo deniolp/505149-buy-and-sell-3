@@ -6,7 +6,7 @@ const {API_PORT, APP_URL} = require(`../../config`);
 const {TIMEOUT, HttpMethod} = require(`../constants`);
 
 const port = API_PORT;
-const defaultUrl = `${APP_URL}:${port}/api/`;
+const defaultUrl = `${APP_URL}:${port}/api`;
 
 class API {
   constructor(baseURL, timeout) {
@@ -22,7 +22,6 @@ class API {
   }
 
   getOffers({offset, limit, comments, userId}) {
-    console.log(defaultUrl);
     return this._load(`/offers`, {params: {offset, limit, comments, userId}});
   }
 

@@ -19,8 +19,6 @@ const createApp = async () => {
   const apiRoutes = await createApi();
   app.use(express.json());
 
-  console.log(`In the server`);
-
   app.use((req, res, next) => {
     logger.debug(`Start request to url ${req.url}, ${req.method} method`);
     res.on(`finish`, () => {
