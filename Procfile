@@ -1,1 +1,1 @@
-web: npm run dev::debug
+web: npm run dev
