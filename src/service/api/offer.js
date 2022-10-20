@@ -121,12 +121,12 @@ module.exports = (app, offerService, commentService) => {
 
   route.delete(`/comments/:commentId`, [routeParamsValidator, commentExist(commentService)], async (req, res) => {
     const {commentId} = req.params;
-    const isCommentDeleted = await commentService.drop(commentId);
+    const {userId} = req.body;
+
+    const isCommentDeleted = await commentService.drop(commentId, userId);
 
     if (!isCommentDeleted) {
-      logger.error(`Error status - ${HttpCode.NOT_FOUND}`);
-      return res.status(HttpCode.NOT_FOUND)
-        .send(`Comment not found`);
+      return logger.error(`Error status - ${HttpCode.BAD_REQUEST}`);
     }
 
     return res.status(HttpCode.OK).send(`Deleted!`);

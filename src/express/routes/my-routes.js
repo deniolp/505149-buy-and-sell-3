@@ -27,7 +27,7 @@ myRouter.post(`/delete/:id`, auth, async (req, res) => {
     res.redirect(`/my`);
   } catch (err) {
     logger.error(err.message);
-    res.redirect(`/my/delete/${id}?error=${encodeURIComponent(err.response.data)}`);
+    res.redirect(`/my/?error=You have not right to delete this offer}`);
   }
 });
 
@@ -39,13 +39,14 @@ myRouter.get(`/comments`, auth, async (req, res) => {
 
 myRouter.post(`/delete-comment/:id`, auth, async (req, res) => {
   const {id} = req.params;
+  const {user} = req.session;
 
   try {
-    await api.deleteComment(id);
+    await api.deleteComment(id, {userId: user.id});
     res.redirect(`/my/comments`);
   } catch (err) {
     logger.error(err.message);
-    res.redirect(`/my/delete-comment/${id}?error=${encodeURIComponent(err.response.data)}`);
+    res.redirect(`/my/?error=You have not right to delete this comment}`);
   }
 });
 

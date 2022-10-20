@@ -69,9 +69,10 @@ class API {
     });
   }
 
-  async deleteComment(id) {
+  async deleteComment(id, data) {
     return this._load(`/offers/comments/${id}`, {
-      method: HttpMethod.DELETE
+      method: HttpMethod.DELETE,
+      data
     });
   }
 

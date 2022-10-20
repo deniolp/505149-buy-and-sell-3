@@ -29,10 +29,13 @@ class CommentService {
     }
   }
 
-  async drop(id) {
+  async drop(id, userId) {
     try {
       const deletedRow = await this._Comment.destroy({
-        where: {id}
+        where: {
+          id,
+          userId
+        }
       });
       return !!deletedRow;
     } catch (error) {
