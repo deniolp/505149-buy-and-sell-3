@@ -137,18 +137,6 @@ offersRouter.post(`/edit/:id`, upload.single(`avatar`), csrfProtection, async (r
   }
 });
 
-offersRouter.post(`/delete/:id`, auth, async (req, res) => {
-  const {id} = req.params;
-
-  try {
-    await api.deleteOffer(id);
-    res.redirect(`/my`);
-  } catch (err) {
-    logger.error(err.message);
-    res.redirect(`/offers/delete/${id}?error=${encodeURIComponent(err.response.data)}`);
-  }
-});
-
 offersRouter.post(`/:id/comments`, upload.single(`text`), csrfProtection, async (req, res) => {
   const {user} = req.session;
   const {id} = req.params;
@@ -160,18 +148,6 @@ offersRouter.post(`/:id/comments`, upload.single(`text`), csrfProtection, async 
   } catch (error) {
     logger.error(error.message);
     res.redirect(`/offers/${id}?error=${encodeURIComponent(error.response.data)}`);
-  }
-});
-
-offersRouter.post(`/delete-comment/:id`, auth, async (req, res) => {
-  const {id} = req.params;
-
-  try {
-    await api.deleteComment(id);
-    res.redirect(`/my/comments`);
-  } catch (err) {
-    logger.error(err.message);
-    res.redirect(`/offers/delete-comment/${id}?error=${encodeURIComponent(err.response.data)}`);
   }
 });
 
