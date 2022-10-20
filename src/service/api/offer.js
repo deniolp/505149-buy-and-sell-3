@@ -6,6 +6,7 @@ const {HttpCode} = require(`../../constants`);
 const offerValidator = require(`../middlewares/offer-validator`);
 const commentValidator = require(`../middlewares/comment-validator`);
 const offerExist = require(`../middlewares/offer-exist`);
+const commentExist = require(`../middlewares/comment-exist`);
 const routeParamsValidator = require(`../middlewares/route-params-validator`);
 const {getLogger} = require(`../lib/logger`);
 
@@ -116,7 +117,7 @@ module.exports = (app, offerService, commentService) => {
       .json(comments);
   });
 
-  route.delete(`/:offerId/comments/:commentId`, [routeParamsValidator, offerExist(offerService)], async (req, res) => {
+  route.delete(`/comments/:commentId`, [routeParamsValidator, commentExist(commentService)], async (req, res) => {
     const {commentId} = req.params;
     const isCommentDeleted = await commentService.drop(commentId);
 

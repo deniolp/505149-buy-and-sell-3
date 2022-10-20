@@ -158,4 +158,16 @@ offersRouter.post(`/:id/comments`, upload.single(`text`), csrfProtection, async 
   }
 });
 
+offersRouter.post(`/delete-comment/:id`, auth, async (req, res) => {
+  const {id} = req.params;
+
+  try {
+    await api.deleteComment(id);
+    res.redirect(`/my/comments`);
+  } catch (err) {
+    logger.error(err.message);
+    res.redirect(`/offers/delete-comment/${id}?error=${encodeURIComponent(err.response.data)}`);
+  }
+});
+
 module.exports = offersRouter;

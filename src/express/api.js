@@ -68,6 +68,12 @@ class API {
     });
   }
 
+  async deleteComment(id) {
+    return this._load(`/offers/comments/${id}`, {
+      method: HttpMethod.DELETE
+    });
+  }
+
   createUser(data) {
     return this._load(`/user`, {
       method: HttpMethod.POST,

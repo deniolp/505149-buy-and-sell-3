@@ -42,6 +42,18 @@ class CommentService {
     }
   }
 
+  async findOne(id) {
+    try {
+      return await this._Comment.findOne({
+        where: {id}
+      });
+    } catch (error) {
+      logger.error(`Can not find comment with ${id}. Error: ${error}`);
+
+      return null;
+    }
+  }
+
   async findAll(offerId) {
     try {
       return await this._Comment.findAll({
