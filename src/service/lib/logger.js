@@ -12,11 +12,11 @@ const logger = pino({
   name: `base-logger`,
   level: process.env.LOG_LEVEL || defaultLogLevel,
   prettyPrint: {
-    colorize: isDevMode ? process.env.COLOR : process.stdout.isTTY,
+    colorize: process.stdout.isTTY,
     translateTime: `SYS:standard`,
     ignore: `pid,hostname`,
   }
-}, isDevMode ? process.stdout : pino.destination(LOG_FILE));
+}, isDevMode ? pino.destination(LOG_FILE) : process.stdout);
 
 module.exports = {
   logger,
