@@ -7,7 +7,7 @@ const {getLogger} = require(`../../service/lib/logger`);
 const {ensureArray} = require(`../../utils`);
 const upload = require(`../middleware/upload`);
 const auth = require(`../middleware/auth`);
-const {OFFERS_PER_PAGE} = require(`../../constants`);
+const {OFFERS_PER_PAGE, HttpCode} = require(`../../constants`);
 
 const api = require(`../api`).getAPI();
 const offersRouter = new Router();
@@ -68,23 +68,28 @@ offersRouter.get(`/category/:id`, async (req, res) => {
   const limit = OFFERS_PER_PAGE;
   const offset = (page - 1) * OFFERS_PER_PAGE;
 
-  const [{count, offers}, categories] = await Promise.all([
-    api.getOffersByCategory({limit, offset, id}),
-    api.getCategories(true)
-  ]);
+  const categories = await api.getCategories(true);
+  const isCategoryExist = !!categories.find((it) => it.id === +id);
 
-  const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
-  const category = categories.find((it) => it.id === +id);
+  if (isCategoryExist) {
+    const {count, offers} = await api.getOffersByCategory({limit, offset, id});
 
-  res.render(`category`, {
-    categories,
-    category,
-    offers,
-    id,
-    page,
-    totalPages,
-    user
-  });
+    const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
+    const category = categories.find((it) => it.id === +id);
+
+    return res.render(`category`, {
+      categories,
+      category,
+      offers,
+      id,
+      page,
+      totalPages,
+      user
+    });
+  } else {
+    logger.error(`Can not find category with ${id}.`);
+    return res.status(HttpCode.NOT_FOUND).render(`errors/404`, {title: `Can not find category`});
+  }
 });
 
 offersRouter.get(`/edit/:id`, auth, csrfProtection, async (req, res) => {
