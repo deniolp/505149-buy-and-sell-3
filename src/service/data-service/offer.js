@@ -121,9 +121,12 @@ class OfferService {
     return offer.get();
   }
 
-  async drop(id) {
+  async drop(id, userId) {
     const deletedRow = await this._Offer.destroy({
-      where: {id}
+      where: {
+        id,
+        userId
+      }
     });
     return !!deletedRow;
   }

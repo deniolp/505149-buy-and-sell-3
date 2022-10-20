@@ -20,9 +20,10 @@ myRouter.get(`/`, auth, async (req, res) => {
 
 myRouter.post(`/delete/:id`, auth, async (req, res) => {
   const {id} = req.params;
+  const {user} = req.session;
 
   try {
-    await api.deleteOffer(id);
+    await api.deleteOffer(id, {userId: user.id});
     res.redirect(`/my`);
   } catch (err) {
     logger.error(err.message);

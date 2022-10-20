@@ -55,9 +55,10 @@ class API {
     });
   }
 
-  async deleteOffer(id) {
+  async deleteOffer(id, data) {
     return this._load(`/offers/${id}`, {
-      method: HttpMethod.DELETE
+      method: HttpMethod.DELETE,
+      data
     });
   }
 

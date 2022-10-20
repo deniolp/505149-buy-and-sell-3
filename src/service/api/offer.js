@@ -99,7 +99,9 @@ module.exports = (app, offerService, commentService) => {
 
   route.delete(`/:offerId`, routeParamsValidator, async (req, res) => {
     const {offerId} = req.params;
-    const isOfferDeleted = await offerService.drop(offerId);
+    const {userId} = req.body;
+
+    const isOfferDeleted = await offerService.drop(offerId, userId);
 
     if (!isOfferDeleted) {
       logger.error(`Error status - ${HttpCode.INTERNAL_SERVER_ERROR}`);
