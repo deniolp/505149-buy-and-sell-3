@@ -33,7 +33,6 @@ mainRouter.get(`/`, async (req, res) => {
         const id = category.id;
         const cat = await api.getOffersByCategory({limit, offset, id});
         category.count = cat.count;
-        console.log(category.count);
       }
     }
 

@@ -144,9 +144,9 @@ describe(`Offer API end-points:`, () => {
     res = await request(app)
       .get(`/api/offers/${mockOfferId}`);
 
-    expect(res.body.sum).toBe(999);
+    expect(res.body.sum).toBe(`999`);
     expect(res.body.description).toBe(`New some description, yes, some description, do not be surprised!`);
-    expect(res.body.categories[0].id).toBe(2);
+    expect(res.body.categories[0].id).toBe(`2`);
   });
 
   test(`wrong PUT request should not work and status code  should be 400`, async () => {
@@ -159,12 +159,16 @@ describe(`Offer API end-points:`, () => {
   });
 
   test(`DELETE offer request should work and status code after deleting should be 200`, async () => {
-    res = await request(app).delete(`/api/offers/${mockOfferId}`);
+    res = await request(app).delete(`/api/offers/${mockOfferId}`).send({
+      "userId": 1
+    });
     expect(res.statusCode).toBe(HttpCode.OK);
   });
 
   test(`status for incorrect DELETE offer request should be 500`, async () => {
-    res = await request(app).delete(`/api/offers/1000`);
+    res = await request(app).delete(`/api/offers/1000`).send({
+      "userId": 1
+    });
 
     expect(res.statusCode).toBe(HttpCode.INTERNAL_SERVER_ERROR);
   });
@@ -249,7 +253,10 @@ describe(`Offer comments API end-points`, () => {
     });
     mockCommentId = res.body.id;
 
-    res = await request(app).delete((`/api/offers/${mockOfferId}/comments/${mockCommentId}`));
+    res = await request(app).delete((`/api/offers/comments/${mockCommentId}`))
+    .send({
+      "userId": 2
+    });
     expect(res.statusCode).toBe(HttpCode.OK);
 
     res = await request(app).get((`/api/offers/${mockOfferId}/comments`));
