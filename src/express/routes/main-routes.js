@@ -28,6 +28,15 @@ mainRouter.get(`/`, async (req, res) => {
       api.getCategories(true)
     ]);
 
+    for (const category of categories) {
+      if (category.count === `1`) {
+        const id = category.id;
+        const cat = await api.getOffersByCategory({limit, offset, id});
+        category.count = cat.count;
+        console.log(category.count);
+      }
+    }
+
     const mostDiscussed = allOffers.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 8);
 
     const totalPages = Math.ceil(count / OFFERS_PER_PAGE);

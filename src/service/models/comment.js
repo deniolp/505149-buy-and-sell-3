@@ -13,7 +13,8 @@ const define = (sequelize) => Comment.init({
   sequelize,
   createdAt: `created_date`,
   modelName: `comment`,
-  tableName: `comments`
+  tableName: `comments`,
+  updatedAt: false
 });
 
 module.exports = define;

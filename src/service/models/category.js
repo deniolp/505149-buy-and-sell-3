@@ -14,7 +14,9 @@ const define = (sequelize) => Category.init({
 }, {
   sequelize,
   modelName: `category`,
-  tableName: `categories`
+  tableName: `categories`,
+  createdAt: false,
+  updatedAt: false,
 });
 
 module.exports = define;

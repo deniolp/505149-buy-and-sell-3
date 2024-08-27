@@ -46,6 +46,8 @@ const define = (sequelize) => {
   OfferCategory.init({}, {
     sequelize,
     modelName: `offers_categories`,
+    createdAt: false,
+    updatedAt: false,
   });
 
   Offer.belongsToMany(Category, {

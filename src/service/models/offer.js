@@ -28,7 +28,8 @@ const define = (sequelize) => Offer.init({
   sequelize,
   createdAt: `created_date`,
   modelName: `offer`,
-  tableName: `offers`
+  tableName: `offers`,
+  updatedAt: false
 });
 
 module.exports = define;

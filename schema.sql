@@ -44,7 +44,7 @@ CREATE TABLE users
     id bigserial NOT NULL,
     name character varying(50) NOT NULL,
     email character varying(50) UNIQUE NOT NULL,
-    passwordHash character varying(50) NOT NULL CHECK (char_length(passwordHash) > 6),
+    "passwordHash" character varying(100) NOT NULL CHECK (char_length("passwordHash") > 6),
     avatar character varying(50),
     PRIMARY KEY (id)
 );
@@ -62,9 +62,9 @@ CREATE TABLE offers
     sum numeric NOT NULL,
     picture character varying(500),
     created_date DATE NOT NULL,
-    user_id bigint NOT NULL,
+    "userId" bigint NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT offers_users FOREIGN KEY (user_id)
+    CONSTRAINT offers_users FOREIGN KEY ("userId")
         REFERENCES users (id) MATCH FULL
         ON UPDATE CASCADE
         ON DELETE CASCADE
@@ -86,32 +86,32 @@ CREATE TABLE comments
     id bigserial NOT NULL,
     text character varying(300) NOT NULL,
     created_date DATE NOT NULL,
-    user_id bigint NOT NULL,
-    offer_id bigint NOT NULL,
+    "userId" bigint NOT NULL,
+    "offerId" bigint NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT comments_users FOREIGN KEY (user_id)
+    CONSTRAINT comments_users FOREIGN KEY ("userId")
         REFERENCES users (id) MATCH FULL
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CONSTRAINT comments_offers FOREIGN KEY (offer_id)
+    CONSTRAINT comments_offers FOREIGN KEY ("offerId")
         REFERENCES offers (id) MATCH FULL
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 
-CREATE INDEX user_id_index ON comments (user_id);
-CREATE INDEX offer_id_index ON comments (offer_id);
+CREATE INDEX user_id_index ON comments ("userId");
+CREATE INDEX offer_id_index ON comments ("offerId");
 CREATE INDEX comment_created_date_index ON comments (created_date);
 
 CREATE TABLE offers_categories
 (
-    offer_id bigint NOT NULL,
-    category_id bigint NOT NULL,
-    CONSTRAINT offers_categories_pk PRIMARY KEY (offer_id, category_id),
-    FOREIGN KEY(offer_id) REFERENCES offers (id) MATCH FULL
+    "offerId" bigint NOT NULL,
+    "categoryId" bigint NOT NULL,
+    CONSTRAINT offers_categories_pk PRIMARY KEY ("offerId", "categoryId"),
+    FOREIGN KEY("offerId") REFERENCES offers (id) MATCH FULL
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY(category_id) REFERENCES categories (id) MATCH FULL
+    FOREIGN KEY("categoryId") REFERENCES categories (id) MATCH FULL
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );

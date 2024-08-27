@@ -69,17 +69,18 @@ offersRouter.get(`/category/:id`, async (req, res) => {
   const offset = (page - 1) * OFFERS_PER_PAGE;
 
   const categories = await api.getCategories(true);
-  const isCategoryExist = !!categories.find((it) => it.id === +id);
+  const isCategoryExist = !!categories.find((it) => +it.id === +id);
 
   if (isCategoryExist) {
     const {count, offers} = await api.getOffersByCategory({limit, offset, id});
 
     const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
-    const category = categories.find((it) => it.id === +id);
+    const category = categories.find((it) => +it.id === +id);
 
     return res.render(`category`, {
       categories,
       category,
+      count,
       offers,
       id,
       page,

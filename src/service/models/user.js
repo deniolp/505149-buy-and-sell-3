@@ -24,7 +24,9 @@ const define = (sequelize) => User.init({
 }, {
   sequelize,
   modelName: `user`,
-  tableName: `users`
+  tableName: `users`,
+  createdAt: false,
+  updatedAt: false
 });
 
 module.exports = define;
